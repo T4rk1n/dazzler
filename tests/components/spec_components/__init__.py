@@ -1,6 +1,7 @@
-import os as _os
-
-from dazzler.system import Package as _Package, Requirement as _Req
+from dazzler.system import (
+    Package as _Package,
+    assets_to_requirements as _ass_to_req
+)
 
 from dazzler._assets import (
     assets as _assets,
@@ -10,21 +11,23 @@ from dazzler._assets import (
 )
 
 from ._imports_ import *
-from ._imports_ import __all__ as _components
+from ._imports_ import __all__
 
 _name = 'test'
 _package_name = f'dazzler_{_name}'
 
 
+_components = []
+for _c in __all__:
+    _components.append(locals()[_c])
+
 package = _Package(
     _package_name,
     components=_components,
-    requirements=[
-        _Req(
-            _os.path.join(_dist_path, _x['name']),
-            dev=_os.path.join(_dev_path, _y['name']),
-            package=_package_name
-        )
-        for _x, _y in zip(_assets[_name], _dev[_name])
-    ]
+    requirements=_ass_to_req(
+        _dist_path, _assets[_name],
+        dev_data=_dev[_name],
+        dev_path=_dev_path,
+        package_name=_package_name,
+    )
 )
