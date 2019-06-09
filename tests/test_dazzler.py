@@ -42,3 +42,19 @@ async def test_multi_page():
 
     await app.stop()
     driver.driver.close()
+
+
+@pytest.mark.async_test
+async def test_binding_return_component():
+    from tests.apps.binding_return_component import app
+
+    driver = AsyncDriver(webdriver.Chrome())
+
+    await app.main(blocking=False)
+
+    await driver.get('http://localhost:5417/')
+
+    clicker = await driver.wait_for_element_by_id('clicker')
+
+    clicker.click()
+    await driver.wait_for_text_to_equal('#from-binding', 'from binding')
