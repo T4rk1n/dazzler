@@ -17,6 +17,10 @@ async def test_click_output(browser):
         await app.executor.execute(clicker.click)
 
         await browser.wait_for_text_to_equal('#output', f'Clicked {i}')
+        await browser.wait_for_style_to_equal(
+            '#output', 'background-color',
+            'rgba(255, 0, 0, 1)' if i % 2 == 1 else 'rgba(0, 0, 255, 1)'
+        )
 
     await app.stop()
 
