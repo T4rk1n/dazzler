@@ -4,6 +4,11 @@ import pytest
 
 # noinspection PyProtectedMember
 # pylint: disable=inconsistent-return-statements
+from selenium import webdriver
+
+from tests.tools import AsyncDriver
+
+
 @pytest.mark.tryfirst
 def pytest_pyfunc_call(pyfuncitem):
     """Run tests marked as async in the loop."""
@@ -16,3 +21,10 @@ def pytest_pyfunc_call(pyfuncitem):
             }))
             loop.run_until_complete(task)
             return True
+
+
+@pytest.fixture(scope='module')
+def browser():
+    driver = AsyncDriver(webdriver.Chrome())
+    yield driver
+    driver.driver.quit()
