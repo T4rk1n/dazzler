@@ -64,3 +64,19 @@ async def test_layout_as_function(browser):
     await browser.wait_for_text_to_equal('#layout', 'Layout as function')
 
     await app.stop()
+
+
+@pytest.mark.async_test
+async def test_generated_component_trigger_binding(browser):
+    from tests.apps.generated_component_trigger_binding import app
+
+    await app.main(blocking=False)
+
+    await browser.get('http://localhost:8150')
+    click = await browser.wait_for_element_by_id('click')
+    click.click()
+
+    click_twice = await browser.wait_for_element_by_id('generated')
+    click_twice.click()
+
+    await browser.wait_for_text_to_equal('#output2', 'Generated')
