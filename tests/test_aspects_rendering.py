@@ -11,7 +11,7 @@ async def test_aspect_rendering(browser):
     types = aspect_rendering.aspect_types
 
     await app.main(blocking=False)
-    await browser.get('http://localhost:5417/')
+    await browser.get('http://localhost:8150/')
 
     for name, aspect in types.items():
         btn = await browser.wait_for_element_by_id(f'set-{name}')

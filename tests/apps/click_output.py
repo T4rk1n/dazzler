@@ -40,4 +40,4 @@ app.add_page(page)
 
 
 if __name__ == '__main__':
-    app.start('-v --debug 1 --port=5419'.split())
+    app.start('-v --debug 1 --port=8152'.split())
