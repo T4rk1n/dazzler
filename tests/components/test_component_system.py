@@ -53,6 +53,7 @@ def test_default_aspect_can_be_changed():
     assert component._prepare()['aspects']['string_with_default'] == 'Non default'  # noqa: E501
 
 
+@pytest.mark.skip('No initial bind trigger (yet) & logic for this was slow.')
 def test_default_aspect_set_default():
     # Set the default value should be included.
     component = spec.TestComponent('', string_with_default='Foo')
@@ -112,3 +113,4 @@ def test_docstring_length():
 
     for line in docstring:
         assert len(line) < 80, f'len({line}) > 79'
+        assert '(default=UNDEFINED)' not in line
