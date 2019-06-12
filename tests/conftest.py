@@ -6,6 +6,7 @@ import pytest
 # pylint: disable=inconsistent-return-statements
 from selenium import webdriver
 
+from dazzler import Dazzler
 from tests.tools import AsyncDriver
 
 
@@ -28,3 +29,35 @@ def browser():
     driver = AsyncDriver(webdriver.Chrome())
     yield driver
     driver.driver.quit()
+
+
+@pytest.fixture()
+def start_visit(browser):
+    namespace = {
+        'app': None
+    }
+
+    async def _start_app(app, url='http://localhost:8150/'):
+        namespace['app'] = app
+        await app.main(blocking=False)
+        await browser.get(url)
+
+    yield _start_app
+
+    loop = asyncio.get_event_loop()
+    task = loop.create_task(
+        namespace['app'].stop()
+    )
+    loop.run_until_complete(task)
+
+
+@pytest.fixture()
+def start_page(start_visit):
+    app = Dazzler(__name__)
+
+    async def _start_page(page):
+        page.url = '/'
+        app.add_page(page)
+        await start_visit(app)
+
+    return _start_page
