@@ -84,3 +84,19 @@ async def test_generated_component_trigger_binding(browser):
     click_twice.click()
 
     await browser.wait_for_text_to_equal('#output2', 'Generated')
+
+
+@pytest.mark.async_test
+async def test_click_with_state(browser):
+    from tests.apps.click_output import app
+    await app.main(blocking=False)
+
+    await browser.get('http://localhost:8150/')
+
+    clicker = await browser.wait_for_element_by_id('clicker')
+    dropdown = await browser.wait_for_element_by_css_selector('#dropdown input')
+
+    dropdown.send_keys('Foo')
+    clicker.click()
+
+    await browser.wait_for_text_to_equal('#datalist-output', 'Data foo')

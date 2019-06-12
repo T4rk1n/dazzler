@@ -12,7 +12,11 @@ page = Page(
             {'value': 'hello', 'label': 'world'},
             {'value': 'foo', 'label': 'Foo'}
         ], identity='dropdown', id='dropdown'),
-        core.Container('No data', identity='datalist-output'),
+        core.Container(
+            'No data',
+            identity='datalist-output',
+            id='datalist-output'
+        ),
     ])
 )
 
