@@ -84,6 +84,7 @@ async def test_generated_component_trigger_binding(browser):
     click_twice.click()
 
     await browser.wait_for_text_to_equal('#output2', 'Generated')
+    await app.stop()
 
 
 @pytest.mark.async_test
@@ -100,3 +101,29 @@ async def test_click_with_state(browser):
     clicker.click()
 
     await browser.wait_for_text_to_equal('#datalist-output', 'Data foo')
+    await app.stop()
+
+
+@pytest.mark.async_test
+async def test_bindings_continue_after_error(browser, capsys):
+    from tests.apps.bindings_continue_after_error import app
+    await app.main(blocking=False)
+
+    await browser.get('http://localhost:8150/')
+    clicker = await browser.wait_for_element_by_id('click')
+    clicker_err = await browser.wait_for_element_by_id('click-error')
+
+    clicker.click()
+
+    await browser.wait_for_text_to_equal('#output', 'Clicked 1')
+
+    clicker_err.click()
+    clicker.click()
+
+    await browser.wait_for_text_to_equal('#output', 'Clicked 2')
+
+    _, err = capsys.readouterr()
+    # Assert the error was logged.
+    assert 'Clicked error' in err
+
+    await app.stop()
