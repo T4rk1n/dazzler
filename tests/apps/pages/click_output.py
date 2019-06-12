@@ -1,6 +1,6 @@
-from dazzler import Dazzler
 from dazzler.components import core
 from dazzler.system import Page, Trigger, BindingContext, State
+
 
 page = Page(
     name='home',
@@ -37,11 +37,3 @@ async def on_click(context: BindingContext):
             'datalist-output',
             children=f'Data {data_value}'
         )
-
-
-app = Dazzler(__name__)
-app.add_page(page)
-
-
-if __name__ == '__main__':
-    app.start('-v --debug 1 --port=8152'.split())

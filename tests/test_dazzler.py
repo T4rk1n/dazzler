@@ -7,25 +7,21 @@ import pytest
 
 
 @pytest.mark.async_test
-async def test_click_output(browser):
-    # This test ensure that binding works.
-    from tests.apps.click_output import app
-    await app.main(blocking=False)
+async def test_click_output(start_page, browser):
+    from tests.apps.pages.click_output import page
 
-    await browser.get('http://localhost:8150/')
+    await start_page(page)
 
     clicker = await browser.wait_for_element_by_id('clicker')
 
     for i in range(1, 25):
-        await app.executor.execute(clicker.click)
+        clicker.click()
 
         await browser.wait_for_text_to_equal('#output', f'Clicked {i}')
         await browser.wait_for_style_to_equal(
             '#output', 'background-color',
             'rgba(255, 0, 0, 1)' if i % 2 == 1 else 'rgba(0, 0, 255, 1)'
         )
-
-    await app.stop()
 
 
 @pytest.mark.async_test
@@ -90,11 +86,10 @@ async def test_generated_component_trigger_binding(browser):
 
 
 @pytest.mark.async_test
-async def test_click_with_state(browser):
-    from tests.apps.click_output import app
-    await app.main(blocking=False)
+async def test_click_with_state(start_page, browser):
+    from tests.apps.pages.click_output import page
 
-    await browser.get('http://localhost:8150/')
+    await start_page(page)
 
     clicker = await browser.wait_for_element_by_id('clicker')
     dropdown = await browser.wait_for_element_by_css_selector('#dropdown input')
@@ -103,7 +98,6 @@ async def test_click_with_state(browser):
     clicker.click()
 
     await browser.wait_for_text_to_equal('#datalist-output', 'Data foo')
-    await app.stop()
 
 
 @pytest.mark.async_test
