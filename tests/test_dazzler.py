@@ -1,6 +1,8 @@
 """
 Main integrations test
 """
+import json
+
 import pytest
 
 
@@ -127,3 +129,25 @@ async def test_bindings_continue_after_error(browser, capsys):
     assert 'Clicked error' in err
 
     await app.stop()
+
+
+@pytest.mark.async_test
+async def test_aspect_rendering(browser):
+    from tests.apps import aspect_rendering
+
+    app = aspect_rendering.app
+    types = aspect_rendering.aspect_types
+
+    await app.main(blocking=False)
+    await browser.get('http://localhost:8150/')
+
+    for name, aspect in types.items():
+        btn = await browser.wait_for_element_by_id(f'set-{name}')
+        btn.click()
+        expected = aspect['value']
+        if aspect.get('json'):
+            expected = json.dumps(expected, separators=(',', ':'))
+        else:
+            expected = str(expected)
+
+        await browser.wait_for_text_to_equal(f'#spec-output .{name}', expected)
