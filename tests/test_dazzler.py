@@ -162,3 +162,25 @@ async def test_binding_set_aspect_trigger(start_page, browser):
     # Use a output container to assert the error was raised instead.
     expected = 'Setting the same aspect that triggered: n_clicks@click-error'
     await browser.wait_for_text_to_equal('#error-output', expected)
+
+
+@pytest.mark.async_test
+async def test_trigger_on_removed_component(start_page, browser):
+    from tests.apps.pages.trigger_on_removed_component import page
+
+    await start_page(page)
+
+    setter = await browser.wait_for_element_by_id('setter')
+    remover = await browser.wait_for_element_by_id('remover')
+
+    setter.click()
+
+    await browser.wait_for_text_to_equal('#set-me', 'set')
+    remover.click()
+    await browser.wait_for_text_to_equal('#remove-inner', 'removed 1')
+    setter.click()
+    await browser.wait_for_text_to_equal('#done', 'done 2')
+
+    # Can continue after error. Maybe add a specific error later.
+    remover.click()
+    await browser.wait_for_text_to_equal('#remove-inner', 'removed 2')
