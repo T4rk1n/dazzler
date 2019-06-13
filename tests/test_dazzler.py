@@ -184,3 +184,16 @@ async def test_trigger_on_removed_component(start_page, browser):
     # Can continue after error. Maybe add a specific error later.
     remover.click()
     await browser.wait_for_text_to_equal('#remove-inner', 'removed 2')
+
+
+@pytest.mark.async_test
+async def test_binding_chain(start_page, browser):
+    # Updating an aspect from the backend should trigger
+    # other connected bindings. (trigger-1 -> n bindings -> output)
+    from tests.apps.pages.binding_chain import page
+    await start_page(page)
+
+    first = await browser.wait_for_element_by_id('trigger-1')
+    first.click()
+
+    await browser.wait_for_text_to_equal('#output', 'output generated')
