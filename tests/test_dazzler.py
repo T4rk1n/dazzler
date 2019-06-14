@@ -197,3 +197,18 @@ async def test_binding_chain(start_page, browser):
     first.click()
 
     await browser.wait_for_text_to_equal('#output', 'output generated')
+
+
+@pytest.mark.async_test
+async def test_binding_tree(start_page, browser):
+    # This ensure that updates are not handled synchronously
+    # in the order they come in and waited until the first one completes.
+    from tests.apps.pages.binding_tree import page
+    await start_page(page)
+
+    trigger = await browser.wait_for_element_by_id('trigger')
+    trigger.click()
+
+    await browser.wait_for_text_to_equal('#done', 'done')
+    output = json.loads((await browser.wait_for_element_by_id('output')).text)
+    assert sum(output) == sum(range(1, 11))
