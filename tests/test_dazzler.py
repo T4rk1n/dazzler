@@ -212,3 +212,71 @@ async def test_binding_tree(start_page, browser):
     await browser.wait_for_text_to_equal('#done', 'done')
     output = json.loads((await browser.wait_for_element_by_id('output')).text)
     assert sum(output) == sum(range(1, 11))
+
+
+@pytest.mark.async_test
+async def test_dev_requirements(start_page, browser):
+    # Make sure the dev requirements are served on page load when debug.
+    from tests.apps.pages.click_output import page
+
+    await start_page(page, debug=True)
+
+    await browser.wait_for_element_by_xpath(
+        '//script[@src="/dazzler/requirements/'
+        'static/dev/react-16-8-6.development.js"]'
+    )
+    await browser.wait_for_element_by_xpath(
+        '//script[contains(@src, '
+        '"/dazzler/requirements/static/dazzler_core/dev/dazzler_core")]'
+    )
+
+
+@pytest.mark.async_test
+async def test_initial_trigger(start_page, browser):
+    from tests.apps.pages.initial_trigger import page
+
+    await start_page(page)
+
+    await browser.wait_for_text_to_equal(
+        '#output', 'Input 10'
+    )
+    await browser.wait_for_text_to_equal(
+        '#state-output', 'State 88'
+    )
+
+
+@pytest.mark.async_test
+async def test_get_aspect(start_page, browser):
+    from tests.apps.pages.get_aspect import page
+
+    await start_page(page)
+
+    starter = await browser.wait_for_element_by_id('starter')
+    updater = await browser.wait_for_element_by_id('updater')
+
+    starter.click()
+    updater.click()
+
+    await browser.wait_for_text_to_equal(
+        '#done', 'done', timeout=30
+    )
+
+    result = json.loads(
+        (await browser.wait_for_element_by_id('done-output')).text
+    )
+
+    assert sum(result) == sum(range(101))
+
+
+@pytest.mark.async_test
+async def test_get_aspect_error(start_page, browser):
+    from tests.apps.pages.get_aspect_error import page
+
+    await start_page(page)
+
+    clicker = await browser.wait_for_element_by_id('click-error')
+    clicker.click()
+
+    await browser.wait_for_text_to_equal(
+        '#error-output', 'Aspect not found invalid.error'
+    )

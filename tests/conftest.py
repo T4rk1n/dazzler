@@ -37,9 +37,9 @@ def start_visit(browser):
         'app': None
     }
 
-    async def _start_app(app, url='http://localhost:8150/'):
+    async def _start_app(app, url='http://localhost:8150/', debug=False):
         namespace['app'] = app
-        await app.main(blocking=False)
+        await app.main(blocking=False, debug=debug)
         await browser.get(url)
 
     yield _start_app
@@ -55,9 +55,9 @@ def start_visit(browser):
 def start_page(start_visit):
     app = Dazzler(__name__)
 
-    async def _start_page(page):
+    async def _start_page(page, debug=False):
         page.url = '/'
         app.add_page(page)
-        await start_visit(app)
+        await start_visit(app, debug=debug)
 
     return _start_page
