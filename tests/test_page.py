@@ -1,4 +1,6 @@
 """Page system specifics tests."""
+import json
+
 import pytest
 
 from aiohttp import web
@@ -138,3 +140,29 @@ async def test_page_requirements_package_override(start_page, browser):
     for script in scripts:
         src = script.get_attribute('src')
         assert 'dazzler_test' not in src
+
+
+# Try this 5 times to make sure it's not luck...
+# Prototype used to load all async so even if they were inserted in
+# order, some would load faster than other and thus no actual ordering but it
+# would pass the test most of the time.
+@pytest.mark.parametrize('_', range(5))
+@pytest.mark.async_test
+async def test_page_requirements_dir(start_page, browser, _):
+    # Page requirements should be loaded after packages requirements
+    # and in the order they are found and defined.
+    # Also load explicit requirement before the requirements directory
+    # meaning if you use an external library in them they be loaded.
+    from tests.apps.pages.page_assets import page
+
+    await start_page(page)
+
+    await browser.wait_for_style_to_equal(
+        '.loaded', 'background-color',  'rgba(255, 0, 0, 1)'
+    )
+
+    output = json.loads(
+        (await browser.wait_for_element_by_id('done-output')).text
+    )
+
+    assert output == [1, 2, 10, "same1", "with-lodash", "nested", "same2"]
