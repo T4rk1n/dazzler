@@ -1,6 +1,7 @@
 """
 Main integrations test
 """
+import asyncio
 import json
 
 import pytest
@@ -280,3 +281,34 @@ async def test_get_aspect_error(start_page, browser):
     await browser.wait_for_text_to_equal(
         '#error-output', 'Aspect not found invalid.error'
     )
+
+
+@pytest.mark.async_test
+async def test_component_as_trigger(start_page, browser):
+    from tests.apps.pages.component_as_trigger import page
+
+    await start_page(page)
+
+    await browser.wait_for_text_to_equal(
+        '#output', 'From component: from children'
+    )
+
+    await browser.wait_for_text_to_equal('#array-output', 'Sum: 45')
+
+    nested = json.loads(
+        (await browser.wait_for_element_by_id('nested-output')).text
+    )
+
+    assert nested['len'] == 2
+    assert nested['insider'] == 'inside html div'
+    assert nested['as_prop'] == 'attribute'
+
+    (await browser.wait_for_element_by_id('get-aspect-trigger')).click()
+
+    await asyncio.sleep(0.1)
+    output = json.loads(
+        (await browser.wait_for_element_by_id('get-aspect-output')).text
+    )
+
+    assert output['get-aspect'] == 'input-value'
+    assert output['state'] == 4747
