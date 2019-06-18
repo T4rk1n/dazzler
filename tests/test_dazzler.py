@@ -151,9 +151,9 @@ async def test_aspect_rendering(browser):
 
 
 @pytest.mark.async_test
-async def test_binding_set_aspect_trigger(start_page, browser):
+async def test_binding_set_aspect_trigger_error(start_page, browser):
     # Setting the aspect that triggered should raise an error
-    from tests.apps.pages.binding_set_aspect_trigger import page
+    from tests.apps.pages.binding_set_aspect_trigger_error import page
 
     await start_page(page)
 
@@ -161,7 +161,7 @@ async def test_binding_set_aspect_trigger(start_page, browser):
     click.click()
 
     # Use a output container to assert the error was raised instead.
-    expected = 'Setting the same aspect that triggered: n_clicks@click-error'
+    expected = 'Setting the same aspect that triggered: click-error.n_clicks'
     await browser.wait_for_text_to_equal('#error-output', expected)
 
 
