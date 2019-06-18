@@ -1,0 +1,9 @@
+pytest==4.4.1
+pylint==2.3.1
+pytest-pylint==0.14.0
+pytest-flake8==1.0.4
+pytest-cov==2.7.1
+python-coveralls
+mypy==0.701
+selenium==3.141.0
+sphinx==2.1.1
