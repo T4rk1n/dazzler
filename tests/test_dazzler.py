@@ -317,8 +317,6 @@ async def test_component_as_trigger(start_page, browser):
 @pytest.mark.async_test
 async def test_binding_return_trigger(start_page, browser):
     # This test that returned components can trigger bindings.
-    # There is bug which you cannot set component with same identity as root.
-    # but contained children works.
     from tests.apps.pages.binding_return_trigger import page
 
     await start_page(page)
@@ -330,3 +328,23 @@ async def test_binding_return_trigger(start_page, browser):
         await browser.wait_for_text_to_equal(
             '#trigger-output', f'from click {i}'
         )
+
+
+@pytest.mark.skip(
+    'Not really important as you can set directly on the component'
+    ' instead of returning the same component in the same spot.')  # FIXME
+@pytest.mark.async_test
+async def test_same_identity(start_page, browser):
+    # There is bug which you cannot set component with same identity as root.
+    # but contained children works as per test_binding_return_trigger.
+    # So setting the children aspect with the same component but updated values
+    # doesn't work.
+    from tests.apps.pages.same_identity import page
+
+    await start_page(page)
+
+    for i in range(1, 25):
+        clicker = await browser.wait_for_element_by_id('click')
+        clicker.click()
+
+        await browser.wait_for_property_to_equal('#same', 'value', 1)
