@@ -312,3 +312,21 @@ async def test_component_as_trigger(start_page, browser):
 
     assert output['get-aspect'] == 'input-value'
     assert output['state'] == 4747
+
+
+@pytest.mark.async_test
+async def test_binding_return_trigger(start_page, browser):
+    # This test that returned components can trigger bindings.
+    # There is bug which you cannot set component with same identity as root.
+    # but contained children works.
+    from tests.apps.pages.binding_return_trigger import page
+
+    await start_page(page)
+
+    clicker = await browser.wait_for_element_by_id('click')
+
+    for i in range(1, 25):
+        clicker.click()
+        await browser.wait_for_text_to_equal(
+            '#trigger-output', f'from click {i}'
+        )
