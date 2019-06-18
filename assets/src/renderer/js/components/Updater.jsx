@@ -187,6 +187,13 @@ export default class Updater extends React.Component {
             case 'set-aspect':
                 const {payload} = data;
                 const component = this.boundComponents[identity];
+                if (!component) {
+                    const error = `Component not found: ${identity}`;
+                    this.ws.send(JSON.stringify({error, kind: 'error'}));
+                    console.error(error);
+                    return;
+                }
+
                 component
                     .setAspects(
                         hydrateProps(

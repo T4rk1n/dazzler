@@ -5,6 +5,7 @@ import asyncio
 import json
 
 import pytest
+from selenium.webdriver.common.keys import Keys
 
 
 @pytest.mark.async_test
@@ -348,3 +349,29 @@ async def test_same_identity(start_page, browser):
         clicker.click()
 
         await browser.wait_for_property_to_equal('#same', 'value', 1)
+
+
+@pytest.mark.async_test
+async def test_component_as_aspect(start_page, browser):
+    from tests.apps.pages.component_as_aspect import page
+
+    await start_page(page)
+
+    (await browser.wait_for_element_by_id('click-sum')).click()
+    await browser.wait_for_text_to_equal('#sum-output', 'Sum 45')
+
+    for i in range(1, 12):
+        component = await browser.wait_for_element_by_id(f'array-{i}')
+        for j in range(25):
+            await browser.wait_for_text_to_equal(
+                f'#output-array-{i}', f'array-{i} value: {i+j}'
+            )
+            component.send_keys(Keys.ARROW_UP)
+
+    for identity in ('single', 'shaped'):
+        clicker = await browser.wait_for_element_by_id(identity)
+        for i in range(1, 25):
+            clicker.click()
+            await browser.wait_for_text_to_equal(
+                f'#{identity}-output', f'Click {identity}: {i}'
+            )
