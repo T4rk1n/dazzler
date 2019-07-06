@@ -118,11 +118,13 @@ class Dazzler(precept.Precept):
             routes += [[
                 web.get(
                     page.url,
-                    functools.partial(self.server.route_page, page=page)
+                    functools.partial(self.server.route_page, page=page),
+                    name=page.name,
                 ),
                 web.post(
                     page.url,
-                    functools.partial(self.server.route_page_json, page=page)
+                    functools.partial(self.server.route_page_json, page=page),
+                    name=f'{page.name}-api'
                 )
             ]]
             routes += [page.routes]
@@ -150,6 +152,7 @@ class Dazzler(precept.Precept):
         description='Generate the components from react-docgen output'
     )
     async def generate(self, metadata, output_dir):
+        os.makedirs(output_dir, exist_ok=True)
         await generate_components(metadata, output_dir, self.executor)
 
     @precept.Command(

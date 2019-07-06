@@ -34,6 +34,12 @@ class Server:
     site: web.TCPSite
 
     def __init__(self, dazzler, loop=None, app: web.Application = None):
+        """
+        :param dazzler: Dazzler instance.
+        :type dazzler: dazzler.Dazzler
+        :param loop: Asyncio event loop.
+        :param app: An existing aiohttp web application to use.
+        """
         self.dazzler = dazzler
         self.loop = loop or asyncio.get_event_loop()
         self.app = app or web.Application()
@@ -45,6 +51,13 @@ class Server:
         self.debug = False
 
     def setup_routes(self, routes: list = None, debug: bool = False):
+        """
+        Setup routes for dazzler.
+
+        :param routes: Routes to add the server.
+        :param debug: Set debug mode.
+        :return:
+        """
         routes = routes or []
         prefix = self.dazzler.config.route_prefix
         self.debug = debug
@@ -52,6 +65,7 @@ class Server:
         # Dazzler api.
         self.app.add_routes([
             web.get(f'{prefix}/dazzler/update', self.route_update),
+            web.get(f'{prefix}/dazzler/link', self.route_get_page)
         ] + routes)
 
         # User static directory.
@@ -71,6 +85,12 @@ class Server:
         )
 
     async def route_update(self, request: web.Request):
+        """
+        WebSocket route for aspect updating.
+
+        :param request: The incoming request.
+        :return:
+        """
         ws = web.WebSocketResponse()
 
         await ws.prepare(request)
@@ -92,7 +112,7 @@ class Server:
             exception = done.exception()
             if exception and not done.cancelled():
                 done.print_stack(file=sys.stderr)
-                self.logger.exception(exception)
+                self.logger.error(exception)
 
         async def handler():
             async for msg in ws:  # type: aiohttp.WSMessage
@@ -133,6 +153,13 @@ class Server:
         return ws
 
     async def route_page(self, _: web.Request, page: Page = None):
+        """
+        Index route for a page.
+
+        :param _:
+        :param page: The page to serve.
+        :return:
+        """
         index = replace_all(
             self.index,
             page_title=page.title,
@@ -156,8 +183,21 @@ class Server:
 
     # noinspection PyMethodMayBeStatic
     async def route_page_json(self, request: web.Request, page: Page = None):
+        """
+        Serve the bindings and layout associated with page.
+
+        :param request:
+        :param page:
+        :return:
+        """
         prepared = await page.prepare(request, self.debug)
         return web.json_response(prepared)
+
+    async def route_get_page(self, request: web.Request):
+        page = request.query.get('page')
+        if page in self.dazzler.pages:
+            raise web.HTTPFound(location=request.app.router[page].url_for())
+        raise web.HTTPNotFound()
 
     async def start(
             self, host: str, port: int,
@@ -167,6 +207,18 @@ class Server:
             reuse_address: Optional[bool] = None,
             reuse_port: Optional[bool] = None,
     ):
+        """
+        Start the server
+
+        :param host:
+        :param port:
+        :param shutdown_timeout:
+        :param ssl_context:
+        :param backlog:
+        :param reuse_address:
+        :param reuse_port:
+        :return:
+        """
         self.app.on_shutdown.append(self._on_shutdown)
         self.logger.debug('Starting server')
         self.runner = web.AppRunner(self.app)

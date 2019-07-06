@@ -2,6 +2,8 @@ from precept import Config, ConfigProperty, ConfigFormat, Nestable
 
 
 class DazzlerConfig(Config):
+    """Dazzler configurations"""
+
     app_title = ConfigProperty(
         default='Dazzler',
         comment='Name of the title of the index.'
@@ -30,12 +32,6 @@ class DazzlerConfig(Config):
         comment='Route prefix for all dazzler related endpoints.',
     )
 
-    api_prefix = ConfigProperty(
-        default='',
-        comment='Virtual prefix to use before '
-                'the route prefix in the frontend.',
-    )
-
     static_folder = ConfigProperty(
         default='static',
         comment='Path relative to project folder where files will be served.',
@@ -52,6 +48,11 @@ class DazzlerConfig(Config):
     )
 
     class Requirements(Nestable):
+        prefer_external = ConfigProperty(
+            default=False,
+            config_type=bool,
+            comment='Prefer serving external requirements when available'
+        )
         external_scripts = ConfigProperty(
             default=[],
             config_type=list,
