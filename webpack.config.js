@@ -2,6 +2,7 @@ const path = require('path');
 const BundleTracker = require('webpack-bundle-tracker');
 const ExtractText = require('extract-text-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 module.exports = function(env, argv) {
     const mode = argv && argv.mode || 'production';
@@ -81,13 +82,27 @@ module.exports = function(env, argv) {
                 verbose: true,
                 exclude: ['dazzler.js'],
             }),
-            new ExtractText({
+            new MiniCssExtractPlugin({
                 filename: 'dazzler_[name]_[hash].css',
+                chunkFilename: 'dazzler_[name]_[hash].css',
             }),
         ],
         devtool,
         module: {
             rules: [
+                {
+				test: /\.s?css$/,
+				use: [
+                        'style-loader',
+                        MiniCssExtractPlugin.loader,
+                        {
+                            loader: "css-loader",
+                        },
+                        {
+                            loader: "sass-loader"
+                        }
+                ]
+                },
                 {
                     test: /\.jsx?$/,
                     loader: ['babel-loader'],
@@ -95,20 +110,6 @@ module.exports = function(env, argv) {
                     resolve: {
                         extensions: ['.js', '.jsx'],
                     },
-                },
-                {
-                    test: /\.css$/,
-                    use: ExtractText.extract({
-                        fallback: 'style-loader',
-                        use: ['css-loader'],
-                    }),
-                },
-                {
-                    test: /\.scss$/,
-                    use: ExtractText.extract({
-                        fallback: 'style-loader',
-                        use: ['css-loader', 'sass-loader'],
-                    }),
                 },
             ],
         },
