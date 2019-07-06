@@ -33,7 +33,7 @@ export default class Renderer extends React.Component {
 
     render() {
         return (
-            <div className="daz-renderer">
+            <div className="dazzler-renderer">
                 <Updater
                     baseUrl={this.props.baseUrl}
                     getHeaders={this.getHeaders}

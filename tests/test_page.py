@@ -132,7 +132,11 @@ async def test_page_requirements_package_override(start_page, browser):
     # noinspection PyUnresolvedReferences
     from tests.components import spec_components as spec
 
-    page = Page('', core.Container(), packages=['dazzler_core'])
+    page = Page(
+        __name__,
+        core.Container('Rendered'),
+        packages=['dazzler_core']
+    )
     await start_page(page)
     await browser.wait_for_element_by_css_selector('.dazzler-rendered')
 

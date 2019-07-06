@@ -363,7 +363,7 @@ export default class Updater extends React.Component {
         }
 
         return (
-            <div className="daz-rendered">
+            <div className="dazzler-rendered">
                 {hydrateComponent(
                     layout.name,
                     layout.package,
