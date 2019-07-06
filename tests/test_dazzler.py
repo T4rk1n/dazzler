@@ -48,9 +48,7 @@ async def test_binding_return_component(browser):
 
     await browser.get('http://localhost:8150/')
 
-    clicker = await browser.wait_for_element_by_id('clicker')
-
-    clicker.click()
+    await browser.click('#clicker')
     await browser.wait_for_text_to_equal('#from-binding', 'from binding')
 
     await app.stop()
@@ -77,11 +75,9 @@ async def test_generated_component_trigger_binding(browser):
     await app.main(blocking=False)
 
     await browser.get('http://localhost:8150')
-    click = await browser.wait_for_element_by_id('click')
-    click.click()
 
-    click_twice = await browser.wait_for_element_by_id('generated')
-    click_twice.click()
+    await browser.click('#click')
+    await browser.click('#generated')
 
     await browser.wait_for_text_to_equal('#output2', 'Generated')
     await app.stop()
@@ -93,11 +89,10 @@ async def test_click_with_state(start_page, browser):
 
     await start_page(page)
 
-    clicker = await browser.wait_for_element_by_id('clicker')
     dropdown = await browser.wait_for_element_by_css_selector('#dropdown input')
 
     dropdown.send_keys('Foo')
-    clicker.click()
+    await browser.click('#clicker')
 
     await browser.wait_for_text_to_equal('#datalist-output', 'Data foo')
 
@@ -138,8 +133,7 @@ async def test_aspect_rendering(browser):
     await browser.get('http://localhost:8150/')
 
     for name, aspect in types.items():
-        btn = await browser.wait_for_element_by_id(f'set-{name}')
-        btn.click()
+        await browser.click(f'#set-{name}')
         expected = aspect['value']
         if aspect.get('json'):
             expected = json.dumps(expected, separators=(',', ':'))
@@ -158,8 +152,7 @@ async def test_binding_set_aspect_trigger_error(start_page, browser):
 
     await start_page(page)
 
-    click = await browser.wait_for_element_by_id('click-error')
-    click.click()
+    await browser.click('#click-error')
 
     # Use a output container to assert the error was raised instead.
     expected = 'Setting the same aspect that triggered: click-error.n_clicks'
@@ -195,8 +188,7 @@ async def test_binding_chain(start_page, browser):
     from tests.apps.pages.binding_chain import page
     await start_page(page)
 
-    first = await browser.wait_for_element_by_id('trigger-1')
-    first.click()
+    await browser.click('#trigger-1')
 
     await browser.wait_for_text_to_equal('#output', 'output generated')
 
@@ -208,8 +200,7 @@ async def test_binding_tree(start_page, browser):
     from tests.apps.pages.binding_tree import page
     await start_page(page)
 
-    trigger = await browser.wait_for_element_by_id('trigger')
-    trigger.click()
+    await browser.click('#trigger')
 
     await browser.wait_for_text_to_equal('#done', 'done')
     output = json.loads((await browser.wait_for_element_by_id('output')).text)
@@ -253,11 +244,8 @@ async def test_get_aspect(start_page, browser):
 
     await start_page(page)
 
-    starter = await browser.wait_for_element_by_id('starter')
-    updater = await browser.wait_for_element_by_id('updater')
-
-    starter.click()
-    updater.click()
+    await browser.click('#starter')
+    await browser.click('#updater')
 
     await browser.wait_for_text_to_equal(
         '#done', 'done', timeout=30
@@ -276,8 +264,7 @@ async def test_get_aspect_error(start_page, browser):
 
     await start_page(page)
 
-    clicker = await browser.wait_for_element_by_id('click-error')
-    clicker.click()
+    await browser.click('#click-error')
 
     await browser.wait_for_text_to_equal(
         '#error-output', 'Aspect not found invalid.error'
@@ -322,10 +309,8 @@ async def test_binding_return_trigger(start_page, browser):
 
     await start_page(page)
 
-    clicker = await browser.wait_for_element_by_id('click')
-
     for i in range(1, 25):
-        clicker.click()
+        await browser.click('#click')
         await browser.wait_for_text_to_equal(
             '#trigger-output', f'from click {i}'
         )
@@ -369,9 +354,8 @@ async def test_component_as_aspect(start_page, browser):
             component.send_keys(Keys.ARROW_UP)
 
     for identity in ('single', 'shaped'):
-        clicker = await browser.wait_for_element_by_id(identity)
         for i in range(1, 25):
-            clicker.click()
+            await browser.click(f'#{identity}')
             await browser.wait_for_text_to_equal(
                 f'#{identity}-output', f'Click {identity}: {i}'
             )

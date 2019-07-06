@@ -1,17 +1,11 @@
-"""Utils methods for pytest-dash such wait_for wrappers"""
-import asyncio
-import pprint
-import time
+"""Tests tools for running selenium with asyncio."""
+import functools
 
-from concurrent.futures import ThreadPoolExecutor
+from precept import AsyncExecutor
 
-
-from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.select import By
-
-import functools
 
 
 def _wait_for(driver, condition, timeout=10.0):
@@ -189,43 +183,12 @@ def wait_for_property_to_equal(
     _wait_for(driver, condition, timeout=timeout)
 
 
-def wait_for_client_app_started(driver, url, wait_time=0.5, timeout=10):
-    # Wait until the #_dash-app-content element is loaded.
-    start_time = time.time()
-    loading_errors = (
-        'Error loading layout',
-        'Error loading dependencies',
-        'Internal Server Error',
-    )
-    while True:
-        try:
-            driver.get(url)
-            wait_for_element_by_css_selector(
-                driver, '#dazzler-rendered', timeout=wait_time
-            )
-            return
-        except TimeoutException:
-            body = wait_for_element_by_css_selector(driver, 'body')
-            if any(x in body.text for x in loading_errors) \
-                    or time.time() - start_time > timeout:
-
-                logs = driver.get_log('browser')
-                raise Exception(
-                    'Dazzler could not start after {}:'
-                    ' \nHTML:\n {}\n\nLOGS: {}'.format(
-                        timeout, body.get_property('innerHTML'),
-                        pprint.pformat(logs)
-                    )
-                )
-
-
 def _async_wrap(func):
 
     @functools.wraps(func)
     async def _wrapped(self, *args, **kwargs):
-        return await self.loop.run_in_executor(
-            self.executor,
-            functools.partial(func, self.driver, *args, **kwargs)
+        return await self.executor.execute(
+            func, self.driver, *args, **kwargs
         )
 
     return _wrapped
@@ -235,20 +198,24 @@ def _get_url(driver, url):
     return driver.get(url)
 
 
-def _click_element(_, element):
-    return element.click()
+def _click_element(driver, selector, timeout=10.0):
+    element = _wait_for(
+        driver,
+        EC.element_to_be_clickable((By.CSS_SELECTOR, selector)),
+        timeout=timeout
+    )
+    element.click()
+    return element
 
 
 class AsyncDriver:
-    def __init__(self, driver, loop=None):
+    def __init__(self, driver):
         """
         :param driver: Selenium driver
         :type driver: selenium.webdriver.remote.webdriver.WebDriver
-        :param loop: Asyncio event loop
         """
         self.driver = driver
-        self.loop = loop or asyncio.get_event_loop()
-        self.executor = ThreadPoolExecutor()
+        self.executor = AsyncExecutor()
 
     wait_for_element_by_id = _async_wrap(wait_for_element_by_id)
     wait_for_element_by_css_selector = _async_wrap(wait_for_element_by_css_selector)
@@ -258,5 +225,6 @@ class AsyncDriver:
     wait_for_property_to_equal = _async_wrap(wait_for_property_to_equal)
     wait_for_text_to_equal = _async_wrap(wait_for_text_to_equal)
     wait_for_style_to_equal = _async_wrap(wait_for_style_to_equal)
-    wait_for_client_app_started = _async_wrap(wait_for_client_app_started)
     get = _async_wrap(_get_url)
+
+    click = _async_wrap(_click_element)
