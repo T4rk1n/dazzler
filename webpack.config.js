@@ -6,7 +6,7 @@ const CleanWebpackPlugin = require('clean-webpack-plugin');
 module.exports = function(env, argv) {
     const mode = argv && argv.mode || 'production';
     const devMode = mode === 'development';
-    const devtool = 'source-map';
+    const devtool = mode === 'development' ? 'inline-source-map' :'source-map';
 
     const output = {
         filename: 'dazzler_[name]_[hash].js',
@@ -82,7 +82,7 @@ module.exports = function(env, argv) {
                 exclude: ['dazzler.js'],
             }),
             new ExtractText({
-                filename: 'dazzler_[name]-[hash].css',
+                filename: 'dazzler_[name]_[hash].css',
             }),
         ],
         devtool,
@@ -98,7 +98,10 @@ module.exports = function(env, argv) {
                 },
                 {
                     test: /\.css$/,
-                    loader: ['style-loader', 'css-loader'],
+                    use: ExtractText.extract({
+                        fallback: 'style-loader',
+                        use: ['css-loader'],
+                    }),
                 },
                 {
                     test: /\.scss$/,
