@@ -176,6 +176,8 @@ class Dazzler(precept.Precept):
         ]
 
         for requirement in itertools.chain(*requirements):
+            if not requirement.internal:
+                continue
             self.logger.debug(
                 f'Copying {requirement.internal} '
                 f'to {requirement.internal_static}'

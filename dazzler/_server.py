@@ -164,7 +164,12 @@ class Server:
             self.index,
             page_title=page.title,
             renderer_scripts='\n'.join(
-                x.tag(dev=self.debug) for x in renderer.requirements
+                x.tag(dev=self.debug)
+                for x in renderer.requirements if x.kind == 'js'
+            ),
+            css='\n'.join(
+                x.tag(dev=self.debug)
+                for x in renderer.requirements if x.kind == 'css'
             ),
             dazzler_script='/dazzler/requirements/static/index.js',
             meta='\n'.join(format_tag('meta', x) for x in page.meta_tags),
