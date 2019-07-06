@@ -27,6 +27,10 @@ export default class Renderer extends React.Component {
         this.setState({ready});
     }
 
+    componentWillMount() {
+        window.dazzler_base_url = this.props.baseUrl;
+    }
+
     render() {
         return (
             <div className="daz-renderer">
@@ -41,5 +45,5 @@ export default class Renderer extends React.Component {
 }
 
 Renderer.propTypes = {
-    baseUrl: PropTypes.string,
+    baseUrl: PropTypes.string.isRequired,
 };

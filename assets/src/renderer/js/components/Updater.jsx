@@ -325,13 +325,6 @@ export default class Updater extends React.Component {
 
     componentWillMount() {
         this.pageApi('', {method: 'POST'}).then(response => {
-            // Setup websocket for updates
-            this.ws = new WebSocket(
-                `ws://${window.location.host}${
-                    this.props.baseUrl
-                }/dazzler/update`
-            );
-            this.ws.addEventListener('message', this.onMessage);
             this.setState({
                 page: response.page,
                 layout: response.layout,
@@ -342,7 +335,19 @@ export default class Updater extends React.Component {
             this.loadRequirements(
                 response.requirements,
                 response.packages
-            ).then(() => this.setState({ready: true}));
+            ).then(() => {
+                // Setup websocket for updates
+                this.ws = new WebSocket(
+                    `ws://${window.location.host}${
+                        this.props.baseUrl
+                    }/dazzler/update`
+                );
+                // TODO add a timeout
+                this.ws.addEventListener('message', this.onMessage);
+                this.ws.onopen = () => {
+                    this.setState({ready: true});
+                };
+            });
         });
     }
 

@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {concat, join} from 'ramda';
+import {camelToSpinal} from "../../../commons/js";
 
 /**
  * Wraps components for aspects updating.
@@ -10,6 +11,8 @@ export default class Wrapper extends React.Component {
         super(props);
         this.state = {
             aspects: props.aspects || {},
+            ready: false,
+            initial: false,
         };
         this.setAspects = this.setAspects.bind(this);
         this.getAspect = this.getAspect.bind(this);
@@ -36,13 +39,18 @@ export default class Wrapper extends React.Component {
     }
 
     componentDidMount() {
-        // Will mount gets a race condition with disconnect.
+        // Only update the component when mounted.
+        // Otherwise gets a race condition with willUnmount
         this.props.connect(
             this.props.identity,
             this.setAspects,
             this.getAspect
         );
-        this.updateAspects(this.props.aspects);
+        if (!this.state.initial) {
+            this.updateAspects(this.state.aspects).then(
+                () => this.setState({ready: true, initial: true})
+            );
+        }
     }
 
     componentWillUnmount() {
@@ -51,7 +59,8 @@ export default class Wrapper extends React.Component {
 
     render() {
         const {component, component_name, package_name} = this.props;
-        const {aspects} = this.state;
+        const {aspects, ready} = this.state;
+        if (!ready) return null;
 
         return React.cloneElement(component, {
             ...aspects,
@@ -62,14 +71,12 @@ export default class Wrapper extends React.Component {
                 concat(
                     [
                         `${package_name
-                            .slice(0, 3)
-                            .toLowerCase()}-${component_name.toLowerCase()}`,
+                            .replace('_', '-')
+                            .toLowerCase()}-${camelToSpinal(component_name)}`,
                     ],
                     aspects.class_name ? aspects.class_name.split(' ') : []
                 )
             ),
-            _name: component_name,
-            _package: package_name,
         });
     }
 }
