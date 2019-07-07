@@ -1,8 +1,9 @@
 const path = require('path');
 const BundleTracker = require('webpack-bundle-tracker');
-const ExtractText = require('extract-text-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const exec = require('child_process').exec;
+
 
 module.exports = function(env, argv) {
     const mode = argv && argv.mode || 'production';
@@ -73,6 +74,11 @@ module.exports = function(env, argv) {
             },
         },
 
+        watchOptions: {
+            aggregateTimeout: 500,
+            poll: 1000,
+        },
+
         plugins: [
             new BundleTracker({
                 path: output.path,
@@ -80,12 +86,23 @@ module.exports = function(env, argv) {
             }),
             new CleanWebpackPlugin([output.path], {
                 verbose: true,
+                watch: true,
                 exclude: ['dazzler.js'],
             }),
             new MiniCssExtractPlugin({
                 filename: 'dazzler_[name]_[hash].css',
                 chunkFilename: 'dazzler_[name]_[hash].css',
             }),
+            {
+                apply: (compiler => {
+                    compiler.hooks.afterEmit.tap('BuildDazzlerPlugin', () => {
+                        exec('npm run build:dazzler', (err, stdout, stderr) => {
+                            if (stdout) process.stdout.write(stdout);
+                            if (stderr) process.stderr.write(stderr);
+                        })
+                    })
+                })
+            }
         ],
         devtool,
         module: {
