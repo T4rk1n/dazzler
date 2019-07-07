@@ -53,10 +53,33 @@ export function loadCss(uri, timeout = 3000) {
         element.onload = onload;
 
         timeoutId = setTimeout(() => {
-            style.href = '';
+            element.href = '';
             reject({error: `${uri} did not load after ${timeout}ms`});
         }, timeout);
 
         document.querySelector('head').appendChild(element);
     });
+}
+
+export function debounce(func, wait) {
+    let timeout, lastCall;
+    return function() {
+        const now = new Date();
+        if (!lastCall) {
+            lastCall = now;
+        }
+        const later = () => {
+            timeout = null;
+            func.apply(this, arguments);
+            lastCall = new Date();
+        };
+        clearTimeout(timeout);
+        const diff = now - lastCall;
+        if (diff >= wait) {
+            func.apply(this, arguments);
+            lastCall = now;
+        } else {
+            timeout = setTimeout(later, diff);
+        }
+    }
 }
