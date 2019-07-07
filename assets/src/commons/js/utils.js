@@ -1,3 +1,5 @@
+import {includes, toPairs, pluck} from "ramda";
+
 export const timestampProp = (prop_name, value) => {
     const payload = {};
     payload[prop_name] = value;
@@ -82,4 +84,13 @@ export function debounce(func, wait) {
             timeout = setTimeout(later, diff);
         }
     }
+}
+
+
+export function collectTruePropKeys(obj, filterKeys) {
+    let pairs = toPairs(obj);
+    if (filterKeys) {
+        pairs = pairs.filter(([k, _]) => includes(k, filterKeys));
+    }
+    return pluck(0, pairs.filter(([_, v]) => v))
 }

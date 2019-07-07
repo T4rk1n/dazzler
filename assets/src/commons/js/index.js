@@ -1,4 +1,10 @@
-import {timestampProp, loadCss, loadScript, debounce} from './utils';
+import {
+    timestampProp,
+    loadCss,
+    loadScript,
+    debounce,
+    collectTruePropKeys,
+} from './utils';
 import {
     camelToSnakeCase,
     camelToSpinal,
@@ -15,4 +21,5 @@ export {
     camelToSnakeCase,
     camelToSpinal,
     transformKeys,
+    collectTruePropKeys,
 };
