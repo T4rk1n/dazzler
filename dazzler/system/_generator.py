@@ -181,6 +181,9 @@ def generate_component(display_name, description, props, output_path):
         aspect_args = []
         required = prop.get('required')
         type_info = prop.get('type')
+        if not type_info:
+            print(f'Invalid prop: {display_name}.{name}')
+            continue
         type_name = type_info.get('name')
         default = prop.get('defaultValue')
         prop_description = prop.get('description', '')
