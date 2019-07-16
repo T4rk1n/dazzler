@@ -1,0 +1,11 @@
+@import 'colors';
+$names: primary primary-light danger danger-light warning warning-light success success-light;
+$colors: $primary $primary-light $danger $danger-light $warning $warning-light $success $success-light;
+
+@for $i from 1 to 9 {
+  .dazzler-renderer {
+    .#{nth($names, $i)} {
+      background-color: nth($colors, $i);
+    }
+  }
+}
