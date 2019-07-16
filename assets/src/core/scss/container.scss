@@ -1,0 +1,37 @@
+@import '../../commons/scss/colors';
+.dazzler-core-container {
+  &.btn {
+    cursor: pointer;
+    user-select: none;
+    padding: 0.5rem;
+    background-color: $neutral;
+    border-radius: 3px;
+    border: solid 1px #c9c9ce;
+    display: inline-block;
+    box-sizing: border-box;
+
+    &:hover {
+      background-color: $neutral-light;
+    }
+  }
+  &.scroll {
+    overflow: scroll;
+  }
+  &.flex {
+    display: flex;
+  }
+  &.row {
+    display: flex;
+    width: 100%;
+    &.reverse {
+      flex-direction: row-reverse;
+    }
+  }
+  &.column {
+    display: flex;
+    flex-direction: column;
+    &.reverse {
+      flex-direction: column-reverse;
+    }
+  }
+}

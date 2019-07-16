@@ -6,33 +6,45 @@ function chunk(arr, n) {
         .map((item, index) =>
             index % n === 0 ? arr.slice(index, index + n) : null
         )
-        .filter(e => e);
+        .filter(item => item);
 }
 
+/**
+ * Render children in a grid.
+ */
 export default class Grid extends React.Component {
     render() {
-        const {id, class_name} = this.props;
+        const {identity, class_name, children, columns} = this.props;
         return (
-            <div id={id} className={class_name}>
-
+            <div id={identity} className={class_name}>
+                {chunk(children, columns).map((row, y) => (
+                    <div key={`${identity}-row-${y}`} className={'grid-row'}>
+                        {row.map((cell, x) => (
+                            <div
+                                key={`${identity}-cell-${y}-${x}`}
+                                className={'grid-cell'}
+                            >
+                                {cell}
+                            </div>
+                        ))}
+                    </div>
+                ))}
             </div>
-        )
+        );
     }
 }
 
+Grid.defaultProps = {};
+
 Grid.propTypes = {
-    id: PropTypes.string,
-    class_name: PropTypes.string,
-
     /**
-     *
+     * Children to render in a grid.
      */
-    columns: PropTypes.number,
-
+    children: PropTypes.arrayOf(PropTypes.node).isRequired,
     /**
-     * Array to chunk into pieces of n columns
+     * Number of columns
      */
-    children: PropTypes.arrayOf(PropTypes.node),
+    columns: PropTypes.number.isRequired,
 
     /**
      *  Unique id for this component

@@ -1,0 +1,49 @@
+@import "../../commons/scss/colors";
+
+.dazzler-core-progress-bar {
+  width: 100%;
+  height: 2rem;
+  background-color: #F1F1F1;
+
+  &.rounded {
+    border-radius: 8px;
+  }
+
+  .progress {
+    background-color: $primary;
+    color: #ffffff;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    &.striped {
+      background: repeating-linear-gradient(45deg, $primary, $primary 1rem, $primary-light 1rem, $primary-light 2rem);
+    }
+
+    &.rounded {
+      border-radius: 8px;
+    }
+
+    &.low {
+      background-color: $danger;
+      &.striped {
+        background: repeating-linear-gradient(45deg, $danger, $danger 1rem, $danger-light 1rem, $danger-light 2rem);
+      }
+    }
+
+    &.high {
+      background-color: #F0AD4E;
+      &.striped {
+        background: repeating-linear-gradient(45deg, $warning, $warning 1rem, $warning-light 1rem, $warning-light 2rem);
+      }
+    }
+
+    &.optimum {
+      background-color: #5CB85C;
+      &.striped {
+        background: repeating-linear-gradient(45deg, $success, $success 1rem, $success-light 1rem, $success-light 2rem);
+      }
+    }
+  }
+}

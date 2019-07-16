@@ -1,15 +1,49 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import {type, map} from 'ramda';
+import {camelToSnakeCase} from "../../../commons/js";
+
+
+function prepareType(obj) {
+    switch (type(obj)) {
+        case 'String':
+        case 'Number':
+        case 'Boolean':
+        case 'Null':
+            return obj;
+        case 'Array':
+            return obj.map(prepareType).filter(e => type(e) !== 'Undefined');
+        case 'Object':
+            return map(prepareObject, obj);
+        default:
+            return
+    }
+}
+
+
+function prepareObject(obj) {
+    const payload = {};
+
+    for (let k in obj) {
+        // noinspection JSUnfilteredForInLoop
+        if (!k.startsWith('_')) {
+            // noinspection JSUnfilteredForInLoop
+            payload[camelToSnakeCase(k)] = prepareType(obj[k]);
+        }
+    }
+
+    return payload;
+}
 
 /**
  * Html tag wrapper, give any props as `attributes`.
  * Listen to events with the readonly event aspect containing the
- * latest event fired..
+ * latest event fired.
  */
 export default class Html extends React.Component {
     constructor(props) {
         super(props);
-        this.onEvent = this.onEvent.bind();
+        this.onEvent = this.onEvent.bind(this);
     }
 
     componentDidMount() {
@@ -29,12 +63,18 @@ export default class Html extends React.Component {
     }
 
     onEvent(e) {
-        // TODO Get additional payload for event types.
         this.props.updateAspects({
             event: {
-                name: e.event,
+                name: e.name,
+                ...prepareObject(e)
             },
         });
+    }
+
+    shouldComponentUpdate(nextProps, nextState, nextContext) {
+        // Ignore virtual event don't need a re-render of
+        // the whole children.
+        return !(this.props.event !== nextProps.event);
     }
 
     render() {

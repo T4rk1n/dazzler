@@ -1,24 +1,34 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {timestampProp} from '../../../commons/js';
 
+/**
+ * Link to external url or other dazzler page by name.
+ */
 export default class Link extends React.Component {
     render() {
-        const {id, class_name, href, children, style} = this.props;
-        // TODO add page name to request the pages urls use the pages
+        const {
+            id,
+            class_name,
+            href,
+            children,
+            style,
+            page_name,
+            identity,
+        } = this.props;
+        let url = href;
+        if (page_name) {
+            url = `${
+                window.dazzler_base_url
+            }/dazzler/link?page=${encodeURIComponent(page_name)}`;
+        }
         return (
             <a
-                id={id}
-                href={href}
+                id={id || identity}
+                href={url}
                 className={class_name}
                 style={style}
-                onClick={() =>
-                    this.props.updateAspects(
-                        timestampProp('n_clicks', this.props.n_clicks + 1)
-                    )
-                }
             >
-                {children}
+                {children || page_name || url}
             </a>
         );
     }
@@ -27,16 +37,36 @@ export default class Link extends React.Component {
 Link.defaultProps = {};
 
 Link.propTypes = {
-    href: PropTypes.string.isRequired,
-    children: PropTypes.node.isRequired,
+    /**
+     * The link destination.
+     */
+    href: PropTypes.string,
+    /**
+     * Text/Component to show as link.
+     */
+    children: PropTypes.node,
+    /**
+     * Id of the html element, othewise the identity is used.
+     */
     id: PropTypes.string,
+    /**
+     * CSS class of the <a> element
+     */
     class_name: PropTypes.string,
+    /**
+     * Style object of root <a> element
+     */
     style: PropTypes.object,
-
+    /**
+     * Hovered description
+     */
     title: PropTypes.string,
 
-    n_clicks: PropTypes.number,
-    n_clicks_timestamp: PropTypes.number,
+    /**
+     * Name of the page to redirect to if the href is not set.
+     */
+    page_name: PropTypes.string,
+
     /**
      *  Unique id for this component
      */

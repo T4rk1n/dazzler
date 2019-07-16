@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {omit} from 'ramda';
+import {omit, concat} from 'ramda';
+
+
 
 export default class Input extends React.Component {
     render() {
@@ -16,6 +18,12 @@ export default class Input extends React.Component {
             min_length,
             max_length,
         } = this.props;
+
+        const omitted = [];
+        if (type === 'reset') {
+            omitted.push('value');
+        }
+
         return (
             <input
                 id={id || identity}
@@ -39,17 +47,25 @@ export default class Input extends React.Component {
                         'updateAspects',
                         'n_blur',
                         'n_submit',
+                        '_name',
+                        '_package'
                     ],
                     this.props
                 )}
-                onChange={e =>
-                    this.props.updateAspects({
-                        value:
-                            type === 'number'
-                                ? Number(e.target.value)
-                                : e.target.value,
-                    })
-                }
+                onChange={e => {
+                    const payload = {};
+                    switch (this.props.type) {
+                        case 'number':
+                            payload.value = Number(e.target.value);
+                            break;
+                        case 'checkbox':
+                            payload.checked = e.target.checked;
+                            break;
+                        default:
+                            payload.value = e.target.value;
+                    }
+                    this.props.updateAspects(payload);
+                }}
                 onBlur={() =>
                     this.props.updateAspects({n_blur: this.props.n_blur + 1})
                 }
@@ -69,6 +85,7 @@ Input.defaultProps = {
     value: '',
     n_blur: 0,
     n_submit: 0,
+    checked: false,
 };
 
 Input.propTypes = {
@@ -78,10 +95,7 @@ Input.propTypes = {
     name: PropTypes.string,
     required: PropTypes.bool,
 
-    value: PropTypes.oneOfType([
-        PropTypes.string,
-        PropTypes.number,
-    ]),
+    value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 
     type: PropTypes.oneOf([
         'hidden',
@@ -93,15 +107,9 @@ Input.propTypes = {
         'range',
         'email',
         'url',
-        'date',
-        'datetime-local',
-        'color',
-        'time',
         'submit',
         'checkbox',
-        'button',
-        'radio',
-        'reset',
+        'reset'
     ]),
 
     placeholder: PropTypes.string,

@@ -7,20 +7,40 @@ export default class Interval extends React.Component {
         super(props);
         this.state = {
             intervalId: null,
-        }
+        };
+        this.loop = this.loop.bind(this);
     }
 
     componentWillMount() {
-        const {timeout, updateAspects} = this.props;
-        const intervalId = window.setInterval(() => {
-            updateAspects({n_interval: this.props.n_interval + 1});
-        }, timeout);
+        this.startLoop();
+    }
 
-        this.setState(intervalId);
+    startLoop() {
+        const {timeout} = this.props;
+        const intervalId = window.setInterval(this.loop, timeout);
+        this.setState({intervalId});
+    }
+
+    loop() {
+        if (this.props.active) {
+            this.props.updateAspects({times: this.props.times + 1});
+        } else {
+            window.clearInterval(this.state.intervalId);
+            this.setState({intervalId: null});
+        }
     }
 
     componentWillUnmount() {
-        window.clearInterval(this.state.intervalId);
+        if (this.state.intervalId) {
+            window.clearInterval(this.state.intervalId);
+            this.setState({intervalId: null});
+        }
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.active && !this.props.active) {
+            this.startLoop();
+        }
     }
 
     render() {
@@ -31,17 +51,24 @@ export default class Interval extends React.Component {
 
 Interval.defaultProps = {
     timeout: 1000,
-    n_interval: 0,
+    times: 0,
+    active: true,
 };
 
 Interval.propTypes = {
+    /**
+     * The delay between each time.
+     */
     timeout: PropTypes.number,
-    n_interval: PropTypes.number,
+    /**
+     * Number of times the interval was fired.
+     */
+    times: PropTypes.number,
 
     /**
-     *  Unique id for this component
+     * Enable/disable the interval loop.
      */
-    identity: PropTypes.string,
+    active: PropTypes.bool,
 
     /**
      * Update aspects on the backend.
