@@ -10,7 +10,7 @@ async def layout(_):
 
 
 page = Page(
-    name='layout-as-function',
+    __name__,
     url='/',
     layout=layout,
 )
