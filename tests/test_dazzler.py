@@ -155,7 +155,7 @@ async def test_binding_set_aspect_trigger_error(start_page, browser):
     await browser.click('#click-error')
 
     # Use a output container to assert the error was raised instead.
-    expected = 'Setting the same aspect that triggered: click-error.n_clicks'
+    expected = 'Setting the same aspect that triggered: click-error.clicks'
     await browser.wait_for_text_to_equal('#error-output', expected)
 
 
@@ -384,6 +384,6 @@ async def test_storage(start_page, browser):
             assert stored['clicks'] == i
 
     browser.driver.refresh()
-    await asyncio.sleep(0.1)
+    await asyncio.sleep(1)
     stored = browser.driver.execute_script(local_getter)
     assert stored['clicks'] == 24

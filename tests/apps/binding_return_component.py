@@ -7,7 +7,7 @@ page = Page(
     name='page',
     url='/',
     layout=core.Container([
-        core.Container('click', identity='clicker', id='clicker'),
+        core.Button('click', identity='clicker', id='clicker'),
         core.Container('output', identity='output', id='output')
     ])
 )
@@ -16,7 +16,7 @@ app = Dazzler(__name__)
 app.add_page(page)
 
 
-@page.bind(Trigger('clicker', 'n_clicks'))
+@page.bind(Trigger('clicker', 'clicks'))
 async def on_click(context: BindingContext):
     await context.set_aspect(
         'output',

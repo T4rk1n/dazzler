@@ -9,13 +9,13 @@ from dazzler.errors import GetAspectError
 page = Page(
     __name__,
     core.Container([
-        core.Container('click error', identity='click-error'),
+        core.Button('click error', identity='click-error'),
         core.Container(identity='error-output')
     ])
 )
 
 
-@page.bind(Trigger('click-error', 'n_clicks'))
+@page.bind(Trigger('click-error', 'clicks'))
 async def trigger_error(ctx: BindingContext):
     try:
         await ctx.get_aspect('invalid', 'error')

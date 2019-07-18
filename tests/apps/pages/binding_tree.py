@@ -6,7 +6,7 @@ from dazzler.system import Page, Trigger, BindingContext, State
 page = Page(
     'binding-tree',
     core.Container([
-        core.Container('trigger', identity='trigger'),
+        core.Button('trigger', identity='trigger'),
         core.Container([
             core.Container([
                 core.Input(identity=f'output-{i}', type='number')
@@ -23,7 +23,7 @@ page = Page(
 )
 
 
-@page.bind(Trigger('trigger', 'n_clicks'))
+@page.bind(Trigger('trigger', 'clicks'))
 async def trigger_click(context: BindingContext):
     await context.set_aspect(
         'output-1',

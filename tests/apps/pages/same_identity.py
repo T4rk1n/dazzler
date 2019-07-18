@@ -12,12 +12,12 @@ page = Page(
             core.Input(value=0, type='number', identity='same'),
             identity='container'
         ),
-        core.Container('click', identity='click')
+        core.Button('click', identity='click')
     ])
 )
 
 
-@page.bind(Trigger('click', 'n_clicks'), State('container', 'children'))
+@page.bind(Trigger('click', 'clicks'), State('container', 'children'))
 async def on_click(ctx: BindingContext):
     component = ctx.states['container']['children']
     component.value = ctx.trigger.value

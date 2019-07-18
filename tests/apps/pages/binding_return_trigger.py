@@ -9,14 +9,14 @@ from dazzler.system import Page, Trigger, BindingContext
 page = Page(
     __name__,
     core.Container([
-        core.Container('click', identity='click'),
+        core.Button('click', identity='click'),
         core.Container(identity='output'),
         core.Container(identity='trigger-output'),
     ])
 )
 
 
-@page.bind(Trigger('click', 'n_clicks'))
+@page.bind(Trigger('click', 'clicks'))
 async def on_click(ctx: BindingContext):
     await ctx.set_aspect(
         'output',

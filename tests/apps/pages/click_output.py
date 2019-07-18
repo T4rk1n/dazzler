@@ -6,7 +6,7 @@ page = Page(
     name='home',
     url='/',
     layout=core.Container([
-        core.Container(children='Click me', identity='clicker', id='clicker'),
+        core.Button('Click me', identity='clicker', id='clicker'),
         core.Container(children='Not clicked', identity='output', id='output'),
         core.DataList([
             {'value': 'hello', 'label': 'world'},
@@ -21,7 +21,7 @@ page = Page(
 )
 
 
-@page.bind(Trigger('clicker', 'n_clicks'), State('dropdown', 'data_value'))
+@page.bind(Trigger('clicker', 'clicks'), State('dropdown', 'data_value'))
 async def on_click(context: BindingContext):
     await context.set_aspect(
         'output',

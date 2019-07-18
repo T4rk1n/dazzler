@@ -29,7 +29,7 @@ page = Page(
         ])), identity='nested-components'),
         core.Container(identity='nested-output'),
 
-        core.Container('get-aspect-click', identity='get-aspect-trigger'),
+        core.Button('get-aspect-click', identity='get-aspect-trigger'),
         core.Container(
             core.Input(value='input-value'),
             identity='input'
@@ -72,7 +72,7 @@ async def trigger_nested_components(ctx: BindingContext):
 
 
 @page.bind(
-    Trigger('get-aspect-trigger', 'n_clicks'), State('as-state', 'children')
+    Trigger('get-aspect-trigger', 'clicks'), State('as-state', 'children')
 )
 async def get_aspect_component_with_state(ctx: BindingContext):
     component = await ctx.get_aspect('input', 'children')

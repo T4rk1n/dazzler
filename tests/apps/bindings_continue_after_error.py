@@ -10,20 +10,20 @@ page = Page(
     name='error',
     url='/',
     layout=core.Container([
-        core.Container('click', identity='click', id='click'),
-        core.Container('click error', identity='click-error', id='click-error'),
+        core.Button('click', identity='click', id='click'),
+        core.Button('click error', identity='click-error', id='click-error'),
         core.Container(identity='output', id='output')
     ])
 )
 app.add_page(page)
 
 
-@page.bind(Trigger('click-error', 'n_clicks'))
+@page.bind(Trigger('click-error', 'clicks'))
 async def on_click_error(_: BindingContext):
     raise Exception('Clicked error')
 
 
-@page.bind(Trigger('click', 'n_clicks'))
+@page.bind(Trigger('click', 'clicks'))
 async def on_click(context: BindingContext):
     await context.set_aspect(
         'output',

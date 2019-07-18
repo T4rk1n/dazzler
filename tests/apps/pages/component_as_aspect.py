@@ -14,18 +14,18 @@ page = Page(
     core.Container([
         spec.ComponentAsAspect(
             identity='component',
-            single=core.Container('single', identity='single'),
+            single=core.Button('single', identity='single'),
             array=[
                 core.Input(value=x, identity=f'array-{x}', type='number')
                 for x in arr
             ],
-            shape={'shaped': core.Container('shaped', identity='shaped')}
+            shape={'shaped': core.Button('shaped', identity='shaped')}
         ),
         core.Container(identity='single-output'),
         core.Container([
             core.Container(identity=f'output-array-{x}') for x in arr
         ]),
-        core.Container('click sum', identity='click-sum'),
+        core.Button('click sum', identity='click-sum'),
         core.Container(identity='sum-output'),
         core.Container(identity='shaped-output'),
     ])
@@ -39,8 +39,8 @@ async def bind_click(ctx: BindingContext):
     )
 
 
-page.bind(Trigger('single', 'n_clicks'))(bind_click)
-page.bind(Trigger('shaped', 'n_clicks'))(bind_click)
+page.bind(Trigger('single', 'clicks'))(bind_click)
+page.bind(Trigger('shaped', 'clicks'))(bind_click)
 
 
 async def bind_array_value(ctx: BindingContext):
@@ -55,7 +55,7 @@ for i in arr:
 
 
 @page.bind(
-    Trigger('click-sum', 'n_clicks'),
+    Trigger('click-sum', 'clicks'),
     *[State(f'array-{x}', 'value') for x in range(1, 10)]
 )
 async def bind_array_state_sum(ctx: BindingContext):

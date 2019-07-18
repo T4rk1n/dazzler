@@ -9,7 +9,7 @@ page = Page(
     name='home',
     url='/',
     layout=core.Container([
-        core.Container('click', identity='click', id='click'),
+        core.Button('click', identity='click', id='click'),
         core.Container(identity='output'),
         core.Container(identity='output2', id='output2')
     ])
@@ -17,17 +17,17 @@ page = Page(
 app.add_page(page)
 
 
-@page.bind(Trigger('click', 'n_clicks'))
+@page.bind(Trigger('click', 'clicks'))
 async def on_click(context: BindingContext):
     await context.set_aspect(
         'output',
-        children=core.Container(
+        children=core.Button(
             'click twice', identity='generated', id='generated'
         )
     )
 
 
-@page.bind(Trigger('generated', 'n_clicks'))
+@page.bind(Trigger('generated', 'clicks'))
 async def on_generated_click(context: BindingContext):
     await context.set_aspect('output2', children='Generated')
 

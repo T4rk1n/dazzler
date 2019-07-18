@@ -12,15 +12,15 @@ page = Page(
     'get-aspect',
     core.Container([
         core.Input(value=0, type='number', identity='input'),
-        core.Container('Start', identity='starter'),
-        core.Container('Updater', identity='updater'),
+        core.Button('Start', identity='starter'),
+        core.Button('Updater', identity='updater'),
         core.Container(identity='done'),
         core.Container(identity='done-output')
     ])
 )
 
 
-@page.bind(Trigger('starter', 'n_clicks'))
+@page.bind(Trigger('starter', 'clicks'))
 async def starter(ctx: BindingContext):
     value = 0
     values = set()
@@ -39,7 +39,7 @@ async def starter(ctx: BindingContext):
     )
 
 
-@page.bind(Trigger('updater', 'n_clicks'))
+@page.bind(Trigger('updater', 'clicks'))
 async def updater(ctx: BindingContext):
     value = 0
     while value < 100:

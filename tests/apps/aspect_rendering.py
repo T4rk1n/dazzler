@@ -44,7 +44,7 @@ button_ids = ['set-{}'.format(y) for y in aspect_types.keys()]
 output_ids = ['out-{}'.format(y) for y in aspect_types.keys()]
 
 layout = core.Container([
-    core.Container([core.Container(x, identity=x, id=x) for x in button_ids]),
+    core.Container([core.Button(x, identity=x, id=x) for x in button_ids]),
     spec.TestComponent('', identity='spec-output', id='spec-output'),
 ])
 
@@ -66,7 +66,7 @@ async def on_click_render_type(context: BindingContext):
 
 
 for button in button_ids:
-    page.bind(Trigger(button, 'n_clicks'))(on_click_render_type)
+    page.bind(Trigger(button, 'clicks'))(on_click_render_type)
 
 
 if __name__ == '__main__':

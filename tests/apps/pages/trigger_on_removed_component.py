@@ -7,14 +7,14 @@ page = Page(
         core.Container(
             core.Container(identity='set-me'), identity='remove-inner'
         ),
-        core.Container('remover', identity='remover'),
-        core.Container('setter', identity='setter'),
+        core.Button('remover', identity='remover'),
+        core.Button('setter', identity='setter'),
         core.Container(identity='done')
     ])
 )
 
 
-@page.bind(Trigger('remover', 'n_clicks'))
+@page.bind(Trigger('remover', 'clicks'))
 async def remover(context: BindingContext):
     await context.set_aspect(
         'remove-inner',
@@ -22,7 +22,7 @@ async def remover(context: BindingContext):
     )
 
 
-@page.bind(Trigger('setter', 'n_clicks'))
+@page.bind(Trigger('setter', 'clicks'))
 async def on_set(context: BindingContext):
     await context.set_aspect(
         'set-me',
