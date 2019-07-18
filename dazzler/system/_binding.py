@@ -188,19 +188,59 @@ class BindingContext:
         :return:
         """
 
+        response_queue = asyncio.Queue()
+
         await self._request_queue.put({
             'request_id': uuid.uuid4().hex,
-            'queue': self._response_queue,
+            'queue': response_queue,
             'identity': identity,
             'aspect': aspect,
             'kind': 'get-aspect'
         })
 
-        value, error = await self._response_queue.get()
+        value, error = await response_queue.get()
         if value is UNDEFINED:
             raise GetAspectError(error)
 
         return hydrate(value)
+
+    async def _get_storage(self, storage, identity):
+        response_queue = asyncio.Queue()
+
+        await self._request_queue.put({
+            'request_id': uuid.uuid4().hex,
+            'queue': response_queue,
+            'identity': identity,
+            'storage': storage,
+            'kind': 'get-storage'
+        })
+
+        value, error = await response_queue.get()
+        if error is not UNDEFINED:
+            raise error
+
+        return value
+
+    async def _set_storage(self, storage, identity, payload):
+        await self._request_queue.put({
+            'request_id': uuid.uuid4().hex,
+            'identity': identity,
+            'kind': 'set-storage',
+            'storage': storage,
+            'payload': payload
+        })
+
+    async def get_local_storage(self, identity):
+        return await self._get_storage('local', identity)
+
+    async def set_local_storage(self, identity, payload):
+        await self._set_storage('local', identity, payload)
+
+    async def get_session_storage(self, identity):
+        return await self._get_storage('session', identity)
+
+    async def set_session_storage(self, identity, payload):
+        await self._set_storage('session', identity, payload)
 
 
 # Decorator

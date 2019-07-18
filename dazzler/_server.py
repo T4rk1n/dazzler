@@ -100,11 +100,16 @@ class Server:
         request_queue = asyncio.Queue()
         pendings = []
         aspect_requests = {}
+        storage_requests = {}
 
         async def request_loop():
             while True:
                 req = await request_queue.get()
-                aspect_requests[req['request_id']] = req.pop('queue')
+                kind = req['kind']
+                if kind == 'get-aspect':
+                    aspect_requests[req['request_id']] = req.pop('queue')
+                elif kind == 'get-storage':
+                    storage_requests[req['request_id']] = req.pop('queue')
                 await ws.send_json(req)
 
         def done_callback(done: asyncio.Task):
@@ -140,6 +145,12 @@ class Server:
                             await req.put((UNDEFINED, data.get('error')))
                         else:
                             await req.put((value, UNDEFINED))
+
+                    elif kind == 'get-storage':
+                        request_id = data['request_id']
+                        value = data.get('value', UNDEFINED)
+                        queue = storage_requests.pop(request_id)
+                        await queue.put((value, UNDEFINED))
                 else:
                     self.logger.debug(f'No handler for msg type: {msg.type}')
 

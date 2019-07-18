@@ -19,7 +19,6 @@ function hydrateProps(props, updateAspects, connect, disconnect) {
     const replace = {};
     Object.entries(props).forEach(([k, v]) => {
         if (type(v) === 'Array') {
-            // TODO add key ?.
             replace[k] = v.map(c => {
                 if (!isComponent(c)) {
                     // Mixing components and primitives
@@ -182,10 +181,15 @@ export default class Updater extends React.Component {
 
     onMessage(response) {
         const data = JSON.parse(response.data);
-        const {identity, kind} = data;
+        const {identity, kind, payload, storage, request_id} = data;
+        let store;
+        if (storage === 'session') {
+            store = window.sessionStorage;
+        } else {
+            store = window.localStorage;
+        }
         switch (kind) {
             case 'set-aspect':
-                const {payload} = data;
                 const component = this.boundComponents[identity];
                 if (!component) {
                     const error = `Component not found: ${identity}`;
@@ -219,7 +223,7 @@ export default class Updater extends React.Component {
                     });
                 break;
             case 'get-aspect':
-                const {aspect, request_id} = data;
+                const {aspect,} = data;
                 const wanted = this.boundComponents[identity];
                 if (!wanted) {
                     this.ws.send(
@@ -243,6 +247,17 @@ export default class Updater extends React.Component {
                         request_id,
                     })
                 );
+                break;
+            case 'set-storage':
+                store.setItem(identity, JSON.stringify(payload));
+                break;
+            case 'get-storage':
+                this.ws.send(JSON.stringify({
+                    kind,
+                    identity,
+                    request_id,
+                    value: JSON.parse(store.getItem(identity)),
+                }));
                 break;
         }
     }
