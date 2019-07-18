@@ -359,3 +359,31 @@ async def test_component_as_aspect(start_page, browser):
             await browser.wait_for_text_to_equal(
                 f'#{identity}-output', f'Click {identity}: {i}'
             )
+
+
+@pytest.mark.async_test
+async def test_storage(start_page, browser):
+    from tests.apps.pages.storage import page
+
+    await start_page(page)
+
+    getter = 'return JSON.parse(window.{}.getItem("data"));'
+    local_getter = getter.format('localStorage')
+    session_getter = getter.format('sessionStorage')
+
+    for store, getter in zip(
+            ['local', 'session'], [local_getter, session_getter]
+    ):
+        for i in range(1, 25):
+            await browser.click(f'#{store}-btn')
+            await browser.wait_for_text_to_equal(
+                f'#{store}-output', json.dumps({'clicks': i})
+            )
+            stored = browser.driver.execute_script(getter)
+
+            assert stored['clicks'] == i
+
+    browser.driver.refresh()
+    await asyncio.sleep(0.1)
+    stored = browser.driver.execute_script(local_getter)
+    assert stored['clicks'] == 24

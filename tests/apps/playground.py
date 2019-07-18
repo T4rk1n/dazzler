@@ -1,7 +1,7 @@
 from dazzler import Dazzler
 
 from tests.apps.pages import component_as_trigger, binding_return_trigger, \
-    same_identity, component_as_aspect
+    same_identity, component_as_aspect, storage
 from tests.components.pages import checklist, store, html, interval, \
     input_output, radio, link, viewport, progress, select, button, slider, \
     modal, textarea, table, grid, form
@@ -30,7 +30,8 @@ pages = [
     textarea.page,
     table.page,
     grid.page,
-    form.page
+    form.page,
+    storage.page,
 ]
 app.add_page(*pages)
 
