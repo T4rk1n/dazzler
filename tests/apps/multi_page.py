@@ -7,7 +7,7 @@ app = Dazzler(__name__)
 for num in ('one', 'two', 'three', 'four'):
     page = Page(
         name=num,
-        layout=core.Container(f'Page {num}', id='content'),
+        layout=core.Container(f'Page {num}', identity='content'),
         title=f'Page {num}',
     )
 

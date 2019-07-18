@@ -44,7 +44,7 @@ button_ids = ['set-{}'.format(y) for y in aspect_types.keys()]
 output_ids = ['out-{}'.format(y) for y in aspect_types.keys()]
 
 layout = core.Container([
-    core.Container([core.Button(x, identity=x, id=x) for x in button_ids]),
+    core.Container([core.Button(x, identity=x) for x in button_ids]),
     spec.TestComponent('', identity='spec-output', id='spec-output'),
 ])
 

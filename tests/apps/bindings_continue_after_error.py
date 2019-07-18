@@ -10,9 +10,9 @@ page = Page(
     name='error',
     url='/',
     layout=core.Container([
-        core.Button('click', identity='click', id='click'),
-        core.Button('click error', identity='click-error', id='click-error'),
-        core.Container(identity='output', id='output')
+        core.Button('click', identity='click'),
+        core.Button('click error', identity='click-error'),
+        core.Container(identity='output')
     ])
 )
 app.add_page(page)

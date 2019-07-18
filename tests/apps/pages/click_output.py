@@ -6,16 +6,15 @@ page = Page(
     name='home',
     url='/',
     layout=core.Container([
-        core.Button('Click me', identity='clicker', id='clicker'),
-        core.Container(children='Not clicked', identity='output', id='output'),
+        core.Button('Click me', identity='clicker'),
+        core.Container(children='Not clicked', identity='output'),
         core.DataList([
             {'value': 'hello', 'label': 'world'},
             {'value': 'foo', 'label': 'Foo'}
-        ], identity='dropdown', id='dropdown'),
+        ], identity='dropdown'),
         core.Container(
             'No data',
             identity='datalist-output',
-            id='datalist-output'
         ),
     ])
 )

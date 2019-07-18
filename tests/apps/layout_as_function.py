@@ -6,7 +6,7 @@ app = Dazzler(__name__)
 
 
 async def layout(_):
-    return core.Container('Layout as function', id='layout')
+    return core.Container('Layout as function', identity='layout')
 
 
 page = Page(

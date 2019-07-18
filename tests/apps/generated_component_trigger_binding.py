@@ -9,9 +9,9 @@ page = Page(
     name='home',
     url='/',
     layout=core.Container([
-        core.Button('click', identity='click', id='click'),
+        core.Button('click', identity='click'),
         core.Container(identity='output'),
-        core.Container(identity='output2', id='output2')
+        core.Container(identity='output2')
     ])
 )
 app.add_page(page)
@@ -22,7 +22,7 @@ async def on_click(context: BindingContext):
     await context.set_aspect(
         'output',
         children=core.Button(
-            'click twice', identity='generated', id='generated'
+            'click twice', identity='generated'
         )
     )
 

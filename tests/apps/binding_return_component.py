@@ -7,8 +7,8 @@ page = Page(
     name='page',
     url='/',
     layout=core.Container([
-        core.Button('click', identity='clicker', id='clicker'),
-        core.Container('output', identity='output', id='output')
+        core.Button('click', identity='clicker'),
+        core.Container('output', identity='output')
     ])
 )
 

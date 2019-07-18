@@ -20,7 +20,7 @@ async def test_page_meta_attributes(start_page, browser):
     await start_page(
         Page(
             name='meta',
-            layout=core.Container('Hello', id='layout'),
+            layout=core.Container('Hello', identity='layout'),
             meta_tags=meta
         )
     )
