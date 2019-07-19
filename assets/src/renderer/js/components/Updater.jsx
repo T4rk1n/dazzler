@@ -340,6 +340,34 @@ export default class Updater extends React.Component {
         });
     }
 
+    _connectWS() {
+        // Setup websocket for updates
+        this.ws = new WebSocket(
+            `ws${
+                window.location.href.startsWith('https') ? 's' : ''
+            }://${this.props.baseUrl || window.location.host}/dazzler/update`
+        );
+        this.ws.addEventListener('message', this.onMessage);
+        this.ws.onopen = () => {
+            this.setState({ready: true});
+        };
+        this.ws.onclose = () => {
+            const reconnect = () => {
+                let tries = 0;
+                try {
+                    tries++;
+                    this._connectWS();
+                }
+                catch(e) {
+                    if (tries < 20) {
+                        setTimeout(reconnect, 1000);
+                    }
+                }
+            };
+            setTimeout(reconnect, 1000);
+        };
+    }
+
     componentWillMount() {
         this.pageApi('', {method: 'POST'}).then(response => {
             this.setState({
@@ -352,24 +380,8 @@ export default class Updater extends React.Component {
             this.loadRequirements(
                 response.requirements,
                 response.packages
-            ).then(() => {
-                // Setup websocket for updates
-                this.ws = new WebSocket(
-                    `ws${
-                        window.location.href.startsWith('https') ? 's' : ''
-                    }://${this.props.baseUrl || window.location.host}/dazzler/update`
-                );
-                // TODO add a timeout
-                this.ws.addEventListener('message', this.onMessage);
-                this.ws.onopen = () => {
-                    this.setState({ready: true});
-                };
-            });
+            ).then(() => this._connectWS());
         });
-    }
-
-    componentWillUnmount() {
-        this.ws.close();
     }
 
     render() {
