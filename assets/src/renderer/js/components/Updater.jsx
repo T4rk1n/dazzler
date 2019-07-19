@@ -223,7 +223,7 @@ export default class Updater extends React.Component {
                     });
                 break;
             case 'get-aspect':
-                const {aspect,} = data;
+                const {aspect} = data;
                 const wanted = this.boundComponents[identity];
                 if (!wanted) {
                     this.ws.send(
@@ -252,12 +252,14 @@ export default class Updater extends React.Component {
                 store.setItem(identity, JSON.stringify(payload));
                 break;
             case 'get-storage':
-                this.ws.send(JSON.stringify({
-                    kind,
-                    identity,
-                    request_id,
-                    value: JSON.parse(store.getItem(identity)),
-                }));
+                this.ws.send(
+                    JSON.stringify({
+                        kind,
+                        identity,
+                        request_id,
+                        value: JSON.parse(store.getItem(identity)),
+                    })
+                );
                 break;
         }
     }
@@ -353,9 +355,9 @@ export default class Updater extends React.Component {
             ).then(() => {
                 // Setup websocket for updates
                 this.ws = new WebSocket(
-                    `ws://${window.location.host}${
-                        this.props.baseUrl
-                    }/dazzler/update`
+                    `ws${
+                        window.location.href.startsWith('https') ? 's' : ''
+                    }://${this.props.baseUrl || window.location.host}/dazzler/update`
                 );
                 // TODO add a timeout
                 this.ws.addEventListener('message', this.onMessage);
