@@ -35,11 +35,16 @@ class Dazzler(precept.Precept):
         - ``dazzler generate components_metadata.json output_dir``
         - ``dazzler copy-requirements -p dazzler_core -p dazzler_extra``
     """
-    config = DazzlerConfig()
+    config: DazzlerConfig
+    config_class = DazzlerConfig
     version = __version__
     pages: typing.Dict[str, Page]
     global_arguments = [
-        precept.Argument('--root', help='Root module path')
+        precept.Argument(
+            '-a', '--application',
+            help='Path to the application',
+            type=str
+        ),
     ]
     server: Server
 
@@ -47,11 +52,12 @@ class Dazzler(precept.Precept):
         self.root_path = get_package_path(module_name)
         super().__init__(
             config_file=[
-                'dazzler.ini',
-                os.path.join(self.root_path, 'dazzler.ini')
+                'dazzler.toml',
+                os.path.join(self.root_path, 'dazzler.toml')
             ],
             add_dump_config_command=True,
             executor=ThreadPoolExecutor(),
+            print_version=False,
         )
         self.requirements: typing.List[Requirement] = []
         self.server = Server(self, loop=self.loop)
@@ -77,15 +83,29 @@ class Dazzler(precept.Precept):
     async def stop(self):
         await self.server.site.stop()
 
-    async def main(self, root=None, blocking=True, debug=False, **kwargs):
-        # Not sure if should be a proper command instead.
-        if root:
-            self.root_path = get_package_path(root)
+    async def main(
+            self,
+            application=None,
+            blocking=True,
+            debug=False,
+            **kwargs
+    ):
+        if application:
+            # When running from the command line need to insert the path.
+            # Otherwise it will never find it.
+            sys.path.insert(0, '.')
+            mod_path, app_name = application.split(':')
+            module = importlib.import_module(mod_path)
+            app: Dazzler = getattr(module, app_name)
+            # Set cli for arguments
+            app.cli = self.cli
+        else:
+            app = self
 
-        await self.setup_server(debug=debug or self.config.debug)
+        await app.setup_server(debug=debug or app.config.debug)
 
-        await self.server.start(
-            self.config.host, self.config.port,
+        await app.server.start(
+            app.config.host, app.config.port,
         )
 
         # Test needs it to run without loop
@@ -136,6 +156,12 @@ class Dazzler(precept.Precept):
 
         self._prepared = True
 
+    async def application(self):
+        """Call for wsgi application"""
+        if not self._prepared:
+            await self.setup_server()
+        return self.server.app
+
     # Commands
 
     @precept.Command(
@@ -149,14 +175,15 @@ class Dazzler(precept.Precept):
             'output_dir',
             help='Output the components in this folder.'
         ),
-        description='Generate the components from react-docgen output'
+        description='Generate dazzler components from react-docgen output'
     )
     async def generate(self, metadata, output_dir):
         os.makedirs(output_dir, exist_ok=True)
         await generate_components(metadata, output_dir, self.executor)
 
     @precept.Command(
-        precept.Argument('-p', '--packages', nargs='+')
+        precept.Argument('-p', '--packages', nargs='+'),
+        description='Copy the application requirements.'
     )
     async def copy_requirements(self, packages=tuple()):
         self.logger.debug('Copying requirements.')
@@ -214,7 +241,3 @@ class Dazzler(precept.Precept):
 def cli():
     dazzler = Dazzler('__main__')
     dazzler.start()
-
-
-if __name__ == '__main__':
-    cli()
