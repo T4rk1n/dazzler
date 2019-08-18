@@ -77,4 +77,4 @@ class DazzlerConfig(Config):
     requirements: Requirements
 
     def __init__(self):
-        super().__init__(root_name='dazzler', config_format=ConfigFormat.INI)
+        super().__init__(root_name='dazzler', config_format=ConfigFormat.TOML)
