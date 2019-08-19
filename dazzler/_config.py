@@ -2,7 +2,7 @@ from precept import Config, ConfigProperty, ConfigFormat, Nestable
 
 
 class DazzlerConfig(Config):
-    """Dazzler configurations"""
+    """Dazzler configuration"""
 
     app_title = ConfigProperty(
         default='Dazzler',

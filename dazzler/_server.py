@@ -175,11 +175,17 @@ class Server:
             self.index,
             page_title=page.title,
             renderer_scripts='\n'.join(
-                x.tag(dev=self.debug)
+                x.tag(
+                    dev=self.debug,
+                    external=self.dazzler.config.requirements.prefer_external
+                )
                 for x in renderer.requirements if x.kind == 'js'
             ),
             css='\n'.join(
-                x.tag(dev=self.debug)
+                x.tag(
+                    dev=self.debug,
+                    external=self.dazzler.config.requirements.prefer_external
+                )
                 for x in renderer.requirements if x.kind == 'css'
             ),
             dazzler_script='/dazzler/requirements/static/index.js',
@@ -206,7 +212,11 @@ class Server:
         :param page:
         :return:
         """
-        prepared = await page.prepare(request, self.debug)
+        prepared = await page.prepare(
+            request,
+            self.debug,
+            external=self.dazzler.config.requirements.prefer_external
+        )
         return web.json_response(prepared)
 
     async def route_get_page(self, request: web.Request):

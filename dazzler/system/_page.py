@@ -80,12 +80,18 @@ class Page:
         self.lang = lang
         self._bindings = {str(x.trigger): x for x in self.bindings}
 
-    async def prepare(self, request: web.Request, debug=False) -> dict:
+    async def prepare(
+            self,
+            request: web.Request,
+            debug=False,
+            external=False
+    ) -> dict:
         """
         Prepare the page for rendering.
 
         :param request: The request to prepare for.
         :param debug: To collect dev package
+        :param external: Serve external requirements if available.
         :return: prepared dict with layout and page name.
         """
         layout = self.layout
@@ -96,7 +102,8 @@ class Page:
             Package.package_registry[x].prepare(dev=debug)
             for x in self.packages
         ] if self.packages is not None else [
-            x.prepare(dev=debug) for x in Package.package_registry.values()
+            x.prepare(dev=debug, external=external)
+            for x in Package.package_registry.values()
         ]
 
         # noinspection PyProtectedMember
@@ -105,7 +112,8 @@ class Page:
             'page': self.name,
             'bindings': {str(x.trigger): x.prepare() for x in self.bindings},
             'requirements': [
-                x.prepare(dev=debug) for x in self.requirements
+                x.prepare(dev=debug, external=external)
+                for x in self.requirements
             ],
             'packages': packages
         }
