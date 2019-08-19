@@ -383,7 +383,22 @@ async def test_storage(start_page, browser):
 
             assert stored['clicks'] == i
 
-    browser.driver.refresh()
+    await browser.executor.execute(browser.driver.refresh)
     await asyncio.sleep(1)
     stored = browser.driver.execute_script(local_getter)
     assert stored['clicks'] == 24
+
+
+@pytest.mark.async_test
+async def test_prefer_external(browser):
+    from tests.apps.prefer_external import app
+
+    await app.main(blocking=False)
+
+    await browser.get('http://localhost:8150/')
+
+    scripts = await browser.wait_for_elements_by_xpath(
+        '//script[contains(@src, '
+        '"https://unpkg.com/react@16.8.6/umd/react.production.min.js")]'
+    )
+    assert len(scripts) == 1

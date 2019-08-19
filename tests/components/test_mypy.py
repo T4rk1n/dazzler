@@ -42,7 +42,6 @@ def assert_mypy_output(code,
                        expected_errors=tuple(),
                        expected_status=0):
     output, error, status = run_mypy(code)
-    print(output)
     assert status == expected_status, \
         f'Status: {status}\nOutput: {output}\nError: {error}'
     for ex_out in expected_outputs:
