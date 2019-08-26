@@ -402,3 +402,16 @@ async def test_prefer_external(browser):
         '"https://unpkg.com/react@16.8.6/umd/react.production.min.js")]'
     )
     assert len(scripts) == 1
+
+
+@pytest.mark.async_test
+async def test_global_requirements(browser):
+    from tests.apps.app_requirements import app
+
+    await app.main(blocking=False)
+    await browser.get('http://localhost:8150/')
+
+    scripts = await browser.wait_for_elements_by_xpath(
+        '//script[contains(@src, "lodash.min.js")]'
+    )
+    assert len(scripts) == 1
