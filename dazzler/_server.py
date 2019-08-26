@@ -217,6 +217,13 @@ class Server:
             self.debug,
             external=self.dazzler.config.requirements.prefer_external
         )
+        # Add global requirements first.
+        prepared['requirements'] = [
+            x.prepare(
+                dev=self.debug,
+                external=self.dazzler.config.requirements.prefer_external
+            ) for x in self.dazzler.requirements
+        ] + prepared['requirements']
         return web.json_response(prepared)
 
     async def route_get_page(self, request: web.Request):

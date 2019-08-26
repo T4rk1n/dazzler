@@ -120,6 +120,19 @@ class Dazzler(precept.Precept):
             await asyncio.sleep(100)
 
     async def setup_server(self, debug=False):
+        # Gather global requirements from configs.
+        for external in itertools.chain(
+                self.config.requirements.external_scripts,
+                self.config.requirements.external_styles
+        ):
+            self.requirements.append(Requirement(external=external))
+
+        for internal in itertools.chain(
+                self.config.requirements.internal_scripts,
+                self.config.requirements.internal_styles
+        ):
+            self.requirements.append(Requirement(internal=internal))
+
         # Copy all requirements to make sure all is latest.
         await self.copy_requirements()
 

@@ -42,11 +42,6 @@ class DazzlerConfig(Config):
         comment='Prefix for the static route'
     )
 
-    static_includes = ConfigProperty(
-        default='**/*.(js/css)',
-        comment='Regex pattern to includes files as requirements inside the static folder.'
-    )
-
     class Requirements(Nestable):
         prefer_external = ConfigProperty(
             default=False,
