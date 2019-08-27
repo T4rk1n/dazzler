@@ -352,8 +352,8 @@ export default class Updater extends React.Component {
             this.setState({ready: true});
         };
         this.ws.onclose = () => {
+            let tries = 0;
             const reconnect = () => {
-                let tries = 0;
                 try {
                     tries++;
                     this._connectWS();
