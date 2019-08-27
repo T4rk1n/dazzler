@@ -71,5 +71,28 @@ class DazzlerConfig(Config):
 
     requirements: Requirements
 
+    class Renderer(Nestable):
+        retries = ConfigProperty(
+            default=20,
+            config_type=int,
+            comment='Number of times it will try to reconnect '
+                    'when the websocket connection is lost.'
+        )
+        ping = ConfigProperty(
+            default=False,
+            config_type=bool,
+            comment='Enable to send a ping every interval to keep the '
+                    'websocket connected if it didn\'t send data after '
+                    'a delay. Some hosts providers will automatically closes'
+                    'idling connection after a while.'
+        )
+        ping_interval = ConfigProperty(
+            default=25.0,
+            config_type=float,
+            comment='Interval at which to send ping data.'
+        )
+
+    renderer: Renderer
+
     def __init__(self):
         super().__init__(root_name='dazzler', config_format=ConfigFormat.TOML)

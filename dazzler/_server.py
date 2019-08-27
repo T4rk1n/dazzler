@@ -101,9 +101,10 @@ class Server:
         pendings = []
         aspect_requests = {}
         storage_requests = {}
+        done = asyncio.Event()
 
         async def request_loop():
-            while True:
+            while not done.is_set():
                 req = await request_queue.get()
                 kind = req['kind']
                 if kind == 'get-aspect':
@@ -154,8 +155,18 @@ class Server:
                 else:
                     self.logger.debug(f'No handler for msg type: {msg.type}')
 
+            done.set()
+
+        async def pong():
+            while not done.is_set():
+                await asyncio.sleep(self.dazzler.config.renderer.ping_interval)
+                await ws.send_json({'kind': 'ping'})
+
         try:
-            await asyncio.gather(handler(), request_loop())
+            ops = [handler(), request_loop()]
+            if self.dazzler.config.renderer.ping:
+                ops.append(pong())
+            await asyncio.gather(*ops)
         finally:
             for pending in pendings:
                 pending.cancel()
@@ -171,6 +182,18 @@ class Server:
         :param page: The page to serve.
         :return:
         """
+        script = {
+            'src': '/dazzler/requirements/static/index.js',
+            'data-retries': str(self.dazzler.config.renderer.retries),
+            'id': 'dazzler-script'
+        }
+        if self.dazzler.config.renderer.ping:
+            script.update({
+                'data-ping': 'true',
+                'data-ping-interval':
+                    str(self.dazzler.config.renderer.ping_interval)
+            })
+
         index = replace_all(
             self.index,
             page_title=page.title,
@@ -188,7 +211,7 @@ class Server:
                 )
                 for x in renderer.requirements if x.kind == 'css'
             ),
-            dazzler_script='/dazzler/requirements/static/index.js',
+            dazzler_script=format_tag('script', script),
             meta='\n'.join(format_tag('meta', x) for x in page.meta_tags),
             favicon=format_tag(
                 'link', {

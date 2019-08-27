@@ -137,8 +137,8 @@ export default class Updater extends React.Component {
         // The api url for the page is the same but a post.
         // Fetch bindings, packages & requirements
         this.pageApi = apiRequest(
-            props.getHeaders,
-            props.refresh,
+            this.getHeaders.bind(this),
+            this.refresh.bind(this),
             window.location.href
         );
         // All components get connected.
@@ -261,6 +261,9 @@ export default class Updater extends React.Component {
                     })
                 );
                 break;
+            case 'ping':
+                // Just do nothing.
+                break;
         }
     }
 
@@ -368,6 +371,10 @@ export default class Updater extends React.Component {
         };
     }
 
+    // TODO implement or remove dependence on these functions.
+    getHeaders() {return {}}
+    refresh() {}
+
     componentWillMount() {
         this.pageApi('', {method: 'POST'}).then(response => {
             this.setState({
@@ -416,6 +423,7 @@ Updater.defaultProps = {};
 
 Updater.propTypes = {
     baseUrl: PropTypes.string.isRequired,
-    getHeaders: PropTypes.func.isRequired,
-    refresh: PropTypes.func.isRequired,
+    ping: PropTypes.bool,
+    ping_interval:  PropTypes.number,
+    retries: PropTypes.number,
 };
