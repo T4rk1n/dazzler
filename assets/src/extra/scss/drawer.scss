@@ -2,6 +2,8 @@
 
 .dazzler-extra-drawer {
   display: flex;
+  background-color: white;
+  z-index: 100;
   .drawer-content {
     padding: 0.125rem;
   }
