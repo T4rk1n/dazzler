@@ -1,9 +1,13 @@
 import {includes, toPairs, pluck} from "ramda";
 
+export function toTimestamp(date) {
+    return parseInt((date.getTime() / 1000).toFixed(0))
+}
+
 export const timestampProp = (prop_name, value) => {
     const payload = {};
     payload[prop_name] = value;
-    payload[`${prop_name}_timestamp`] = new Date();
+    payload[`${prop_name}_timestamp`] = toTimestamp(new Date());
     return payload;
 };
 

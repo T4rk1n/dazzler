@@ -7,6 +7,7 @@ import {
     debounce,
     collectTruePropKeys,
     chunk,
+    toTimestamp,
 } from './utils';
 import {
     camelToSnakeCase,
@@ -16,6 +17,7 @@ import {
 } from './casing';
 
 export {
+    toTimestamp,
     timestampProp,
     loadCss,
     loadScript,
