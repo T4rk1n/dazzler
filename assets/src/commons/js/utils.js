@@ -94,3 +94,11 @@ export function collectTruePropKeys(obj, filterKeys) {
     }
     return pluck(0, pairs.filter(([_, v]) => v))
 }
+
+export function chunk(arr, n) {
+    return arr
+        .map((item, index) =>
+            index % n === 0 ? arr.slice(index, index + n) : null
+        )
+        .filter(item => item);
+}

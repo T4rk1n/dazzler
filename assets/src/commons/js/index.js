@@ -6,6 +6,7 @@ import {
     loadScript,
     debounce,
     collectTruePropKeys,
+    chunk,
 } from './utils';
 import {
     camelToSnakeCase,
@@ -24,4 +25,5 @@ export {
     camelToSpinal,
     transformKeys,
     collectTruePropKeys,
+    chunk,
 };
