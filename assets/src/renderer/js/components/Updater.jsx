@@ -345,34 +345,40 @@ export default class Updater extends React.Component {
 
     _connectWS() {
         // Setup websocket for updates
-        this.ws = new WebSocket(
-            `ws${
-                window.location.href.startsWith('https') ? 's' : ''
-            }://${this.props.baseUrl || window.location.host}/dazzler/update`
-        );
-        this.ws.addEventListener('message', this.onMessage);
-        this.ws.onopen = () => {
-            this.setState({ready: true});
-        };
-        this.ws.onclose = () => {
-            let tries = 0;
-            const reconnect = () => {
-                try {
-                    tries++;
-                    this._connectWS();
-                }
-                catch(e) {
-                    if (tries < 20) {
-                        setTimeout(reconnect, 1000);
-                    }
-                }
+        let tries = 0;
+        const connexion = () => {
+            this.ws = new WebSocket(
+                `ws${
+                    window.location.href.startsWith('https') ? 's' : ''
+                }://${this.props.baseUrl ||
+                    window.location.host}/dazzler/update`
+            );
+            this.ws.addEventListener('message', this.onMessage);
+            this.ws.onopen = () => {
+                this.setState({ready: true});
+                tries = 0;
             };
-            setTimeout(reconnect, 1000);
+            this.ws.onclose = () => {
+                const reconnect = () => {
+                    try {
+                        tries++;
+                        connexion();
+                    } catch (e) {
+                        if (tries < this.props.retries) {
+                            setTimeout(reconnect, 1000);
+                        }
+                    }
+                };
+                setTimeout(reconnect, 1000);
+            };
         };
+        connexion();
     }
 
     // TODO implement or remove dependence on these functions.
-    getHeaders() {return {}}
+    getHeaders() {
+        return {};
+    }
     refresh() {}
 
     componentWillMount() {
@@ -424,6 +430,6 @@ Updater.defaultProps = {};
 Updater.propTypes = {
     baseUrl: PropTypes.string.isRequired,
     ping: PropTypes.bool,
-    ping_interval:  PropTypes.number,
+    ping_interval: PropTypes.number,
     retries: PropTypes.number,
 };
