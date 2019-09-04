@@ -15,3 +15,10 @@ async def test_markdown_render(start_page, browser):
     # it should be tested by it's lib.
     await browser.wait_for_text_to_equal('#markdown h1', 'Foo')
     await browser.wait_for_text_to_equal('#markdown h2', 'Bar')
+    await browser.wait_for_element_by_xpath(
+        '//*[@id="markdown"]/p/a[contains(text(), "google")]'
+    )
+    # Test a prism code block was inserted.
+    await browser.wait_for_element_by_xpath(
+        '//*[@id="markdown"]/div/pre[contains(@class, "language-jsx")]'
+    )
