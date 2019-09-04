@@ -1,77 +1,51 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import {Prism as SyntaxHighlighter} from 'react-syntax-highlighter';
-import * as prism_styles from 'react-syntax-highlighter/dist/esm/styles/prism';
+import Highlight, {defaultProps} from "prism-react-renderer";
 
 /**
  * A block of code to highlight.
  */
 export default class CodeBlock extends React.Component {
     render() {
-        const {language, value, style, class_name, editable, identity} = this.props;
+        const {language, value, style: outer_style, class_name, identity} = this.props;
         return (
-            <div className={class_name} contentEditable={editable} id={identity} onInput={(e) => {
-                console.log('Change');
-                this.props.updateAspects({value: this.getDOMnode().innerHTML})
-            }}>
-                  <SyntaxHighlighter
-                    language={language}
-                    style={prism_styles[style]}
-                >
-                    {value}
-                </SyntaxHighlighter>
+            <div className={class_name} id={identity} style={outer_style}>
+                  <Highlight {...defaultProps} code={value} language={language}>
+                      {({className, style, tokens, getLineProps, getTokenProps}) => (
+                        <pre className={className} style={{ ...style, padding: '0.5rem'}}>
+                          {tokens.map((line, i) => (
+                            <div key={i} {...getLineProps({line, key: i})}>
+                              {line.map((token, key) => (
+                                <span key={key} {...getTokenProps({token, key})} />
+                              ))}
+                            </div>
+                          ))}
+                        </pre>
+                      )}
+                </Highlight>
             </div>
-
         );
     }
 }
 
 CodeBlock.defaultProps = {
-    style: 'coy'
+
 };
 
 CodeBlock.propTypes = {
     /**
      * The code to render
      */
-    value: PropTypes.node,
+    value: PropTypes.node.isRequired,
     /**
-     * Style of highlighted code.
+     * Language to render
      */
-    style: PropTypes.oneOf([
-        'coy',
-        'dark',
-        'funky',
-        'okaidia',
-        'solarizedlight',
-        'tomorrow',
-        'twilight',
-        'prism',
-        'atomDark',
-        'base16AteliersulphurpoolLight',
-        'cb',
-        'darcula',
-        'duotoneDark',
-        'duotoneSea',
-        'duotoneSpace',
-        'ghcolors',
-        'hopscotch',
-        'pojoaque',
-        'vs',
-        'xonokai',
-    ]),
-
+    language: PropTypes.string.isRequired,
+    style: PropTypes.object,
     class_name: PropTypes.string,
-    editable: PropTypes.bool,
-
     /**
      *  Unique id for this component
      */
     identity: PropTypes.string,
-
-    /**
-     * Update aspects on the backend.
-     */
-    updateAspects: PropTypes.func,
 };

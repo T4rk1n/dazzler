@@ -10,7 +10,7 @@ import CodeBlock from './CodeBlock';
  */
 export default class Markdown extends React.Component {
     render() {
-        const {identity, class_name, highlight_style} = this.props;
+        const {identity, class_name} = this.props;
         return (
             <div id={identity} className={class_name}>
                 <ReactMarkdown
@@ -20,7 +20,6 @@ export default class Markdown extends React.Component {
                                 'identity',
                                 'updateAspects',
                                 'class_name',
-                                'highlight_style',
                             ],
                             this.props
                         ),
@@ -28,7 +27,7 @@ export default class Markdown extends React.Component {
                     )}
                     renderers={{
                         code: props => (
-                            <CodeBlock {...props} style={highlight_style} />
+                            <CodeBlock {...props}/>
                         ),
                     }}
                 />
@@ -38,7 +37,6 @@ export default class Markdown extends React.Component {
 }
 
 Markdown.defaultProps = {
-    highlight_style: 'coy',
     escape_html: true,
 };
 
@@ -47,32 +45,6 @@ Markdown.propTypes = {
      * Markdown string to render.
      */
     source: PropTypes.string.isRequired,
-
-    /**
-     * Style of highlighted code.
-     */
-    highlight_style: PropTypes.oneOf([
-        'coy',
-        'dark',
-        'funky',
-        'okaidia',
-        'solarizedlight',
-        'tomorrow',
-        'twilight',
-        'prism',
-        'atomDark',
-        'base16AteliersulphurpoolLight',
-        'cb',
-        'darcula',
-        'duotoneDark',
-        'duotoneSea',
-        'duotoneSpace',
-        'ghcolors',
-        'hopscotch',
-        'pojoaque',
-        'vs',
-        'xonokai',
-    ]),
 
     /**
      * CSS class of the container element.
