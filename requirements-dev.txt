@@ -7,3 +7,4 @@ python-coveralls
 mypy==0.701
 selenium==3.141.0
 sphinx==2.1.1
+pytz
