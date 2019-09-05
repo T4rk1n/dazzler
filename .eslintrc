@@ -89,7 +89,7 @@
     "no-useless-concat": ["error"],
     "no-with": ["error"],
     "prefer-const": ["error"],
-    "radix": ["error"],
+    "radix": ["off"],
     "react/jsx-no-duplicate-props": ["error"],
     "react/jsx-no-undef": ["error"],
     "react/jsx-uses-react": ["error"],
@@ -112,7 +112,7 @@
         "argsIgnorePattern": "^_",
         "caughtErrorsIgnorePattern": "^e$"
     }],
-    "no-magic-numbers": ["error", {
+    "no-magic-numbers": ["off", {
       "ignoreArrayIndexes": true,
         "ignore": [-1, 0, 1, 2, 3, 100, 10, 0.5]
     }],
