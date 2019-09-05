@@ -37,6 +37,8 @@ module.exports = function(env, argv) {
         ],
         core: [path.join(__dirname, 'assets/src/core/js/index.js')],
         extra: [path.join(__dirname, 'assets/src/extra/js/index.js')],
+        markdown: [path.join(__dirname, 'assets/src/markdown/js/index.js')],
+        calendar: [path.join(__dirname, 'assets/src/calendar/js/index.js')],
     };
 
     const externals = {
@@ -55,6 +57,35 @@ module.exports = function(env, argv) {
             root: 'ReactDOM',
         },
     };
+
+    const plugins = [
+        new BundleTracker({
+            path: output.path,
+            filename: 'assets.json',
+        }),
+        new CleanWebpackPlugin([output.path], {
+            verbose: true,
+            watch: true,
+            exclude: ['dazzler.js'],
+        }),
+        new MiniCssExtractPlugin({
+            filename: 'dazzler_[name]_[hash].css',
+            chunkFilename: 'dazzler_[name]_[hash].css',
+        }),
+    ];
+
+    if (devMode) {
+        plugins.push({
+            apply: (compiler => {
+                compiler.hooks.afterEmit.tap('BuildDazzlerPlugin', () => {
+                    exec('npm run build:dazzler', (err, stdout, stderr) => {
+                        if (stdout) process.stdout.write(stdout);
+                        if (stderr) process.stderr.write(stderr);
+                    })
+                })
+            })
+        })
+    }
 
     return {
         mode,
@@ -79,31 +110,7 @@ module.exports = function(env, argv) {
             poll: 1000,
         },
 
-        plugins: [
-            new BundleTracker({
-                path: output.path,
-                filename: 'assets.json',
-            }),
-            new CleanWebpackPlugin([output.path], {
-                verbose: true,
-                watch: true,
-                exclude: ['dazzler.js'],
-            }),
-            new MiniCssExtractPlugin({
-                filename: 'dazzler_[name]_[hash].css',
-                chunkFilename: 'dazzler_[name]_[hash].css',
-            }),
-            {
-                apply: (compiler => {
-                    compiler.hooks.afterEmit.tap('BuildDazzlerPlugin', () => {
-                        exec('npm run build:dazzler', (err, stdout, stderr) => {
-                            if (stdout) process.stdout.write(stdout);
-                            if (stderr) process.stderr.write(stderr);
-                        })
-                    })
-                })
-            }
-        ],
+        plugins,
         devtool,
         module: {
             rules: [
