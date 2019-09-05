@@ -1,6 +1,4 @@
 import re
-
-import appdirs
 import os
 import warnings
 import shutil
@@ -8,6 +6,7 @@ import shutil
 # Create a data dir for the requirements once and for all.
 import typing
 
+import appdirs
 from dazzler.tools import format_tag
 
 from dazzler.errors import (
@@ -119,16 +118,15 @@ class Requirement:
         prepared = self.prepare(dev, external)
         if self.kind == 'css':
             return format_tag(
-                'link', prepared['attributes'], open=True, close=False
+                'link', prepared['attributes'], opened=True, close=False
             )
-        elif self.kind == 'js':
+        if self.kind == 'js':
             return format_tag('script', prepared['attributes'])
-        elif self.kind == 'map':
+        if self.kind == 'map':
             return ''
-        else:
-            raise InvalidRequirementKindError(
-                f'Invalid requirement kind: {self.kind}'
-            )
+        raise InvalidRequirementKindError(
+            f'Invalid requirement kind: {self.kind}'
+        )
 
     def __str__(self):
         return self.internal or self.external
@@ -182,8 +180,8 @@ def collect_requirements(directory: str, page: str = None):
     for current, _, files in os.walk(directory):
         for file in sorted(
                 (
-                        x for x in files
-                        if x.endswith('.js') or x.endswith('.css')
+                    x for x in files
+                    if x.endswith('.js') or x.endswith('.css')
                 ),
                 key=lambda k: [
                     int(x) if x.isdigit() else x

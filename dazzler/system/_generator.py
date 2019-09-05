@@ -163,6 +163,7 @@ def is_component_aspect(type_obj):
     return False
 
 
+# pylint: disable=too-many-locals
 def generate_component(display_name, description, props, output_path):
     aspects = []
     aspects_required = []

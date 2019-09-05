@@ -146,8 +146,9 @@ disable=print-statement,
         protected-access,
         too-few-public-methods,
         too-many-branches,
-        no-member,
-        too-many-ancestors
+        logging-fstring-interpolation,
+        too-many-ancestors,
+        too-many-arguments
 
 # Enable the message, report, category or checker with the given id(s). You can
 # either give multiple identifier separated by comma (,) or put this option
@@ -250,7 +251,7 @@ min-similarity-lines=4
 
 # Format style used to check logging format string. `old` means using %
 # formatting, while `new` is for `{}` formatting.
-logging-format-style=old
+logging-format-style=new
 
 # Logging modules to check that the string format arguments are in logging
 # function parameter format.
@@ -273,7 +274,7 @@ indent-after-paren=4
 indent-string='    '
 
 # Maximum number of characters on a single line.
-max-line-length=100
+max-line-length=120
 
 # Maximum number of lines in a module.
 max-module-lines=1000
@@ -363,9 +364,7 @@ attr-naming-style=snake_case
 #attr-rgx=
 
 # Bad variable names which should always be refused, separated by a comma.
-bad-names=foo,
-          bar,
-          baz,
+bad-names=baz,
           toto,
           tutu,
           tata
@@ -419,7 +418,14 @@ good-names=i,
            m,
            t,
            p,
-           c
+           c,
+           fg,
+           bg,
+           ts,
+           r,
+           n,
+           g,
+           ws
 
 # Include a hint for the correct naming format with invalid-name.
 include-naming-hint=no
@@ -489,10 +495,10 @@ spelling-store-unknown-words=no
 [DESIGN]
 
 # Maximum number of arguments for function / method.
-max-args=10
+max-args=15
 
 # Maximum number of attributes for a class (see R0902).
-max-attributes=7
+max-attributes=15
 
 # Maximum number of boolean expressions in an if statement.
 max-bool-expr=5
@@ -501,7 +507,7 @@ max-bool-expr=5
 max-branches=12
 
 # Maximum number of locals for function / method body.
-max-locals=15
+max-locals=18
 
 # Maximum number of parents for a class (see R0901).
 max-parents=7
@@ -513,7 +519,7 @@ max-public-methods=20
 max-returns=6
 
 # Maximum number of statements in function / method body.
-max-statements=50
+max-statements=60
 
 # Minimum number of public methods for a class (see R0903).
 min-public-methods=2

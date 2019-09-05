@@ -8,10 +8,10 @@ import asyncio
 import os
 import typing
 
-import precept
-
 from concurrent.futures import ThreadPoolExecutor
+
 from aiohttp import web
+import precept
 
 from .system import Package, generate_components, Requirement, Page
 from .tools import get_package_path
@@ -83,6 +83,7 @@ class Dazzler(precept.Precept):
     async def stop(self):
         await self.server.site.stop()
 
+    # pylint: disable=arguments-differ
     async def main(
             self,
             application=None,

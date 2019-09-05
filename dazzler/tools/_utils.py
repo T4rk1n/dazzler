@@ -21,7 +21,7 @@ def replace_all(template, **kwargs):
     return t
 
 
-def format_tag(tag_name, attributes, content=None, open=True, close=True):
+def format_tag(tag_name, attributes, content=None, opened=True, close=True):
     attrs = []
     for k, v in attributes.items():
         if isinstance(v, str):
@@ -33,7 +33,7 @@ def format_tag(tag_name, attributes, content=None, open=True, close=True):
     attr = ' '.join(attrs)
     tag = f'<{tag_name} {attr}'
 
-    if open:
+    if opened:
         tag += '>'
     else:
         tag += '/>'

@@ -9,6 +9,7 @@ from ._package import Package
 from ._requirements import Requirement, collect_requirements
 
 
+# pylint: disable=too-many-instance-attributes
 class Page:
     """A page of the application."""
 
