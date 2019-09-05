@@ -218,4 +218,4 @@ typings/
 # next.js build output
 .next
 
-assets/dev
+dazzler/assets/dev

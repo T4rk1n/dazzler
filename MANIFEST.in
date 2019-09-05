@@ -1,6 +1,2 @@
-recursive-include assets/dist *.js *.css *.json
-recursive-include assets/dev *.js *.css *.json
-recursive-include assets/vendors *.js *.css
-include assets/index.html
-include assets/index.js
+recursive-include dazzler/assets *.js *.css *.json *.html
 prune tests

@@ -44,7 +44,7 @@ class Server:
         self.loop = loop or asyncio.get_event_loop()
         self.app = app or web.Application()
         self.index = pkgutil.get_data(
-            'dazzler', os.path.join('..', 'assets', 'index.html')
+            'dazzler', os.path.join('assets', 'index.html')
         ).decode()
         self.logger = self.dazzler.logger
         self.websockets = weakref.WeakSet()

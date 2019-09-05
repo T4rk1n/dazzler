@@ -18,27 +18,27 @@ module.exports = function(env, argv) {
     };
 
     if (devMode) {
-        output.path = path.join(__dirname, 'assets/dev');
+        output.path = path.join(__dirname, 'dazzler/assets/dev');
     } else {
-        output.path = path.join(__dirname, 'assets/dist');
+        output.path = path.join(__dirname, 'dazzler/assets/dist');
     }
 
     const entry = {
         commons: [
             '@babel/polyfill',
-            path.join(__dirname, 'assets/src/commons/js/index.js'),
+            path.join(__dirname, 'src/commons/js/index.js'),
         ],
-        renderer: [path.join(__dirname, 'assets/src/renderer/js/index.js')],
+        renderer: [path.join(__dirname, 'src/renderer/js/index.js')],
         test: [
             path.join(
                 __dirname,
-                'assets/src/internal/test_components/index.js'
+                'src/internal/test_components/index.js'
             ),
         ],
-        core: [path.join(__dirname, 'assets/src/core/js/index.js')],
-        extra: [path.join(__dirname, 'assets/src/extra/js/index.js')],
-        markdown: [path.join(__dirname, 'assets/src/markdown/js/index.js')],
-        calendar: [path.join(__dirname, 'assets/src/calendar/js/index.js')],
+        core: [path.join(__dirname, 'src/core/js/index.js')],
+        extra: [path.join(__dirname, 'src/extra/js/index.js')],
+        markdown: [path.join(__dirname, 'src/markdown/js/index.js')],
+        calendar: [path.join(__dirname, 'src/calendar/js/index.js')],
     };
 
     const externals = {
