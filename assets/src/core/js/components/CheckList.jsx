@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {concat} from 'ramda';
 
-
 /**
  * A list of labels with options, the values aspect get all selected options.
  */

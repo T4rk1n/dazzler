@@ -1,19 +1,18 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
-
 export default class DefaultProps extends Component {
     render() {
         const {id} = this.props;
         return (
             <div id={id}>
-                {
-                    Object.entries(this.props).map(
-                        (k, v) => <div id={`${id}-${k}`} key={`${id}-${k}`}>{k}: {JSON.stringify(v)}</div>
-                    )
-                }
+                {Object.entries(this.props).map((k, v) => (
+                    <div id={`${id}-${k}`} key={`${id}-${k}`}>
+                        {k}: {JSON.stringify(v)}
+                    </div>
+                ))}
             </div>
-        )
+        );
     }
 }
 

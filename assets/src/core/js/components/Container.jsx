@@ -5,7 +5,6 @@ import PropTypes from 'prop-types';
  * Virtual div
  */
 export default class Container extends React.Component {
-
     shouldComponentUpdate(nextProps, nextState, nextContext) {
         // Ignore virtual n_clicks don't need a re-render of
         // the whole children.
@@ -29,11 +28,11 @@ export default class Container extends React.Component {
                 style={style}
                 title={title}
                 draggable={draggable}
-                onClick={(e) => {
+                onClick={e => {
                     e.stopPropagation();
                     this.props.updateAspects({
                         n_clicks: this.props.n_clicks + 1,
-                    })
+                    });
                 }}
             >
                 {children}

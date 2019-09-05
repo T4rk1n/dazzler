@@ -1,8 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {type, map} from 'ramda';
-import {camelToSnakeCase} from "../../../commons/js";
-
+import {camelToSnakeCase} from '../../../commons/js';
 
 function prepareType(obj) {
     switch (type(obj)) {
@@ -16,10 +15,9 @@ function prepareType(obj) {
         case 'Object':
             return map(prepareObject, obj);
         default:
-            return
+            return;
     }
 }
-
 
 function prepareObject(obj) {
     const payload = {};
@@ -66,7 +64,7 @@ export default class Html extends React.Component {
         this.props.updateAspects({
             event: {
                 name: e.name,
-                ...prepareObject(e)
+                ...prepareObject(e),
             },
         });
     }

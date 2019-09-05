@@ -27,14 +27,13 @@ export default class Select extends React.Component {
                 onChange={e => {
                     let value;
                     if (multi) {
-                        const opts =  e.target.options;
+                        const opts = e.target.options;
                         value = [];
                         for (let i = 0, l = opts.length; i < l; i++) {
                             if (opts[i].selected) {
                                 value.push(options[i].value);
                             }
                         }
-
                     } else {
                         value = options[e.target.selectedIndex].value;
                     }

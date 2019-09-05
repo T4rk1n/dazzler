@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-
 export default class Interval extends React.Component {
     constructor(props) {
         super(props);
@@ -47,7 +46,6 @@ export default class Interval extends React.Component {
         return null;
     }
 }
-
 
 Interval.defaultProps = {
     timeout: 1000,

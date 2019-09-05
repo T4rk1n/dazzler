@@ -37,7 +37,6 @@ export function prevMonth(month, year) {
     return [month - 1, year];
 }
 
-
 export function firstDayOfTheMonth(month, year) {
     return new Date(year, month, 1).getDay();
 }

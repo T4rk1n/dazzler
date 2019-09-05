@@ -45,13 +45,12 @@ export default class Calendar extends React.Component {
             ts = new Date();
             payload.month_timestamp = ts.getTime();
             toUpdate = true;
-
         } else {
             ts = new Date(month_timestamp);
         }
         this.setState({
             month: ts.getUTCMonth(),
-            year: ts.getUTCFullYear()
+            year: ts.getUTCFullYear(),
         });
 
         if (selected === undefined && use_selected) {

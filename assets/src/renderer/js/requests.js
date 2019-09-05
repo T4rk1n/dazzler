@@ -69,8 +69,7 @@ export function xhrRequest(url, options = defaultXhrOptions) {
         xhr.onerror = err => reject(err);
         xhr.send(json ? JSON.stringify(payload) : payload);
     });
-};
-
+}
 
 /**
  * Auto get headers and refresh/retry.

@@ -10,9 +10,7 @@ export default class Renderer extends React.Component {
     render() {
         return (
             <div className="dazzler-renderer">
-                <Updater
-                    {...this.props}
-                />
+                <Updater {...this.props} />
             </div>
         );
     }
@@ -21,6 +19,6 @@ export default class Renderer extends React.Component {
 Renderer.propTypes = {
     baseUrl: PropTypes.string.isRequired,
     ping: PropTypes.bool,
-    ping_interval:  PropTypes.number,
+    ping_interval: PropTypes.number,
     retries: PropTypes.number,
 };

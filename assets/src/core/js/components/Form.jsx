@@ -66,7 +66,11 @@ export default class Form extends React.Component {
                     {body}
                 </div>
                 {footer && <div className="form-footer">{footer}</div>}
-                {include_submit && <button type='submit' className='form-submit'>{submit_label}</button>}
+                {include_submit && (
+                    <button type="submit" className="form-submit">
+                        {submit_label}
+                    </button>
+                )}
             </form>
         );
     }
@@ -75,7 +79,7 @@ export default class Form extends React.Component {
 Form.defaultProps = {
     include_submit: true,
     submit_label: 'Submit',
-    errors: {}
+    errors: {},
 };
 
 Form.propTypes = {

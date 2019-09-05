@@ -1,13 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {join, concat} from 'ramda';
-import {collectTruePropKeys} from "../../../commons/js";
+import {collectTruePropKeys} from '../../../commons/js';
 
 /**
  * A button to click on!
  */
 export default class Button extends React.Component {
-
     shouldComponentUpdate(nextProps, nextState, nextContext) {
         return !(this.props.clicks < nextProps.clicks);
     }
@@ -33,11 +32,11 @@ export default class Button extends React.Component {
         if (preset) {
             css.push(preset);
         } else {
-            css.push('default')
+            css.push('default');
         }
 
         if (size) {
-            css.push(size)
+            css.push(size);
         }
 
         return (
@@ -91,7 +90,11 @@ Button.propTypes = {
      * Preset style colors to apply.
      */
     preset: PropTypes.oneOf([
-        'primary', 'secondary', 'danger', 'warning', 'success'
+        'primary',
+        'secondary',
+        'danger',
+        'warning',
+        'success',
     ]),
 
     /**

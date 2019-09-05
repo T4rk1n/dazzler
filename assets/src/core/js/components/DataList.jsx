@@ -57,7 +57,6 @@ DataList.propTypes = {
      */
     value: PropTypes.string,
 
-
     /**
      * The value of the selected option if found.
      */

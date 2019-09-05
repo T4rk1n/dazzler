@@ -6,10 +6,4 @@ import Spinner from './components/Spinner';
 import Sticky from './components/Sticky';
 import Drawer from './components/Drawer';
 
-export {
-    Notice,
-    Pager,
-    Spinner,
-    Sticky,
-    Drawer,
-};
+export {Notice, Pager, Spinner, Sticky, Drawer};

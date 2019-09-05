@@ -1,5 +1,11 @@
-export function findByXpath(xpath, contextNode=document) {
-    const it = document.evaluate(xpath, contextNode, null, XPathResult.ANY_TYPE, null);
+export function findByXpath(xpath, contextNode = document) {
+    const it = document.evaluate(
+        xpath,
+        contextNode,
+        null,
+        XPathResult.ANY_TYPE,
+        null
+    );
     const elements = [];
     let current = it.iterateNext();
     while (current) {

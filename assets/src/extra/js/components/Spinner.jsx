@@ -7,13 +7,9 @@ import PropTypes from 'prop-types';
 export default class Spinner extends React.Component {
     render() {
         const {class_name, style, identity} = this.props;
-        return (
-            <div id={identity} className={class_name} style={style}>
-            </div>
-        )
+        return <div id={identity} className={class_name} style={style} />;
     }
 }
-
 
 Spinner.defaultProps = {};
 

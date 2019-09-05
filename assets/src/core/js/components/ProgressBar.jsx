@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {join} from "ramda";
+import {join} from 'ramda';
 
 /**
  * Simple progress bar support by all browsers.
@@ -34,10 +34,10 @@ export default class ProgressBar extends React.Component {
         const outerClasses = [class_name];
         const innerClasses = ['progress'];
         if (progress_class_name) {
-            innerClasses.push(progress_class_name)
+            innerClasses.push(progress_class_name);
         }
         if (high && value >= high) {
-            innerClasses.push('high')
+            innerClasses.push('high');
         } else if (optimum && value >= optimum) {
             innerClasses.push('optimum');
         } else if (low && value <= low) {
@@ -54,10 +54,10 @@ export default class ProgressBar extends React.Component {
         const width = (value / total) * 100;
         let text = '';
         if (progress_text === 'percent') {
-            text = `${width.toFixed(0)} %`
+            text = `${width.toFixed(0)} %`;
         }
         if (progress_text === 'value') {
-            text = `${value} / ${maximum}`
+            text = `${value} / ${maximum}`;
         }
         return (
             <div
@@ -79,7 +79,10 @@ export default class ProgressBar extends React.Component {
                     });
                 }}
             >
-                <div className={join(' ', innerClasses)} style={{width: `${width}%`}}>
+                <div
+                    className={join(' ', innerClasses)}
+                    style={{width: `${width}%`}}
+                >
                     {text}
                 </div>
             </div>
@@ -92,7 +95,7 @@ ProgressBar.defaultProps = {
 };
 
 ProgressBar.propTypes = {
-     /**
+    /**
      * The current numeric value. This must be between the minimum and maximum values (min attribute and max attribute) if they are specified. If unspecified or malformed, the value is 0. If specified, but not within the range given by the min attribute and max attribute, the value is equal to the nearest end of the range.
      */
     value: PropTypes.number,
@@ -137,10 +140,7 @@ ProgressBar.propTypes = {
     /**
      * Set to show the value on the progress bar.
      */
-    progress_text: PropTypes.oneOf([
-        'percent',
-        'value'
-    ]),
+    progress_text: PropTypes.oneOf(['percent', 'value']),
 
     /**
      * Readonly click event with the value.

@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {chunk} from "../../../commons/js";
+import {chunk} from '../../../commons/js';
 
 /**
  * Render children in a grid.

@@ -141,7 +141,7 @@ export default class TimePicker extends React.Component {
 
 TimePicker.defaultProps = {
     value: '00:00',
-    mode: '24h'
+    mode: '24h',
 };
 
 TimePicker.propTypes = {

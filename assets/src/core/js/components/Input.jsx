@@ -2,8 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {omit, concat} from 'ramda';
 
-
-
 export default class Input extends React.Component {
     render() {
         const {
@@ -48,7 +46,7 @@ export default class Input extends React.Component {
                         'n_blur',
                         'n_submit',
                         '_name',
-                        '_package'
+                        '_package',
                     ],
                     this.props
                 )}
@@ -109,7 +107,7 @@ Input.propTypes = {
         'url',
         'submit',
         'checkbox',
-        'reset'
+        'reset',
     ]),
 
     placeholder: PropTypes.string,

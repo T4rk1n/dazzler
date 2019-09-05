@@ -23,10 +23,10 @@ export default class DatePicker extends React.Component {
             <div className={class_name} id={identity}>
                 <input
                     type="text"
-                    onClick={(e) => {
+                    onClick={e => {
                         e.preventDefault();
                         e.stopPropagation();
-                        this.props.updateAspects({opened: !opened})
+                        this.props.updateAspects({opened: !opened});
                     }}
                     value={format(new Date(value * 1000), date_format)}
                     readOnly={true}
@@ -52,7 +52,7 @@ export default class DatePicker extends React.Component {
 }
 
 DatePicker.defaultProps = {
-    date_format: 'DD MMM YYYY'
+    date_format: 'DD MMM YYYY',
 };
 
 DatePicker.propTypes = {

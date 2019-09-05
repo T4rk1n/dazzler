@@ -1,7 +1,7 @@
-import {includes, toPairs, pluck} from "ramda";
+import {includes, toPairs, pluck} from 'ramda';
 
 export function toTimestamp(date) {
-    return parseInt((date.getTime() / 1000).toFixed(0))
+    return parseInt((date.getTime() / 1000).toFixed(0));
 }
 
 export const timestampProp = (prop_name, value) => {
@@ -87,16 +87,15 @@ export function debounce(func, wait) {
         } else {
             timeout = setTimeout(later, diff);
         }
-    }
+    };
 }
-
 
 export function collectTruePropKeys(obj, filterKeys) {
     let pairs = toPairs(obj);
     if (filterKeys) {
         pairs = pairs.filter(([k, _]) => includes(k, filterKeys));
     }
-    return pluck(0, pairs.filter(([_, v]) => v))
+    return pluck(0, pairs.filter(([_, v]) => v));
 }
 
 export function chunk(arr, n) {

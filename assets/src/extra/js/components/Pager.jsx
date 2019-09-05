@@ -27,14 +27,8 @@ const showList = (page, total, n) => {
     return range(1, total + 1);
 };
 
-
-
 const Page = ({style, class_name, on_change, text, page}) => (
-    <span
-        style={style}
-        className={class_name}
-        onClick={() => on_change(page)}
-    >
+    <span style={style} className={class_name} onClick={() => on_change(page)}>
         {text || page}
     </span>
 );
@@ -112,10 +106,7 @@ export default class Pager extends React.Component {
         pageCss = join(' ', pageCss);
 
         return (
-            <div
-                className={class_name}
-                id={identity}
-            >
+            <div className={class_name} id={identity}>
                 {current_page > 1 && (
                     <Page
                         page={1}

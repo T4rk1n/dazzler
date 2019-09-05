@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-
 /**
  * Store data in the browser memory.
  */
@@ -14,7 +13,6 @@ export default class Store extends React.Component {
         return null;
     }
 }
-
 
 Store.defaultProps = {};
 

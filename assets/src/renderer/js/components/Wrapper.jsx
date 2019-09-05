@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {concat, join} from 'ramda';
-import {camelToSpinal} from "../../../commons/js";
+import {camelToSpinal} from '../../../commons/js';
 
 /**
  * Wraps components for aspects updating.
@@ -47,8 +47,8 @@ export default class Wrapper extends React.Component {
             this.getAspect
         );
         if (!this.state.initial) {
-            this.updateAspects(this.state.aspects).then(
-                () => this.setState({ready: true, initial: true})
+            this.updateAspects(this.state.aspects).then(() =>
+                this.setState({ready: true, initial: true})
             );
         }
     }
