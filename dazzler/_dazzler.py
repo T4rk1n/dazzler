@@ -171,7 +171,7 @@ class Dazzler(precept.Precept):
         self._prepared = True
         self.server.app.on_startup.append(self._on_startup)
         self.server.app.on_shutdown.append(self._on_shutdown)
-        self.events.dispatch('dazzler_setup', application=self)
+        await self.events.dispatch('dazzler_setup', application=self)
 
     async def application(self):
         """Call for wsgi application"""
