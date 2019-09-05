@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {format} from 'date-fns';
-import {firstDayOfTheMonth, monthLength, prevMonth} from '../utils';
+import {firstDayOfTheMonth, monthLength, prevMonth, nextMonth} from '../utils';
 import {range, concat, join} from 'ramda';
 import {chunk} from '../../../commons/js';
 
@@ -28,6 +28,14 @@ function calendar(month, year) {
  * Display a calendar based on the month of a timestamp.
  */
 export default class Calendar extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            month: null,
+            year: null,
+        };
+    }
+
     componentWillMount() {
         const {selected, month_timestamp, use_selected} = this.props;
         const payload = {};
@@ -37,9 +45,14 @@ export default class Calendar extends React.Component {
             ts = new Date();
             payload.month_timestamp = ts.getTime();
             toUpdate = true;
+
         } else {
             ts = new Date(month_timestamp);
         }
+        this.setState({
+            month: ts.getUTCMonth(),
+            year: ts.getUTCFullYear()
+        });
 
         if (selected === undefined && use_selected) {
             payload.selected = {
@@ -50,7 +63,7 @@ export default class Calendar extends React.Component {
             toUpdate = true;
         }
 
-        if (toUpdate) {
+        if (toUpdate && this.props.updateAspects) {
             this.props.updateAspects(payload);
         }
     }
@@ -60,7 +73,6 @@ export default class Calendar extends React.Component {
             class_name,
             identity,
             week_labels,
-            month_timestamp,
             month_format,
             selected,
             use_selected,
@@ -69,12 +81,47 @@ export default class Calendar extends React.Component {
         if (!class_name) {
             css = 'dazzler-calendar-calendar';
         }
-        const date = new Date(month_timestamp);
-        const month = date.getMonth();
-        const year = date.getFullYear();
+        const {month, year} = this.state;
+        const date = new Date(year, month);
         return (
             <div className={css} id={identity}>
-                <div className="month-label">{format(date, month_format)}</div>
+                <div className="calendar-header">
+                    <span
+                        onClick={() => {
+                            const [pm, py] = prevMonth(month, year);
+                            if (this.props.updateAspects) {
+                                this.props.updateAspects({
+                                    month_timestamp: new Date(py, pm).getTime(),
+                                });
+                            }
+                            this.setState({
+                                month: pm,
+                                year: py,
+                            });
+                        }}
+                    >
+                        &#9666;
+                    </span>
+                    <div className="month-label">
+                        {format(date, month_format)}
+                    </div>
+                    <span
+                        onClick={() => {
+                            const [pm, py] = nextMonth(month, year);
+                            if (this.props.updateAspects) {
+                                this.props.updateAspects({
+                                    month_timestamp: new Date(py, pm).getTime(),
+                                });
+                            }
+                            this.setState({
+                                month: pm,
+                                year: py,
+                            });
+                        }}
+                    >
+                        &#9656;
+                    </span>
+                </div>
                 <div className="week-labels">
                     {week_labels.map(week => (
                         <div
@@ -104,13 +151,17 @@ export default class Calendar extends React.Component {
                                             concat(
                                                 ['calendar-day'],
                                                 selected &&
-                                                    selected.day === day.day
+                                                    selected.day === day.day &&
+                                                    selected.year === year &&
+                                                    selected.month === month
                                                     ? ['selected-day']
                                                     : []
                                             )
                                         )}
                                         key={`${identity}-day-${day.day}`}
-                                        onClick={() => {
+                                        onClick={e => {
+                                            e.preventDefault();
+                                            e.stopPropagation();
                                             const payload = {
                                                 day: day.day,
                                                 month,

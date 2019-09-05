@@ -25,7 +25,7 @@ page = Page(
             identity='future-calendar'
         ),
         calendar.Calendar(use_selected=False),
-        # calendar.DatePicker(identity='single-picker'),
+        calendar.DatePicker(identity='single-picker'),
         calendar.TimePicker(fallback_mode=True, identity='time-picker'),
     ])
 )

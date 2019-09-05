@@ -1,0 +1,19 @@
+@import '../../commons/scss/colors';
+
+.dazzler-calendar-date-picker {
+  position: relative;
+  .picker {
+    position: absolute;
+    top: 1.25rem;
+    left: 0.125rem;
+    display: flex;
+    border: 1px solid $neutral-dark;
+    width: auto;
+    z-index: 201;
+    background: white;
+    .dazzler-calendar-calendar {
+      border: none;
+    }
+  }
+
+}
