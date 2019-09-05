@@ -168,6 +168,9 @@ class Dazzler(precept.Precept):
         )
 
         self._prepared = True
+        self.server.app.on_startup.append(self._on_startup)
+        self.server.app.on_shutdown.append(self._on_shutdown)
+        self.events.dispatch('dazzler_setup', application=self)
 
     async def application(self):
         """Call for wsgi application"""
@@ -249,6 +252,12 @@ class Dazzler(precept.Precept):
             )
         )
         await asyncio.gather(*futures)
+
+    async def _on_startup(self, _):
+        await self.events.dispatch('dazzler_start', application=self)
+
+    async def _on_shutdown(self, _):
+        await self.events.dispatch('dazzler_stop', application=self)
 
 
 def cli():
