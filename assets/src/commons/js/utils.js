@@ -13,6 +13,7 @@ export const timestampProp = (prop_name, value) => {
 
 export function loadScript(uri, timeout = 3000) {
     return new Promise((resolve, reject) => {
+        /* eslint-disable prefer-const */
         let timeoutId;
         const onload = () => {
             clearTimeout(timeoutId);
@@ -40,6 +41,7 @@ export function loadScript(uri, timeout = 3000) {
 
 export function loadCss(uri, timeout = 3000) {
     return new Promise((resolve, reject) => {
+        /* eslint-disable prefer-const */
         let timeoutId;
         const onload = () => {
             clearTimeout(timeoutId);
@@ -76,12 +78,14 @@ export function debounce(func, wait) {
         }
         const later = () => {
             timeout = null;
+            /* eslint-disable no-invalid-this */
             func.apply(this, arguments);
             lastCall = new Date();
         };
         clearTimeout(timeout);
         const diff = now - lastCall;
         if (diff >= wait) {
+            /* eslint-disable no-invalid-this */
             func.apply(this, arguments);
             lastCall = now;
         } else {
