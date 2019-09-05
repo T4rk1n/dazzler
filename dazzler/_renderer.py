@@ -29,12 +29,12 @@ _vendors_requirements = [
     _Requirement(
         internal=os.path.join(_vendors, 'react-dom-16-8-6.production.min.js'),
         dev=os.path.join(_vendors, 'react-dom-16-8-6.development.js'),
-        external='https://unpkg.com/react-dom@16.8.6/umd/react-dom.production.min.js',
+        external='https://unpkg.com/react-dom@16.8.6/umd/react-dom.production.min.js',  # noqa: E501
     ),
     # Normalize
     _Requirement(
         internal=os.path.join(_vendors, 'normalize-8-0-1.min.css'),
-        external='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css'
+        external='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css'  # noqa: E501
     )
 ]
 

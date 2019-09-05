@@ -1,3 +1,3 @@
-from ._ordered_set import OrderedSet
+from ._ordered_set import OrderedSet  # noqa: F401
 
-from ._utils import *
+from ._utils import *  # noqa: F401, F403
