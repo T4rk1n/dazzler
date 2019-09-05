@@ -1,0 +1,16 @@
+@import '../../commons/scss/colors';
+
+.dazzler-core-image {
+  &.bordered {
+    border: $neutral-light 1px solid;
+  }
+  &.padded {
+    padding: 0.25rem;
+  }
+  &.rounded {
+    border-radius: 5px;
+  }
+  &.centered {
+    margin: 0 auto;
+  }
+}

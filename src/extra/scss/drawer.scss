@@ -1,0 +1,35 @@
+@import '../../commons/scss/colors';
+
+.dazzler-extra-drawer {
+  display: flex;
+  background-color: white;
+  z-index: 100;
+  .drawer-content {
+    padding: 0.125rem;
+  }
+  .drawer-control {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    &.vertical {
+      height: 100%;
+    }
+    &.horizontal {
+      width: 100%;
+    }
+    border: 1px solid $neutral-dark;
+  }
+  &.vertical {
+    height: 100%;
+  }
+  &.horizontal {
+    width: 100%;
+    flex-direction: column;
+  }
+  &.right {
+    flex-direction: row-reverse !important;
+  }
+  &.bottom {
+    flex-direction: column-reverse !important;
+  }
+}

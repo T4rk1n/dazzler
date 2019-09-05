@@ -1,0 +1,89 @@
+@import '../../commons/scss/colors';
+
+.dazzler-core-view-port {
+  .hidden {
+    display: none;
+  }
+
+  .view-content {
+    &.bordered {
+      border: $neutral-dark solid 1px;
+      &.rounded {
+        border-top: none;
+        border-radius: 0 0 5px 5px;
+        padding: 0.25rem;
+      }
+    }
+  }
+  .dazzler-tabs {
+    display: flex;
+    justify-content: space-evenly;
+    border-bottom: $neutral-dark solid 1px;
+    width: 100%;
+
+    &.vertical {
+      flex-direction: column;
+      border-bottom: None;
+      .dazzler-tab {
+        border-right: None;
+        border-bottom: $neutral-dark solid 1px;
+      }
+    }
+
+    &.rounded {
+      border-bottom: none;
+      justify-content: initial;
+    }
+
+    .filler {
+      flex-grow: 1;
+      border-bottom: $neutral-dark solid 1px;
+    }
+
+    .dazzler-tab {
+      border-right: $neutral-dark solid 1px;
+      flex-grow: 1;
+      cursor: pointer;
+      user-select: none;
+      padding: 0.5rem;
+      text-align: center;
+
+      &.tab-active {
+        background-color: $primary;
+        color: white;
+
+        &:hover {
+          background-color: $primary-light;
+        }
+      }
+
+      &:hover {
+        background-color: $neutral-light;
+      }
+      &:last-child {
+        border-right: none;
+      }
+
+      &.rounded {
+        flex-grow: unset;
+        min-width: 10rem;
+        border:  $neutral-dark solid 1px;
+        background-color: $neutral;
+
+        &:hover {
+          background-color: $neutral-light;
+        }
+
+        border-radius: 5px 5px 0 0;
+        &.tab-active {
+          background-color: initial;
+          color: initial;
+          border-bottom: none;
+          &.hover {
+            background-color: initial;
+          }
+        }
+      }
+    }
+  }
+}

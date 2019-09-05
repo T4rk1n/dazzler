@@ -1,0 +1,82 @@
+@import '../../commons/scss/colors';
+
+._calendar-cell {
+  width: 1.75rem;
+  height: 1.75rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.dazzler-calendar-calendar {
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border: solid 1px $neutral-dark;
+
+  .empty {
+    @extend ._calendar-cell;
+  }
+
+  .calendar-header {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+
+    span {
+      cursor: pointer;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+      padding: 0.125rem;
+    }
+
+    span:first-child {
+      margin-right: 0.5rem;
+    }
+    span:last-child {
+      margin-left: 0.5rem;
+    }
+  }
+
+  .month-label {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .week-labels {
+    display: flex;
+    border-bottom: solid 1px $neutral-dark;
+    .week-label {
+      @extend ._calendar-cell;
+    }
+  }
+
+  .week-rows {
+    .calendar-week {
+      display: flex;
+    }
+
+    .calendar-day {
+      @extend ._calendar-cell;
+      cursor: pointer;
+
+      &.selected-day {
+        background-color: $primary-dark;
+        color: white;
+      }
+
+      &:hover {
+        background-color: $primary-light;
+        color: white;
+      }
+    }
+  }
+}

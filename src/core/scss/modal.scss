@@ -1,0 +1,68 @@
+@import '../../commons/scss/colors';
+
+.dazzler-core-modal {
+  .modal-content {
+    background-color: $neutral;
+    border: $neutral-light 0.125rem solid;
+    border-radius: 5px;
+    opacity: 100%;
+    width:  calc(60%);
+
+    @media only screen and (max-width: 600px) {
+      width: calc(90%);
+    }
+    @media only screen  and (max-width: 1000px) {
+      width: calc(80%);
+    }
+
+    margin-top: 2rem;
+    margin-right: auto;
+    margin-left: auto;
+  }
+
+  .modal-overlay {
+    display: none;
+    z-index: 1000;
+    &.modal-active {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+      background-color: darken($neutral, 80);
+      opacity: 0.8;
+    }
+  }
+  .modal-header {
+    border-bottom: $neutral-dark 0.125rem solid;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem;
+    .modal-closer {
+      background-color: $neutral-dark;
+      border: $neutral-light;
+      border-radius: 5px;
+      width: 2rem;
+      height: 2rem;
+      cursor: pointer;
+      user-select: none;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      align-self: flex-start;
+      font-weight: bolder;
+      &:hover, &:focus {
+        background-color: $neutral-light;
+      }
+    }
+  }
+  .modal-body {
+    padding: 0.5rem;
+  }
+  .modal-footer {
+    border-top: $neutral-dark 0.125rem solid;
+    padding: 0.5rem;
+  }
+}

@@ -1,0 +1,107 @@
+@import '../../commons/scss/colors';
+
+.dazzler-core-button {
+  border-style: solid;
+  border-width: 0;
+  cursor: pointer;
+  color: white;
+  padding: 0.25rem;
+  margin: 0.1325rem;
+
+  &:focus {
+    outline: none;
+  }
+
+  &.bordered {
+    border-width: 1px;
+  }
+
+  &.default {
+    &.bordered {
+      border-color: $neutral-dark;
+    }
+    background-color: $neutral;
+    color: #606060;
+    &:hover, &:focus {
+      background-color: $neutral-light;
+    }
+  }
+
+  &.rounded {
+    border-radius: 5px;
+  }
+  &.circle {
+    border-radius: 50%;
+  }
+
+  &.primary {
+    color: white;
+
+    &.bordered {
+      border-color: $primary-dark;
+    }
+
+    &:hover, &:focus  {
+      background-color: $primary-light;
+    }
+  }
+  &.danger {
+    &.bordered {
+      border-color: $danger-dark;
+    }
+
+    &:hover, &:focus  {
+      background-color: $danger-light;
+    }
+  }
+  &.warning {
+    &.bordered {
+      border-color: $warning-dark;
+    }
+
+    &:hover, &:focus  {
+      background-color: $warning-light;
+    }
+  }
+  &.success {
+    &.bordered {
+      border-color: $success-dark;
+    }
+
+    &:hover, &:focus  {
+      background-color: $success-light;
+    }
+  }
+  &.tiny {
+    padding: 0;
+    font-size: smaller;
+  }
+  &.small {
+    padding: 0.125rem;
+    font-size: small;
+  }
+  &.medium {
+    font-size: medium;
+    border-width: 0.125rem;
+  }
+  &.large {
+    padding: 0.5rem;
+    font-size: large;
+    border-width: 0.25rem;
+  }
+  &.larger {
+    padding: 0.75rem;
+    font-size: larger;
+    border-width: 0.33rem;
+  }
+  &.x-large {
+    padding: 1rem;
+    font-size: x-large;
+    border-width: 0.44rem;
+  }
+  &.xx-large {
+    padding: 1.25rem;
+    font-size: xx-large;
+    border-width: 0.5rem;
+  }
+}

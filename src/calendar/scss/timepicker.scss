@@ -1,0 +1,52 @@
+@import '../../commons/scss/colors';
+
+.dazzler-calendar-time-picker {
+  &.fallback-mode {
+    height: 100%;
+    position: relative;
+
+    .time-input {
+      width: 96px;
+      height: 1.8rem;
+      text-align: center;
+      box-sizing: border-box;
+    }
+
+    .fallback-timepicker {
+      position: absolute;
+      z-index: 200;
+      top: 1.9rem;
+      background: white;
+      display: flex;
+      flex-wrap: nowrap;
+      border: solid 1px $neutral-dark;
+
+      .time-range {
+        overflow-y: scroll;
+        color: black;
+        border: none;
+        height: 300px;
+
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+
+        cursor: pointer;
+
+        div:first-child {
+          color: #9c9c9c;
+          text-align: center;
+          padding: 0.25rem;
+        }
+        .time-value {
+          padding: 0.5rem;
+          &:hover {
+            background-color: $primary-light;
+            color: #fff;
+          }
+        }
+      }
+    }
+  }
+}

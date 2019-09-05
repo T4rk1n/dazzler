@@ -1,0 +1,19 @@
+@import '../../commons/scss/colors';
+
+.dazzler-extra-pager {
+  text-align: center;
+  .page {
+    padding: 5px;
+    background-color: $primary;
+    margin: 3px;
+    display: inline-block;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    &:hover, &:focus {
+      background-color: $primary-light;
+    }
+  }
+}
