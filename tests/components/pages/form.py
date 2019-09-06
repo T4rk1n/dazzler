@@ -5,7 +5,7 @@ Created 2019-07-14
 from aiohttp import web
 
 from dazzler.components import core
-from dazzler.system import Page, Trigger, BindingContext, State
+from dazzler.system import Page
 
 page = Page(
     __name__,
@@ -32,4 +32,3 @@ async def submit(request: web.Request):
 
 
 page.routes.append(web.post('/submit-form', submit))
-

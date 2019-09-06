@@ -3,7 +3,7 @@ Page pager of dazzler
 Created 2019-09-03
 """
 from dazzler.components import core, extra
-from dazzler.system import Page, Trigger, BindingContext, State
+from dazzler.system import Page, Trigger, BindingContext
 
 items = list(range(1, 200))
 

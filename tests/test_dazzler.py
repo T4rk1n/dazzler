@@ -89,7 +89,9 @@ async def test_click_with_state(start_page, browser):
 
     await start_page(page)
 
-    dropdown = await browser.wait_for_element_by_css_selector('#dropdown input')
+    dropdown = await browser.wait_for_element_by_css_selector(
+        '#dropdown input'
+    )
 
     dropdown.send_keys('Foo')
     await browser.click('#clicker')

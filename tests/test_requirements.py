@@ -30,7 +30,7 @@ def test_dev_requirements():
         dev='/home/project/dev/dev-requirements.js'
     )
     prepared = requirement.prepare(dev=True)
-    assert prepared['url'] == '/dazzler/requirements/static/dev/dev-requirements.js'
+    assert prepared['url'] == '/dazzler/requirements/static/dev/dev-requirements.js'  # noqa: E501
 
     tag = requirement.tag(dev=True)
     assert 'src="/dazzler/requirements/static/dev/dev-requirements.js"' in tag
@@ -73,4 +73,4 @@ def test_external_only_warning():
         Requirement(external='external-only')
 
     assert len(record) == 1
-    assert record[0].message.args[0] == 'No local file for requirement: external-only'
+    assert record[0].message.args[0] == 'No local file for requirement: external-only'  # noqa: E501

@@ -3,7 +3,7 @@ Page textarea of dazzler
 Created 2019-07-07
 """
 from dazzler.components import core
-from dazzler.system import Page, Trigger, BindingContext, State
+from dazzler.system import Page, Trigger, BindingContext
 
 page = Page(
     __name__,

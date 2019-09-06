@@ -131,7 +131,7 @@ async def test_page_requirements_package_override(start_page, browser):
     # and others pages are more lightweight, down the line maybe add
     # on-demand loading of requirements, it's already set up for it.
     # noinspection PyUnresolvedReferences
-    from tests.components import spec_components as spec
+    from tests.components import spec_components as spec  # noqa: F401
 
     page = Page(
         __name__,
