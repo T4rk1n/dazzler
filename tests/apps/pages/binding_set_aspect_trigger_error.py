@@ -15,5 +15,5 @@ page = Page(
 async def on_click_error(context: BindingContext):
     try:
         await context.set_aspect('click-error', clicks=2)
-    except errors.TriggerLoopError as e:
-        await context.set_aspect('error-output', children=f'{e.args[0]}')
+    except errors.TriggerLoopError as error:
+        await context.set_aspect('error-output', children=f'{error.args[0]}')

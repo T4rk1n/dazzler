@@ -124,6 +124,7 @@ def test_page_url_conflict():
     assert context.value.args[0] == 'Duplicate page url: two@/one'
 
 
+# pylint: disable=unused-import
 @pytest.mark.async_test
 async def test_page_requirements_package_override(start_page, browser):
     # Overriding the package is an optimization if some pages uses big bundles
@@ -162,7 +163,7 @@ async def test_page_requirements_dir(start_page, browser, _):
     await start_page(page)
 
     await browser.wait_for_style_to_equal(
-        '.loaded', 'background-color',  'rgba(255, 0, 0, 1)'
+        '.loaded', 'background-color', 'rgba(255, 0, 0, 1)'
     )
 
     output = json.loads(

@@ -6,11 +6,13 @@ from dazzler.system import Requirement, RequirementWarning
 
 
 @pytest.mark.parametrize(
-    'filename, kind, uri_key, formatted_tag', [
+    'filename, kind, uri_key, formatted_tag',
+    [
         ('bundle.js', 'js', 'src', '<script src="/dazzler/requirements/static/dist/bundle.js"></script>'),  # noqa: E501
         ('bundle.js.map', 'map', 'href', ''),
         ('bundle.css', 'css', 'href', '<link rel="stylesheet" type="text/css" href="/dazzler/requirements/static/dist/bundle.css">'),  # noqa: E501
-])
+    ]
+)
 def test_requirement(filename, kind, uri_key, formatted_tag):
     requirement = Requirement(filename)
     prepared = requirement.prepare()

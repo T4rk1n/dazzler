@@ -329,7 +329,7 @@ async def test_same_identity(start_page, browser):
 
     await start_page(page)
 
-    for i in range(1, 25):
+    for _ in range(1, 25):
         clicker = await browser.wait_for_element_by_id('click')
         clicker.click()
 

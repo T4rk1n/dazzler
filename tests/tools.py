@@ -1,11 +1,11 @@
 """Tests tools for running selenium with asyncio."""
 import functools
 
-from precept import AsyncExecutor
-
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.select import By
+
+from precept import AsyncExecutor
 
 
 def _wait_for(driver, condition, timeout=10.0):

@@ -3,7 +3,7 @@ Page get_aspect_error of dazzler
 Created 2019-06-15
 """
 from dazzler.components import core
-from dazzler.system import Page, Trigger, BindingContext, State
+from dazzler.system import Page, Trigger, BindingContext
 from dazzler.errors import GetAspectError
 
 page = Page(
