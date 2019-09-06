@@ -403,6 +403,8 @@ async def test_prefer_external(browser):
     )
     assert len(scripts) == 1
 
+    await app.stop()
+
 
 @pytest.mark.async_test
 async def test_global_requirements(browser):
@@ -415,3 +417,5 @@ async def test_global_requirements(browser):
         '//script[contains(@src, "lodash.min.js")]'
     )
     assert len(scripts) == 1
+
+    await app.stop()
