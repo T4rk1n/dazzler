@@ -10,7 +10,7 @@ from dazzler._assets import (
     assets_dev_path as _dev_path,
 )
 
-from ._imports_ import *
+from ._imports_ import *   # noqa: F401, F403
 from ._imports_ import __all__
 
 _name = 'markdown'
