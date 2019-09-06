@@ -236,10 +236,11 @@ def generate_component(display_name, description, props, output_path):
                 init_value += '  # noqa: E501'
             aspects_optional.append(init_value)
 
-        docstring = f'{os.linesep}            '.join(
-            textwrap.fill(docstring, 58 - len(prop)).split(os.linesep)
-        )
-        init_docstring.append(f':param {name}:{docstring}'.rstrip())
+        init_docstring.append(f'{os.linesep}            '.join(
+            textwrap.fill(
+                f':param {name}:{docstring}'.rstrip(), 67
+            ).split(os.linesep)
+        ))
 
         # Evaluate if the the prop can be a component
         if is_component_aspect(type_info):
@@ -261,7 +262,7 @@ def generate_component(display_name, description, props, output_path):
             for x in
             # Make sure the description has less than 79 char lines.
             textwrap.fill(description.replace('\r', ''), 74).split('\n')
-        ) + '\n' if description else '',
+        ) if description else '',
         aspects='\n'.join('    ' + x if x else x for x in aspects),
         aspects_init='\n            '.join(
             aspects_required + aspects_optional
