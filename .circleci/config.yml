@@ -40,7 +40,7 @@ jobs:
           name: Test
           command: |
             . venv/bin/activate
-            pytest -ra --junitxml=~/test-reports/dazzler/results.xml --cov=dazzler
+            pytest --pylint --flake8 --cov=dazzler
 
       - store_artifacts:
           path: ~/test-reports
