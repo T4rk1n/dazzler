@@ -28,7 +28,10 @@ page = Page(
 
 async def submit(request: web.Request):
     data = await request.post()
-    return web.Response(body=f'<div id="output">{data.get("field1")}</div>', content_type='text/html')
+    return web.Response(
+        body=f'<div id="output">{data.get("field1")}</div>',
+        content_type='text/html'
+    )
 
 
 page.routes.append(web.post('/submit-form', submit))

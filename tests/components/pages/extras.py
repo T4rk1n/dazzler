@@ -18,7 +18,9 @@ page = Page(
             for _ in range(20)
         ]),
         extra.Sticky(
-            extra.Drawer(core.Container('drawed'), side='bottom', identity='draw'),
+            extra.Drawer(
+                core.Container('drawed'), side='bottom', identity='draw'
+            ),
             identity='stick',
             bottom='0',
         ),
