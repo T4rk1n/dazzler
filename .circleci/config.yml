@@ -34,6 +34,7 @@ jobs:
           name: Build
           command: |
             . venv/bin/activate
+            pip install -e .
             npm run build
 
       - run:
