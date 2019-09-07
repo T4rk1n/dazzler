@@ -13,7 +13,7 @@ from dazzler.errors import (
     InvalidRequirementError, InvalidRequirementKindError
 )
 
-_internal_data_dir = appdirs.site_data_dir('dazzler')
+_internal_data_dir = appdirs.user_data_dir('dazzler')
 
 if not os.path.exists(_internal_data_dir):
     os.makedirs(_internal_data_dir)
