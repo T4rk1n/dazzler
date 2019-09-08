@@ -416,7 +416,7 @@ async def test_global_requirements(browser):
     await browser.get('http://localhost:8150/')
 
     scripts = await browser.wait_for_elements_by_xpath(
-        '//script[contains(@src, "lodash.min.js")]'
+        '//script[contains(@src, "withRequirements.js")]'
     )
     assert len(scripts) == 1
 

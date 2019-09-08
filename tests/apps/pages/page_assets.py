@@ -7,9 +7,6 @@ import os
 from dazzler.components import core
 from dazzler.system import Page, Requirement
 
-# noinspection PyProtectedMember
-from dazzler._assets import assets_path
-
 
 page = Page(
     __name__,
@@ -18,7 +15,7 @@ page = Page(
     ]),
     requirements=[
         Requirement(
-            os.path.join(assets_path, 'vendors', 'lodash.min.js'),
+            os.path.join(os.path.dirname(__file__), 'withRequirements.js'),
             page='page_assets'
         )
     ],

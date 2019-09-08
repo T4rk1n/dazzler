@@ -147,11 +147,11 @@ async def test_page_requirements_package_override(start_page, browser):
         assert 'dazzler_test' not in src
 
 
-# Try this 5 times to make sure it's not luck...
+# Try this 3 times to make sure it's not luck...
 # Prototype used to load all async so even if they were inserted in
 # order, some would load faster than other and thus no actual ordering but it
 # would pass the test most of the time.
-@pytest.mark.parametrize('_', range(5))
+@pytest.mark.parametrize('_', range(3))
 @pytest.mark.async_test
 async def test_page_requirements_dir(start_page, browser, _):
     # Page requirements should be loaded after packages requirements
@@ -170,4 +170,5 @@ async def test_page_requirements_dir(start_page, browser, _):
         (await browser.wait_for_element_by_id('done-output')).text
     )
 
-    assert output == [1, 2, 10, "same1", "with-lodash", "nested", "same2"]
+    expected = [1, 2, 10, "same1", "with-requirements", "nested", "same2"]
+    assert output == expected
