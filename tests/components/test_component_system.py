@@ -114,3 +114,31 @@ def test_docstring_length():
     for line in docstring:
         assert len(line) < 80, f'len({line}) > 79'
         assert '(default=UNDEFINED)' not in line
+
+
+def test_iter_components():
+    component = spec.TestComponent(
+        '', identity='root', children=spec.TestComponent(
+            '', identity='child',
+            children=[
+                'first',
+                spec.TestComponent('', identity='one'),
+                spec.TestComponent('', identity='two')
+            ]
+        )
+    )
+    n_components = 0
+
+    for path, component in component._paths():
+        n_components += 1
+        assert isinstance(component, Component)
+        if n_components == 1:
+            assert path == 'root'
+        elif n_components == 2:
+            assert 'child' in path
+        elif n_components == 3:
+            assert 'child.one' in path
+        elif n_components == 4:
+            assert 'child.two' in path
+
+    assert n_components == 4
