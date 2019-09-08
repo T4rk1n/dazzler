@@ -28,7 +28,7 @@ async def on_value(ctx: BindingContext):
 
 
 @page.bind(Trigger('multi', 'value'))
-async def on_value(ctx: BindingContext):
+async def on_multi(ctx: BindingContext):
     await ctx.set_aspect(
         'multi-output',
         children=json.dumps(ctx.trigger.value)

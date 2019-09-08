@@ -3,7 +3,7 @@ Page viewport of dazzler
 Created 2019-06-24
 """
 from dazzler.components import core
-from dazzler.system import Page, Trigger, BindingContext, State
+from dazzler.system import Page, Trigger, BindingContext
 
 views = ['first', 'second', 'third']
 tabs = ['one', 'two', 'three']

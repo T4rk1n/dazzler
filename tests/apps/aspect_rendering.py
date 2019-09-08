@@ -40,8 +40,8 @@ aspect_types = {
     },
 }
 
-button_ids = ['set-{}'.format(y) for y in aspect_types.keys()]
-output_ids = ['out-{}'.format(y) for y in aspect_types.keys()]
+button_ids = ['set-{}'.format(y) for y in aspect_types]
+output_ids = ['out-{}'.format(y) for y in aspect_types]
 
 layout = core.Container([
     core.Container([core.Button(x, identity=x) for x in button_ids]),

@@ -1,11 +1,11 @@
 """Tests tools for running selenium with asyncio."""
 import functools
 
-from precept import AsyncExecutor
-
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.select import By
+
+from precept import AsyncExecutor
 
 
 def _wait_for(driver, condition, timeout=10.0):
@@ -218,8 +218,12 @@ class AsyncDriver:
         self.executor = AsyncExecutor()
 
     wait_for_element_by_id = _async_wrap(wait_for_element_by_id)
-    wait_for_element_by_css_selector = _async_wrap(wait_for_element_by_css_selector)
-    wait_for_elements_by_css_selector = _async_wrap(wait_for_elements_by_css_selector)
+    wait_for_element_by_css_selector = _async_wrap(
+        wait_for_element_by_css_selector
+    )
+    wait_for_elements_by_css_selector = _async_wrap(
+        wait_for_elements_by_css_selector
+    )
     wait_for_element_by_xpath = _async_wrap(wait_for_element_by_xpath)
     wait_for_elements_by_xpath = _async_wrap(wait_for_elements_by_xpath)
     wait_for_property_to_equal = _async_wrap(wait_for_property_to_equal)

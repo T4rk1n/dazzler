@@ -1,0 +1,51 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/python:3.7-stretch-node-browsers
+    environment:
+      PYTHONPATH: ~/repo
+
+    working_directory: ~/repo
+
+    steps:
+      - checkout
+
+      - restore_cache:
+          keys:
+          - deps-{{ checksum "requirements.txt" }}-{{ checksum "requirements-dev.txt" }}-{{ checksum "package.json" }}-{{ checksum "package-lock.json" }}-{{ checksum ".circleci/config.yml" }}
+
+      - run:
+          name: Install
+          command: |
+            python3 -m venv venv
+            . venv/bin/activate
+            pip install -r requirements.txt --quiet
+            pip install -r requirements-dev.txt --quiet
+            npm i
+
+      - save_cache:
+          paths:
+            - ./venv
+            - ./node_modules/
+          key: deps-{{ checksum "requirements.txt" }}-{{ checksum "requirements-dev.txt" }}-{{ checksum "package.json" }}-{{ checksum "package-lock.json" }}-{{ checksum ".circleci/config.yml" }}
+
+      - run:
+          name: Build
+          command: |
+            . venv/bin/activate
+            pip install -e .
+            npm run build
+
+      - run:
+          name: Test
+          command: |
+            . venv/bin/activate
+            pytest -ra --junitxml=~/test-reports/dazzler/results.xml --pylint --flake8 --cov=dazzler
+
+      - store_artifacts:
+          path: ~/test-reports
+          destination: test-reports
+
+      - store_test_results:
+          path: ~/test-reports

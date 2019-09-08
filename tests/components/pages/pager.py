@@ -3,7 +3,7 @@ Page pager of dazzler
 Created 2019-09-03
 """
 from dazzler.components import core, extra
-from dazzler.system import Page, Trigger, BindingContext, State
+from dazzler.system import Page, Trigger, BindingContext
 
 items = list(range(1, 200))
 
@@ -11,7 +11,9 @@ page = Page(
     __name__,
     core.Container([
         core.Grid([], columns=2, identity='output'),
-        extra.Pager(total_items=len(items), items_per_page=10, identity='pager'),
+        extra.Pager(
+            total_items=len(items), items_per_page=10, identity='pager'
+        ),
         core.Container(identity='num_pages'),
     ])
 )

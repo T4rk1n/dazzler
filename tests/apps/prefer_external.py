@@ -7,4 +7,3 @@ app = Dazzler(__name__)
 app.config.requirements.prefer_external = True
 
 app.add_page(Page('index', core.Container('foo'), url='/'))
-

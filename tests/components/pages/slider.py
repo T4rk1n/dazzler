@@ -12,7 +12,12 @@ page = Page(
         core.Container(
             [
                 core.Container('start', identity='start'),
-                core.Slider(-100, 100, identity='slider', value=-20, style={'width': '80%'}),
+                core.Slider(
+                    -100, 100,
+                    identity='slider',
+                    value=-20,
+                    style={'width': '80%'}
+                ),
                 core.Container('stop', identity='stop')],
             style={'padding': '3rem'},
             class_name='row'

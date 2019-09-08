@@ -124,13 +124,14 @@ def test_page_url_conflict():
     assert context.value.args[0] == 'Duplicate page url: two@/one'
 
 
+# pylint: disable=unused-import
 @pytest.mark.async_test
 async def test_page_requirements_package_override(start_page, browser):
     # Overriding the package is an optimization if some pages uses big bundles
     # and others pages are more lightweight, down the line maybe add
     # on-demand loading of requirements, it's already set up for it.
     # noinspection PyUnresolvedReferences
-    from tests.components import spec_components as spec
+    from tests.components import spec_components as spec  # noqa: F401
 
     page = Page(
         __name__,
@@ -146,11 +147,11 @@ async def test_page_requirements_package_override(start_page, browser):
         assert 'dazzler_test' not in src
 
 
-# Try this 5 times to make sure it's not luck...
+# Try this 3 times to make sure it's not luck...
 # Prototype used to load all async so even if they were inserted in
 # order, some would load faster than other and thus no actual ordering but it
 # would pass the test most of the time.
-@pytest.mark.parametrize('_', range(5))
+@pytest.mark.parametrize('_', range(3))
 @pytest.mark.async_test
 async def test_page_requirements_dir(start_page, browser, _):
     # Page requirements should be loaded after packages requirements
@@ -162,11 +163,12 @@ async def test_page_requirements_dir(start_page, browser, _):
     await start_page(page)
 
     await browser.wait_for_style_to_equal(
-        '.loaded', 'background-color',  'rgba(255, 0, 0, 1)'
+        '.loaded', 'background-color', 'rgba(255, 0, 0, 1)'
     )
 
     output = json.loads(
         (await browser.wait_for_element_by_id('done-output')).text
     )
 
-    assert output == [1, 2, 10, "same1", "with-lodash", "nested", "same2"]
+    expected = [1, 2, 10, "same1", "with-requirements", "nested", "same2"]
+    assert output == expected

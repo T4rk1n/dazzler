@@ -32,7 +32,7 @@ def browser():
 
 
 @pytest.fixture()
-def start_visit(browser):
+def start_visit(browser):  # pylint: disable=redefined-outer-name
     namespace = {
         'app': None
     }
@@ -52,7 +52,7 @@ def start_visit(browser):
 
 
 @pytest.fixture()
-def start_page(start_visit):
+def start_page(start_visit):  # pylint: disable=redefined-outer-name
     app = Dazzler(__name__)
 
     async def _start_page(page, debug=False):

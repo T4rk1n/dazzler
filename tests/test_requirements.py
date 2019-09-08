@@ -6,11 +6,13 @@ from dazzler.system import Requirement, RequirementWarning
 
 
 @pytest.mark.parametrize(
-    'filename, kind, uri_key, formatted_tag', [
+    'filename, kind, uri_key, formatted_tag',
+    [
         ('bundle.js', 'js', 'src', '<script src="/dazzler/requirements/static/dist/bundle.js"></script>'),  # noqa: E501
         ('bundle.js.map', 'map', 'href', ''),
         ('bundle.css', 'css', 'href', '<link rel="stylesheet" type="text/css" href="/dazzler/requirements/static/dist/bundle.css">'),  # noqa: E501
-])
+    ]
+)
 def test_requirement(filename, kind, uri_key, formatted_tag):
     requirement = Requirement(filename)
     prepared = requirement.prepare()
@@ -28,7 +30,7 @@ def test_dev_requirements():
         dev='/home/project/dev/dev-requirements.js'
     )
     prepared = requirement.prepare(dev=True)
-    assert prepared['url'] == '/dazzler/requirements/static/dev/dev-requirements.js'
+    assert prepared['url'] == '/dazzler/requirements/static/dev/dev-requirements.js'  # noqa: E501
 
     tag = requirement.tag(dev=True)
     assert 'src="/dazzler/requirements/static/dev/dev-requirements.js"' in tag
@@ -71,4 +73,4 @@ def test_external_only_warning():
         Requirement(external='external-only')
 
     assert len(record) == 1
-    assert record[0].message.args[0] == 'No local file for requirement: external-only'
+    assert record[0].message.args[0] == 'No local file for requirement: external-only'  # noqa: E501

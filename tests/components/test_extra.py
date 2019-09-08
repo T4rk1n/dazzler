@@ -3,6 +3,7 @@ import asyncio
 import math
 
 import pytest
+from selenium.common.exceptions import TimeoutException
 
 
 @pytest.mark.async_test
@@ -36,5 +37,5 @@ async def test_pager(start_page, browser):
             )
             button.click()
             await asyncio.sleep(0.5)
-        except:
+        except TimeoutException:
             assert stop == len(pager.items)

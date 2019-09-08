@@ -51,10 +51,10 @@ async def trigger_input(context: BindingContext):
         start = 6
         stop = 11
 
-    for i in range(start, stop):
+    for value in range(start, stop):
         await context.set_aspect(
-            f'value-{i}',
-            value=i
+            f'value-{value}',
+            value=value
         )
         await asyncio.sleep(0.15)
 
@@ -78,7 +78,10 @@ for i in range(1, 3):
 
 
 for i in range(1, 11):
-    page.bind(Trigger(f'value-{i}', 'value'), State('output', 'children'))(trigger_output)
+    page.bind(
+        Trigger(f'value-{i}', 'value'),
+        State('output', 'children')
+    )(trigger_output)
 
 
 if __name__ == '__main__':

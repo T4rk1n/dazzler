@@ -89,7 +89,9 @@ async def test_click_with_state(start_page, browser):
 
     await start_page(page)
 
-    dropdown = await browser.wait_for_element_by_css_selector('#dropdown input')
+    dropdown = await browser.wait_for_element_by_css_selector(
+        '#dropdown input'
+    )
 
     dropdown.send_keys('Foo')
     await browser.click('#clicker')
@@ -329,7 +331,7 @@ async def test_same_identity(start_page, browser):
 
     await start_page(page)
 
-    for i in range(1, 25):
+    for _ in range(1, 25):
         clicker = await browser.wait_for_element_by_id('click')
         clicker.click()
 
@@ -403,6 +405,8 @@ async def test_prefer_external(browser):
     )
     assert len(scripts) == 1
 
+    await app.stop()
+
 
 @pytest.mark.async_test
 async def test_global_requirements(browser):
@@ -412,6 +416,8 @@ async def test_global_requirements(browser):
     await browser.get('http://localhost:8150/')
 
     scripts = await browser.wait_for_elements_by_xpath(
-        '//script[contains(@src, "lodash.min.js")]'
+        '//script[contains(@src, "withRequirements.js")]'
     )
     assert len(scripts) == 1
+
+    await app.stop()
