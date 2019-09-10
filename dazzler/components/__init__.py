@@ -2,7 +2,7 @@
 Component packages of dazzler.
 
 - ``core``: Lightweight interactive components.
-- ``extra``: Bulkier components with more functionality (markdown, syntax, etc)
-- ``analytics``: Graphs and viz.
-- ``media``: Video, audio,
+- ``extra``: More components that may not be needed by all pages.
+- ``markdown``: Markdown and CodeBlock.
+- ``calendar``: Date & time related components.
 """
