@@ -24,7 +24,7 @@ def pytest_pyfunc_call(pyfuncitem):
             return True
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope='session')
 def browser():
     driver = AsyncDriver(webdriver.Chrome())
     yield driver
