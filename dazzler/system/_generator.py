@@ -3,6 +3,7 @@ import json
 import keyword
 import os
 import textwrap
+import re
 
 import stringcase
 
@@ -254,6 +255,18 @@ def generate_component(display_name, description, props, output_path):
 
     aspects_optional.append('identity: str = None')
 
+    # Enable example in docstring if they are after
+    # @example with 4 spaces per lines.
+    example = re.search(r'(?!@example\n)(\s\s\s\s.*)+(?!@\w+)', description)
+    if example:
+        sample = example.group()
+        desc = description.replace(sample, '').replace('@example', '').strip()
+        sample = ('\n' + ' ' * 4).join(sample.splitlines())
+        sample = f'\n\n    .. code-block:: python3\n{sample}'
+    else:
+        desc = description or ''
+        sample = ''
+
     component_string = replace_all(
         TEMPLATE,
         name=display_name,
@@ -261,8 +274,8 @@ def generate_component(display_name, description, props, output_path):
             '    {}'.format(x)
             for x in
             # Make sure the description has less than 79 char lines.
-            textwrap.fill(description.replace('\r', ''), 74).split('\n')
-        ) if description else '',
+            textwrap.fill(desc.replace('\r', ''), 74).split('\n')
+        ) + sample,
         aspects='\n'.join('    ' + x if x else x for x in aspects),
         aspects_init='\n            '.join(
             aspects_required + aspects_optional
