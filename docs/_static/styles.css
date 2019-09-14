@@ -1,0 +1,8 @@
+code.literal {
+    font-size: 90%;
+    background: #EEEEEE;
+}
+
+.seealso code.literal {
+    background-color: initial;
+}

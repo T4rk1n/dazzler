@@ -1,0 +1,3 @@
+:orphan:
+
+.. mdinclude:: ../README.md

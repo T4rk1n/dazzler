@@ -1,0 +1,3 @@
+.. _license:
+
+.. include:: ../LICENSE
