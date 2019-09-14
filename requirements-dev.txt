@@ -9,4 +9,5 @@ selenium==3.141.0
 sphinx==2.1.1
 m2r==0.2.1
 Flask-Sphinx-Themes==1.0.2
+sphinx-autodoc-typehints==1.7.0
 pytz
