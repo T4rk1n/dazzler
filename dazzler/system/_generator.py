@@ -257,25 +257,19 @@ def generate_component(display_name, description, props, output_path):
 
     # Enable example in docstring if they are after
     # @example with 4 spaces per lines.
-    example = re.search(r'(?!@example\n)(\s\s\s\s.*)+(?!@\w+)', description)
+    example = re.search(r'(?<=@example\n)(\s\s\s\s.*)+(?!@\w+)', description)
     if example:
-        sample = example.group()
-        desc = description.replace(sample, '').replace('@example', '').strip()
-        sample = ('\n' + ' ' * 4).join(sample.splitlines())
-        sample = f'\n\n    .. code-block:: python3\n{sample}'
+        example = example.group()
+        desc = description.replace(example, '').replace('@example', '').strip()
+        example = f'\n\n:Example:\n\n.. code-block:: python3\n{example}'
     else:
         desc = description or ''
-        sample = ''
+        example = ''
 
     component_string = replace_all(
         TEMPLATE,
         name=display_name,
-        docstring='\n'.join(
-            '    {}'.format(x)
-            for x in
-            # Make sure the description has less than 79 char lines.
-            textwrap.fill(desc.replace('\r', ''), 74).split('\n')
-        ) + sample,
+        docstring=textwrap.indent(desc + example, '    '),
         aspects='\n'.join('    ' + x if x else x for x in aspects),
         aspects_init='\n            '.join(
             aspects_required + aspects_optional
