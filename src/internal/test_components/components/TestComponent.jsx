@@ -3,7 +3,8 @@ import PropTypes from 'prop-types';
 import {isNil} from 'ramda';
 
 /**
- * Test component with all supported props by dazzler. Each prop are rendered with a selector for easy access.
+ * Test component with all supported props by dazzler.
+ * Each prop are rendered with a selector for easy access.
  */
 export default class TestComponent extends Component {
     render() {

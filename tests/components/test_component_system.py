@@ -109,7 +109,6 @@ def test_set_aspect(aspect, value):
 def test_docstring_length():
     # The length of each line of the generated docstring should be < 80
     docstring = spec.TestComponent.__init__.__doc__.split(os.linesep)
-    docstring += spec.TestComponent.__doc__.split(os.linesep)
 
     for line in docstring:
         assert len(line) < 80, f'len({line}) > 79'
