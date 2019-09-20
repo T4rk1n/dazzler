@@ -20,6 +20,7 @@
     "build:dazzler::calendar": "dazzler generate dazzler/assets/dist/dazzler_calendar_meta.json dazzler/components/calendar",
     "build:dazzler::markdown": "dazzler generate dazzler/assets/dist/dazzler_markdown_meta.json dazzler/components/markdown",
     "build:dazzler": "npm run build:meta && npm run build:dazzler::core && npm run build:dazzler::test && npm run build:dazzler::extra && npm run build:dazzler::calendar &&  npm run build:dazzler::markdown",
+    "build:docs": "docs/build.sh",
     "build": "npm run build:webpack && npm run build:dev",
     "watch": "npm run build:dev -- --watch",
     "lint": "eslint src",
