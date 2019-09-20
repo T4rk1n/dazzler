@@ -20,7 +20,7 @@ from ._generator import generate_components  # noqa: F401
 from ._undefined import UNDEFINED, Undefined  # noqa: F401
 from ._page import Page  # noqa: F401
 
-__all__ = [
+__all__ = [  # noqa: F405
     'Component',
     'Aspect',
     'BindingContext',
