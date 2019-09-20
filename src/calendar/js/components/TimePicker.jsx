@@ -4,6 +4,14 @@ import {range, split} from 'ramda';
 
 /**
  * Time input with fallback for ie and safari.
+ *
+ * :CSS:
+ *
+ *     ``dazzler-calendar-time-picker``
+ *     - ``time-input``
+ *     - ``fallback-timepicker``
+ *     - ``time-range``
+ *     - ``time-value``
  */
 export default class TimePicker extends React.Component {
     constructor(props) {

@@ -26,6 +26,19 @@ function calendar(month, year) {
 
 /**
  * Display a calendar based on the month of a timestamp.
+ *
+ * :CSS:
+ *
+ *     ``dazzler-calendar-calendar``
+ *     - ``calendar-header``
+ *     - ``month-label``
+ *     - ``week-labels``
+ *     - ``week-label``
+ *     - ``calendar-day``
+ *     - ``selected-day``
+ *     - ``week-rows``
+ *     - ``calendar-week``
+ *     - ``empty``
  */
 export default class Calendar extends React.Component {
     constructor(props) {

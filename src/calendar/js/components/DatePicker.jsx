@@ -6,6 +6,11 @@ import {toTimestamp} from '../../../commons/js';
 
 /**
  * Pick a date from a calendar.
+ *
+ * :CSS:
+ *
+ *     ``dazzler-calendar-date-picker``
+ *     - ``picker``
  */
 export default class DatePicker extends React.Component {
     componentWillMount() {
