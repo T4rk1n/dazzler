@@ -2,6 +2,12 @@
 
 Versions follow [Semantic Versioning](https://www.semver.org)
 
+## Unreleased
+### Changed
+
+- :construction: Improve docstrings generation.
+- :hammer: Rename `Container.n_clicks` -> `clicks`.
+
 ## [0.0.2]
 ### Fixed
 
