@@ -1,6 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+/**
+ * Html Textarea wrapper.
+ */
 export default class TextArea extends React.Component {
     render() {
         const {value, identity, cols, rows, name, required} = this.props;

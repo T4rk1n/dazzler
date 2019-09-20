@@ -1,6 +1,20 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+/**
+ * A modal overlay the page with a darkened background.
+ *
+ * :CSS:
+ *
+ *     ``dazzler-core-modal``
+ *     - ``modal-overlay``
+ *     - ``modal-active``
+ *     - ``modal-content``
+ *     - ``modal-header``
+ *     - ``modal-closer``
+ *     - ``modal-body``
+ *     - ``modal-footer``
+ */
 export default class Modal extends React.Component {
     render() {
         const {

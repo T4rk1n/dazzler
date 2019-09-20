@@ -5,6 +5,24 @@ import {collectTruePropKeys} from '../../../commons/js';
 
 /**
  * A button to click on!
+ *
+ * :CSS: ``dazzler-core-button``
+ *
+ * @example
+ *
+ *     from dazzler.system import Page, Trigger
+ *     from dazzler.components import core
+ *
+ *     button = core.Button('Click me', identity='btn')
+ *
+ *     page = Page(
+ *         __name__,
+ *         core.Container([button, core.Container(identity="output")])
+ *     )
+ *
+ *     @page.binding(Trigger('btn', 'clicks'))
+ *     async def on_click(ctx):
+ *         await ctx.set_aspect('output', f'Clicked {ctx.trigger.value}')
  */
 export default class Button extends React.Component {
     shouldComponentUpdate(nextProps, nextState, nextContext) {

@@ -5,13 +5,15 @@ import {join} from 'ramda';
 /**
  * Simple progress bar support by all browsers.
  *
- * Available CSS classes (Under dazzler-core-progress-bar)
- * - progress The div where the value is
- * - high
- * - low
- * - optimum
- * - striped
- * - rounded
+ * :CSS:
+ *
+ *     ``dazzler-core-progress-bar``
+ *     - ``progress``
+ *     - ``high``
+ *     - ``low``
+ *     - ``optimum``
+ *     - ``striped``
+ *     - ``rounded``
  */
 export default class ProgressBar extends React.Component {
     render() {

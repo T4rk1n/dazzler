@@ -34,7 +34,7 @@ function prepareObject(obj) {
 }
 
 /**
- * Html tag wrapper, give any props as `attributes`.
+ * Html tag wrapper, give any props as ``attributes``.
  * Listen to events with the readonly event aspect containing the
  * latest event fired.
  */

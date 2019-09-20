@@ -5,10 +5,12 @@ import {debounce} from '../../../commons/js';
 /**
  * A slider with a caret contained within a min and max value.
  *
- * Available CSS classes (dazzler-core-slider scoped):
- * - slider-area: The outer div of the slider.
- * - slider-handle: The drag handle
- * - slider-spacer: The space that is before the handle.
+ * :CSS:
+ *
+ *     ``dazzler-core-slider``
+ *     - ``slider-area``: The outer div of the slider.
+ *     - ``slider-handle``: The drag handle
+ *     - ``slider-spacer``: The space that is before the handle.
  */
 export default class Slider extends React.Component {
     constructor(props) {
