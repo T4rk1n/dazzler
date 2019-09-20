@@ -4,14 +4,14 @@ import PropTypes from 'prop-types';
 /**
  * Display data in a tabular manner (Non interactive).
  *
- * Available CSS classes
- * - dazzler-core-table (root)
- * - table-head
- * - table-heading
- * - table-body
- * - table-row
- * - table-cell
- * - table-footer
+ * :CSS:
+ *     ``dazzler-core-table``
+ *     - ``table-head``
+ *     - ``table-heading``
+ *     - ``table-body``
+ *     - ``table-row``
+ *     - ``table-cell``
+ *     - ``table-footer``
  */
 export default class Table extends React.Component {
     render() {

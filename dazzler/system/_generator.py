@@ -3,6 +3,7 @@ import json
 import keyword
 import os
 import textwrap
+import re
 
 import stringcase
 
@@ -163,7 +164,7 @@ def is_component_aspect(type_obj):
     return False
 
 
-# pylint: disable=too-many-locals
+# pylint: disable=too-many-locals, too-many-statements
 def generate_component(display_name, description, props, output_path):
     aspects = []
     aspects_required = []
@@ -254,15 +255,21 @@ def generate_component(display_name, description, props, output_path):
 
     aspects_optional.append('identity: str = None')
 
+    # Enable example in docstring if they are after
+    # @example with 4 spaces per lines.
+    example = re.search(r'(?<=@example\n)(\s\s\s\s.*)+(?!@\w+)', description)
+    if example:
+        example = example.group()
+        desc = description.replace(example, '').replace('@example', '').strip()
+        example = f'\n\n:Example:\n\n.. code-block:: python3\n{example}'
+    else:
+        desc = description or ''
+        example = ''
+
     component_string = replace_all(
         TEMPLATE,
         name=display_name,
-        docstring='\n'.join(
-            '    {}'.format(x)
-            for x in
-            # Make sure the description has less than 79 char lines.
-            textwrap.fill(description.replace('\r', ''), 74).split('\n')
-        ) if description else '',
+        docstring=textwrap.indent(desc + example, '    '),
         aspects='\n'.join('    ' + x if x else x for x in aspects),
         aspects_init='\n            '.join(
             aspects_required + aspects_optional

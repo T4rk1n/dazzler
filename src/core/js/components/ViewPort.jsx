@@ -4,6 +4,16 @@ import {toPairs, keys} from 'ramda';
 
 /**
  * Activate a view with key.
+ *
+ * Standalone or tabbed.
+ *
+ * :CSS:
+ *
+ *     ``dazzler-core-view-port``
+ *     - ``view-content``
+ *     - ``dazzler-tab``
+ *     - ``dazzler-tabs``
+ *     - ``tab-active``
  */
 export default class ViewPort extends React.Component {
     render() {

@@ -7,6 +7,8 @@ import CodeBlock from './CodeBlock';
 
 /**
  * A react-markdown wrapper for dazzler.
+ *
+ * :CSS: ``dazzler-markdown-markdown``
  */
 export default class Markdown extends React.Component {
     render() {

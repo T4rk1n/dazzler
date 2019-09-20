@@ -1,6 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+
+/**
+ * Update ``times`` aspect every interval to trigger a binding.
+ */
 export default class Interval extends React.Component {
     constructor(props) {
         super(props);

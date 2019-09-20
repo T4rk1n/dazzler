@@ -3,12 +3,21 @@ import PropTypes from 'prop-types';
 
 /**
  * Virtual div
+ *
+ * :CSS:
+ *
+ *     ``dazzler-core-container``.
+ *     - ``scroll``
+ *     - ``flex``
+ *     - ``row``
+ *     - ``column``
+ *     - ``btn``
  */
 export default class Container extends React.Component {
     shouldComponentUpdate(nextProps, nextState, nextContext) {
         // Ignore virtual n_clicks don't need a re-render of
         // the whole children.
-        return !(this.props.n_clicks < nextProps.n_clicks);
+        return !(this.props.clicks < nextProps.clicks);
     }
 
     render() {
@@ -31,7 +40,7 @@ export default class Container extends React.Component {
                 onClick={e => {
                     e.stopPropagation();
                     this.props.updateAspects({
-                        n_clicks: this.props.n_clicks + 1,
+                        clicks: this.props.clicks + 1,
                     });
                 }}
             >
@@ -55,7 +64,10 @@ Container.propTypes = {
 
     draggable: PropTypes.bool,
 
-    n_clicks: PropTypes.number,
+    /**
+     * Number of times the container was clicked.
+     */
+    clicks: PropTypes.number,
 
     /**
      *  Unique id for this component

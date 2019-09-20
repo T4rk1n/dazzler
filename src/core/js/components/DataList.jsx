@@ -1,6 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+/**
+ * A html datalist (select with autocomplete).
+ */
 export default class DataList extends React.Component {
     render() {
         const {class_name, id, identity, value, options, title} = this.props;

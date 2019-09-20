@@ -1,7 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {omit, concat} from 'ramda';
+import {omit} from 'ramda';
 
+/**
+ * Html input wrapper.
+ */
 export default class Input extends React.Component {
     render() {
         const {
@@ -17,7 +20,21 @@ export default class Input extends React.Component {
             max_length,
         } = this.props;
 
-        const omitted = [];
+        const omitted = [
+            'class_name',
+            'id',
+            'identity',
+            'auto_complete',
+            'auto_focus',
+            'auto_save',
+            'auto_correct',
+            'min_length',
+            'updateAspects',
+            'n_blur',
+            'n_submit',
+            '_name',
+            '_package',
+        ];
         if (type === 'reset') {
             omitted.push('value');
         }
@@ -33,21 +50,7 @@ export default class Input extends React.Component {
                 minLength={min_length}
                 maxLength={max_length}
                 {...omit(
-                    [
-                        'class_name',
-                        'id',
-                        'identity',
-                        'auto_complete',
-                        'auto_focus',
-                        'auto_save',
-                        'auto_correct',
-                        'min_length',
-                        'updateAspects',
-                        'n_blur',
-                        'n_submit',
-                        '_name',
-                        '_package',
-                    ],
+                    omitted,
                     this.props
                 )}
                 onChange={e => {

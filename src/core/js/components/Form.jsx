@@ -1,6 +1,21 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+/**
+ * A form element with auto fields.
+ *
+ * :CSS:
+ *
+ *     ``dazzler-core-form``
+ *     - ``form-header``
+ *     - ``form-body``
+ *     - ``form-field``
+ *     - ``field-error``
+ *     - ``form-label``
+ *     - ``form-input``
+ *     - ``form-footer``
+ *     - ``form-submit``
+ */
 export default class Form extends React.Component {
     render() {
         const {
@@ -39,9 +54,8 @@ export default class Form extends React.Component {
                             return (
                                 <div
                                     className={
-                                        'form-field' + error
-                                            ? ' field-error'
-                                            : ''
+                                        'form-field' +
+                                        (error ? ' field-error' : '')
                                     }
                                     key={`form-${identity}-${name}`}
                                 >

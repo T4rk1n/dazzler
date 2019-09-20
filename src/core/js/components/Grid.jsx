@@ -3,7 +3,19 @@ import PropTypes from 'prop-types';
 import {chunk} from '../../../commons/js';
 
 /**
- * Render children in a grid.
+ * Render a list in a grid with a number of ``columns``.
+ *
+ * :CSS:
+ *
+ *     ``dazzler-core-grid``
+ *     - ``grid-row``
+ *     - ``grid-cell``
+ *
+ * @example
+ *
+ *     from dazzler.components import core
+ *
+ *     grid = core.Grid([1, 2, 3, 4], 2)
  */
 export default class Grid extends React.Component {
     render() {

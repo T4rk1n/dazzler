@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 
 /**
  * Link to external url or other dazzler page by name.
+ *
+ * :CSS: ``dazzler-core-link``
  */
 export default class Link extends React.Component {
     render() {
