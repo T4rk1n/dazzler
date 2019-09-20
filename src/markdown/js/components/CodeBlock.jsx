@@ -5,6 +5,12 @@ import Highlight, {defaultProps} from 'prism-react-renderer';
 
 /**
  * A block of code to highlight.
+ *
+ * Wrapper of ``prism-react-renderer``.
+ *
+ * :CSS:
+ *
+ *      ``dazzler-markdown-code-block``
  */
 export default class CodeBlock extends React.Component {
     render() {
