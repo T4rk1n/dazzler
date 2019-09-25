@@ -132,6 +132,7 @@ class Page:
             binding = Binding(trigger, list(states))(func)
             self.bindings.append(binding)
             self._bindings[str(binding.trigger)] = binding
+            return func
 
         return _wrapper
 
@@ -143,6 +144,31 @@ class Page:
         :return:
         """
         return self._bindings.get(key)
+
+    def route(self, path, method='get', name=None, prefix=True, **kwargs):
+        """
+        Add a route with a decorator.
+
+        :param path: Url to handle.
+        :param method: Method of the route.
+        :param name: Unique name for the route.
+        :param prefix: Prefix the path with the page path.
+        :param kwargs:
+        :return:
+        """
+        if prefix:
+            url = '/'.join([self.url.rstrip('/'), path.lstrip('/')])
+        else:
+            url = path
+
+        def _page_route(func):
+            handler = getattr(web, method.lower())
+            self.routes.append(
+                handler(url, func, name=name, **kwargs)
+            )
+            return func
+
+        return _page_route
 
     def __str__(self):
         return f'{self.name}@{self.url}'
