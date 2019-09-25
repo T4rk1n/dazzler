@@ -73,6 +73,10 @@ async def test_page_default(start_page, browser):
 
 @pytest.mark.async_test
 async def test_page_routes(start_page, browser):
+
+    page = Page('page-routes', core.Container())
+
+    @page.route('/page-route')
     async def page_route(_):
         return web.Response(
             body='<html><head></head><body>'
@@ -81,13 +85,9 @@ async def test_page_routes(start_page, browser):
             content_type='text/html'
         )
 
-    await start_page(
-        Page('page-routes', core.Container(), routes=[
-            web.get('/page-route', page_route)
-        ])
-    )
+    await start_page(page)
 
-    await browser.get('http://localhost:8150/page-route')
+    await browser.get('http://localhost:8150/page-routes/page-route')
     await browser.wait_for_text_to_equal('#content', 'Page route')
 
 
