@@ -76,6 +76,7 @@ async def test_page_routes(start_page, browser):
 
     page = Page('page-routes', core.Container())
 
+    # pylint: disable=unused-variable
     @page.route('/page-route')
     async def page_route(_):
         return web.Response(
