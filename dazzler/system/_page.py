@@ -7,6 +7,7 @@ from ._binding import Binding, BoundAspect, Trigger, State
 from ._component import Component
 from ._package import Package
 from ._requirements import Requirement, collect_requirements
+from ._route import Route, RouteMethod
 
 
 # pylint: disable=too-many-instance-attributes
@@ -19,7 +20,7 @@ class Page:
             layout: typing.Union[Component, typing.Callable[[web.Request], typing.Awaitable[Component]]],  # noqa: E501
             url: str = None,
             bindings: list = None,
-            routes: list = None,
+            routes: typing.List[Route] = None,
             requirements: typing.List[Requirement] = None,
             requirements_dir: str = 'requirements',
             title: str = None,
@@ -145,7 +146,13 @@ class Page:
         """
         return self._bindings.get(key)
 
-    def route(self, path, method='get', name=None, prefix=True, **kwargs):
+    def route(
+            self,
+            path,
+            method: typing.Union[str, RouteMethod] = RouteMethod.GET,
+            name=None,
+            prefix=True
+    ):
         """
         Add a route with a decorator.
 
@@ -153,7 +160,6 @@ class Page:
         :param method: Method of the route.
         :param name: Unique name for the route.
         :param prefix: Prefix the path with the page path.
-        :param kwargs:
         :return:
         """
         if prefix:
@@ -162,9 +168,8 @@ class Page:
             url = path
 
         def _page_route(func):
-            handler = getattr(web, method.lower())
             self.routes.append(
-                handler(url, func, name=name, **kwargs)
+                Route(url, func, name=name, method=method)
             )
             return func
 

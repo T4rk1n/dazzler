@@ -3,14 +3,14 @@ import os
 import pkgutil
 import sys
 from ssl import SSLContext
-from typing import Optional
+from typing import Optional, List
 import weakref
 
 import aiohttp
 
 from aiohttp import web, WSCloseCode
 
-from .system import Page, UNDEFINED
+from .system import Page, UNDEFINED, Route
 
 # noinspection PyProtectedMember
 from .system._requirements import _internal_data_dir
@@ -50,7 +50,7 @@ class Server:
         self.websockets = weakref.WeakSet()
         self.debug = False
 
-    def setup_routes(self, routes: list = None, debug: bool = False):
+    def setup_routes(self, routes: List[Route] = None, debug: bool = False):
         """
         Setup routes for dazzler.
 
@@ -64,9 +64,20 @@ class Server:
 
         # Dazzler api.
         self.app.add_routes([
-            web.get(f'{prefix}/dazzler/update', self.route_update),
-            web.get(f'{prefix}/dazzler/link', self.route_get_page)
-        ] + routes)
+            web.get(
+                f'{prefix}/dazzler/update',
+                self._apply_middleware(self.route_update)
+            ),
+            web.get(
+                f'{prefix}/dazzler/link',
+                self._apply_middleware(self.route_get_page)
+            )
+        ] + [
+            x.method.get_method()(
+                x.path, self._apply_middleware(x.handler), name=x.name
+            )
+            for x in routes
+        ])
 
         # User static directory.
         static_dir = os.path.join(
@@ -294,3 +305,24 @@ class Server:
         for ws in set(self.websockets):
             await ws.close(code=WSCloseCode.GOING_AWAY,
                            message='Server shutdown')
+
+    def _apply_middleware(self, handler):
+        if not self.dazzler.middlewares:
+            return handler
+
+        async def apply(request: web.Request, *args, **kwargs):
+
+            callbacks = []
+            for middleware in self.dazzler.middlewares:
+                callback = await middleware(request)
+                if callback:
+                    callbacks.append(callback)
+
+            response = await handler(request, *args, **kwargs)
+
+            for callback in callbacks:
+                await callback(response)
+
+            return response
+
+        return apply

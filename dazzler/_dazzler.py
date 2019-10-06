@@ -13,7 +13,15 @@ from concurrent.futures import ThreadPoolExecutor
 from aiohttp import web
 import precept
 
-from .system import Package, generate_components, Requirement, Page
+from dazzler.system import RouteMethod
+from .system import (
+    Package,
+    generate_components,
+    Requirement,
+    Page,
+    Middleware,
+    Route
+)
 from .tools import get_package_path
 
 from ._config import DazzlerConfig
@@ -60,6 +68,7 @@ class Dazzler(precept.Precept):
             print_version=False,
         )
         self.requirements: typing.List[Requirement] = []
+        self.middlewares: typing.List[Middleware] = []
         self.server = Server(self, loop=self.loop)
         self.pages = {}
         self.stop_event = asyncio.Event()
@@ -150,15 +159,16 @@ class Dazzler(precept.Precept):
             # Pages are not prefixed
             # noinspection PyTypeChecker
             routes += [[
-                web.get(
+                Route(
                     page.url,
                     functools.partial(self.server.route_page, page=page),
                     name=page.name,
                 ),
-                web.post(
+                Route(
                     page.url,
                     functools.partial(self.server.route_page_json, page=page),
-                    name=f'{page.name}-api'
+                    name=f'{page.name}-api',
+                    method=RouteMethod.POST,
                 )
             ]]
             routes += [page.routes]
