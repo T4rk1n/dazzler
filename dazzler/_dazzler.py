@@ -55,8 +55,12 @@ class Dazzler(precept.Precept):
     ]
     server: Server
 
-    def __init__(self, module_name):
-        self.root_path = get_package_path(module_name)
+    def __init__(self, module_name, app_name=None):
+        module = importlib.import_module(module_name)
+        self.root_path = os.path.dirname(module.__file__)
+        self.app_name = app_name or \
+            os.path.basename(module.__file__).rstrip('.py')
+
         super().__init__(
             config_file=[
                 'dazzler.toml',
@@ -66,6 +70,7 @@ class Dazzler(precept.Precept):
             executor=ThreadPoolExecutor(),
             print_version=False,
         )
+
         self.requirements: typing.List[Requirement] = []
         self.middlewares: typing.List[Middleware] = []
         self.server = Server(self, loop=self.loop)
