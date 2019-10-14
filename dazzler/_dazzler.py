@@ -10,19 +10,18 @@ import typing
 
 from concurrent.futures import ThreadPoolExecutor
 
-from aiohttp import web
 import precept
 
-from dazzler.system import RouteMethod
+
 from .system import (
     Package,
     generate_components,
     Requirement,
     Page,
     Middleware,
-    Route
+    Route,
+    RouteMethod,
 )
-from .tools import get_package_path
 
 from ._config import DazzlerConfig
 from ._server import Server
@@ -151,6 +150,8 @@ class Dazzler(precept.Precept):
         if 'dazzler_renderer' in Package.package_registry:
             Package.package_registry.pop('dazzler_renderer')
 
+        await self.events.dispatch('dazzler_setup', application=self)
+
         # Add package defined routes
         routes = [x.routes for x in Package.package_registry.values()]
 
@@ -181,7 +182,6 @@ class Dazzler(precept.Precept):
         self._prepared = True
         self.server.app.on_startup.append(self._on_startup)
         self.server.app.on_shutdown.append(self._on_shutdown)
-        await self.events.dispatch('dazzler_setup', application=self)
 
     async def application(self):
         """Call for wsgi application"""
