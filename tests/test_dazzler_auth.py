@@ -85,3 +85,13 @@ async def test_invalid_login(auth_app, browser):
 
     await browser.wait_for_text_to_equal('#login-error', 'Invalid credentials')
     await auth_app.stop()
+
+
+@pytest.mark.async_test
+async def test_unauthenticated_data(auth_app):
+    await auth_app.main(blocking=False)
+    async with client.ClientSession() as session:
+        rep = await session.request('post', 'http://localhost:8150/safe')
+        assert rep.status == 401
+
+    await auth_app.stop()
