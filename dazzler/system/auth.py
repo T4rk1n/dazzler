@@ -205,10 +205,10 @@ class DazzlerAuth:
         self.login_page = login_page or _default_page(default_redirect)
         app.server.route_page = self.require_page_login(app.server.route_page)
         app.server.route_page_json = self.require_page_login(
-            app.server.route_page_json,
+            app.server.route_page_json, redirect=False,
         )
         app.server.route_update = self.require_page_login(
-            app.server.route_update
+            app.server.route_update, redirect=False,
         )
 
         self.login_page.route('/login', method='post')(self.login)
