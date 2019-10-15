@@ -175,7 +175,13 @@ class Dazzler(precept.Precept):
                     functools.partial(self.server.route_page_json, page=page),
                     name=f'{page.name}-api',
                     method=RouteMethod.POST,
-                )
+                ),
+                Route(
+                    f'{page.url}/ws',
+                    functools.partial(self.server.route_update, page=page),
+                    name=f'{page.name}-ws',
+                    method=RouteMethod.GET,
+                ),
             ]]
             routes += [page.routes]
 

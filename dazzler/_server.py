@@ -65,10 +65,6 @@ class Server:
         # Dazzler api.
         self.app.add_routes([
             web.get(
-                f'{prefix}/dazzler/update',
-                self._apply_middleware(self.route_update)
-            ),
-            web.get(
                 f'{prefix}/dazzler/link',
                 self._apply_middleware(self.route_get_page)
             )
@@ -95,11 +91,12 @@ class Server:
             _internal_data_dir,
         )
 
-    async def route_update(self, request: web.Request):
+    async def route_update(self, request: web.Request, page: Page):
         """
         WebSocket route for aspect updating.
 
         :param request: The incoming request.
+        :param page: The incoming page.
         :return:
         """
         ws = web.WebSocketResponse()
@@ -139,7 +136,6 @@ class Server:
                     kind = data.get('kind')
 
                     if kind == 'binding':
-                        page: Page = self.dazzler.pages[data['page']]
                         binding = page.get_binding(data['key'])
 
                         task = self.loop.create_task(
