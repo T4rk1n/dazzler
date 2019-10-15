@@ -40,3 +40,7 @@ class InvalidRequirementKindError(RequirementError):
 
 class RequirementNotFoundError(RequirementError):
     """The requirement file did not exist."""
+
+
+class SessionError(DazzlerError):
+    """Error related to session system."""

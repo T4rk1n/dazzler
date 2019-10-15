@@ -6,6 +6,7 @@ import asyncio
 
 from aiohttp import web
 
+from .session import Session
 from ._undefined import UNDEFINED
 from ._component import prepare_aspects
 from ._package import Package
@@ -155,6 +156,7 @@ class BindingContext:
         self.trigger = trigger
         self.states = states
         self.websocket = websocket
+        self.session: Session = request.get('session')
         self._request_queue = request_queue
         self._response_queue = asyncio.Queue()
 
