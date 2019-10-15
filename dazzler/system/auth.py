@@ -43,7 +43,7 @@ def _default_page(default_redirect):
             'marginTop': '4rem'
         })
 
-    page = Page(__name__, layout)
+    page = Page(__name__, layout, packages=['dazzler_core', 'dazzler_auth'])
 
     return page
 
