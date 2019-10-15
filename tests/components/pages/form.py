@@ -26,7 +26,7 @@ page = Page(
 )
 
 
-@page.route('/submit-form', method=RouteMethod.POST)
+@page.route('/submit-form', method=RouteMethod.POST, prefix=False)
 async def submit(request: web.Request):
     data = await request.post()
     return web.Response(
