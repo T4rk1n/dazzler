@@ -42,27 +42,38 @@ class DazzlerConfig(Config):
         comment='Prefix for the static route'
     )
 
-    class Security(Nestable):
-        secret_key = ConfigProperty(
-            comment='Secret key to use for signing sessions.',
+    secret_key = ConfigProperty(
+        default='Please change me',
+        comment='Secret key to use for signing sessions.',
+        config_type=str,
+    )
+
+    class Session(Nestable):
+        enable = ConfigProperty(
+            config_type=bool,
+            default=True
+        )
+        backend = ConfigProperty(
+            comment='Type of session backend to use. Choices: File, Redis',
+            default='File',
             config_type=str,
         )
-        session_salt = ConfigProperty(
+        salt = ConfigProperty(
             config_type=str,
             comment='Salt for signing sessions ids.'
         )
-        session_cookie_name = ConfigProperty(
+        cookie_name = ConfigProperty(
             config_type=str,
             comment='Name of the session cookie.',
             default='sessionid'
         )
-        session_duration = ConfigProperty(
+        duration = ConfigProperty(
             config_type=int,
             comment='Maximum duration of a session in seconds.',
             default=86400,
         )
 
-    security: Security
+    session: Session
 
     class Requirements(Nestable):
         prefer_external = ConfigProperty(

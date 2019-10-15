@@ -15,7 +15,8 @@ from dazzler.system.session import (
 ])
 async def test_session(start_visit, browser, backend):
     app = Dazzler(__name__)
-    app.config.security.secret_key = 'SecretKey'
+    app.config.secret_key = 'SecretKey'
+    app.config.session.enable = False
     app.middlewares.append(SessionMiddleware(app, backend=backend(app)))
 
     page = Page(

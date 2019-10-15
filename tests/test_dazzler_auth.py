@@ -38,10 +38,8 @@ def auth_app():
         await ctx.set_aspect('username-output', children=user.username)
 
     app.add_page(page)
-    app.config.security.secret_key = 'SecretKey'
-    app.middlewares.append(
-        SessionMiddleware(app, backend=RedisSessionBackend(app))
-    )
+    app.config.secret_key = 'SecretKey'
+    app.config.session.backend = 'Redis'
 
     DazzlerAuth(app, DummyAuthenticator())
 

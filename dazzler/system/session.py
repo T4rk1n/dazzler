@@ -224,7 +224,7 @@ class FileSessionBackEnd(SessionBackEnd):
                 return
             path = os.path.join(self.save_directory, file)
             modified = os.path.getmtime(path)
-            if now - modified > self.app.config.security.session_duration:
+            if now - modified > self.app.config.session.duration:
                 os.remove(path)
 
 
@@ -254,7 +254,7 @@ class RedisSessionBackend(SessionBackEnd):
         # Serialize to keep the type.
         transaction.hset(session_id, key, json.dumps({'v': value}))
         transaction.expire(
-            session_id, self.app.config.security.session_duration
+            session_id, self.app.config.session.duration
         )
         await transaction.execute()
 
@@ -263,7 +263,7 @@ class RedisSessionBackend(SessionBackEnd):
             return UNDEFINED
         data = await self.redis.hget(session_id, key)
         await self.redis.expire(
-            session_id, self.app.config.security.session_duration
+            session_id, self.app.config.session.duration
         )
         data = json.loads(data)
         return data['v']
@@ -285,12 +285,16 @@ class SessionMiddleware(Middleware):
         :param backend:
         :type backend: SessionBackEnd
         """
-        if not app.config.security.secret_key:
+        if not app.config.secret_key:
             raise SessionError('Missing app secret key!')
+        if app.config.secret_key == 'Please change me':
+            app.logger.warning(
+                'Please change the app secret key in the configs.'
+            )
         self.app = app
         self.signer = Signer(
-            app.config.security.secret_key,
-            salt=app.config.security.session_salt
+            app.config.secret_key,
+            salt=app.config.session.salt
         )
         self._backend = backend or FileSessionBackEnd(app)
         self._sessions_queues = weakref.WeakValueDictionary()
@@ -320,7 +324,7 @@ class SessionMiddleware(Middleware):
 
     async def __call__(self, request: web.Request):
         session_id = request.cookies.get(
-            self.app.config.security.session_cookie_name
+            self.app.config.session.cookie_name
         )
         callback = None
 
@@ -329,10 +333,10 @@ class SessionMiddleware(Middleware):
 
             async def set_cookie(response):
                 response.set_cookie(
-                    self.app.config.security.session_cookie_name,
+                    self.app.config.session.cookie_name,
                     session_id,
                     httponly=True,
-                    max_age=self.app.config.security.session_duration,
+                    max_age=self.app.config.session.duration,
                 )
 
             callback = set_cookie
@@ -341,7 +345,7 @@ class SessionMiddleware(Middleware):
             self.verify_session_id(session_id)
         except BadSignature:
             error = web.HTTPUnauthorized()
-            error.del_cookie(self.app.config.security.session_cookie_name)
+            error.del_cookie(self.app.config.session.cookie_name)
             raise error
 
         request['session'] = Session(
