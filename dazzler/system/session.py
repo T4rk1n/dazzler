@@ -41,7 +41,6 @@ class Session:
         """
         self._session_id = session_id
         self._query_queue = query_queue
-        self._data_queue = asyncio.Queue()
 
     async def get(self, key: str) -> Any:
         """
@@ -50,10 +49,11 @@ class Session:
         :param key: The item to fetch.
         :return: The value of the key for the session.
         """
+        queue = asyncio.Queue()
         await self._query_queue.put(
-            (SessionAction.GET, self._session_id, key, self._data_queue)
+            (SessionAction.GET, self._session_id, key, queue)
         )
-        return await self._data_queue.get()
+        return await queue.get()
 
     async def set(self, key: str, value: Any):
         """
@@ -77,6 +77,17 @@ class Session:
         await self._query_queue.put(
             (SessionAction.DELETE, self._session_id, key, 0)
         )
+
+    async def pop(self, key):
+        """
+        Retrieve and delete the key.
+
+        :param key:
+        :return:
+        """
+        data = await self.get(key)
+        await self.delete(key)
+        return data
 
 
 class SessionBackEnd:
