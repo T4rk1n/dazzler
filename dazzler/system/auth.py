@@ -14,6 +14,13 @@ def _default_page(default_redirect):
 
     async def layout(request: web.Request):
         next_url = request.query.get('next_url') or default_redirect
+        error = request.query.get('err')
+
+        footer = core.Container(
+            'Invalid credentials',
+            style={'color': 'red', 'padding': '0.5rem'},
+            identity='login-error'
+        ) if error else UNDEFINED
 
         return core.Container([
             auth.Login(
@@ -23,6 +30,7 @@ def _default_page(default_redirect):
                 next_url=next_url,
                 bordered=True,
                 header=core.Html('h2', 'Please sign in'),
+                footer=footer,
                 style={
                     'padding': '2rem',
                 }
@@ -220,9 +228,10 @@ class DazzlerAuth:
 
         # Cheap throttling on failures.
         await asyncio.sleep(0.25)
+        login_url = request.app.router[self.login_page.name].url_for()
         if self.login_page:
             raise web.HTTPFound(
-                location=request.app.router[self.login_page.name].url_for()
+                location=f'{login_url}?next_url={quote(next_url)}&err=1'
             )
         raise web.HTTPUnauthorized()
 
