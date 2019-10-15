@@ -2,6 +2,7 @@ from typing import Optional
 
 import pytest
 
+import aiohttp
 from aiohttp import client
 
 from dazzler import Dazzler
@@ -93,5 +94,20 @@ async def test_unauthenticated_data(auth_app):
     async with client.ClientSession() as session:
         rep = await session.request('post', 'http://localhost:8150/safe')
         assert rep.status == 401
+
+    await auth_app.stop()
+
+
+@pytest.mark.async_test
+async def test_unauthenticated_ws(auth_app):
+    await auth_app.main(blocking=False)
+
+    async with client.ClientSession() as session:
+        with pytest.raises(aiohttp.WSServerHandshakeError) as context:
+            async with session.ws_connect(
+                    'http://localhost:8150/safe/ws') as ws:
+                await ws.close()
+
+        assert context.value.status == 401
 
     await auth_app.stop()
