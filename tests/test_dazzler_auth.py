@@ -2,6 +2,8 @@ from typing import Optional
 
 import pytest
 
+from aiohttp import client
+
 from dazzler import Dazzler
 from dazzler.components import core, auth as _auth
 from dazzler.system import Page, Trigger
@@ -19,7 +21,8 @@ class DummyAuthenticator(Authenticator):
         return User(username)
 
 
-def get_app():
+@pytest.fixture
+def auth_app():
     app = Dazzler(__name__)
     page = Page(__name__, core.Container([
         core.Html('h2', 'logged-in', identity='header'),
@@ -43,23 +46,24 @@ def get_app():
     return app
 
 
-@pytest.mark.async_test
-async def test_login_logout(browser):
-    app = get_app()
-
-    await app.main(blocking=False, debug=True)
-
-    await browser.get('http://localhost:8150/safe')
-
+async def proceed_login(browser, username, password):
     login_username = await browser.wait_for_element_by_css_selector(
         '#login-form .login-username'
     )
-    login_username.send_keys('AgentSmith')
+    login_username.send_keys(username)
     login_password = await browser.wait_for_element_by_css_selector(
         '#login-form .login-password'
     )
-    login_password.send_keys('SuperSecret1')
+    login_password.send_keys(password)
     await browser.click('#login-form .login-button')
+
+
+@pytest.mark.async_test
+async def test_login_logout(auth_app, browser):
+    await auth_app.main(blocking=False, debug=True)
+    await browser.get('http://localhost:8150/safe')
+
+    await proceed_login(browser, 'AgentSmith', 'SuperSecret1')
 
     # Every request should have a user if authenticated.
     await browser.wait_for_text_to_equal('#username-output', 'AgentSmith')
@@ -69,4 +73,15 @@ async def test_login_logout(browser):
         '#login-form .login-header', 'Please sign in'
     )
 
-    await app.stop()
+    await auth_app.stop()
+
+
+@pytest.mark.async_test
+async def test_invalid_login(auth_app, browser):
+    await auth_app.main(blocking=False, debug=True)
+    await browser.get('http://localhost:8150/safe')
+
+    await proceed_login(browser, 'NotGood', 'NoGood')
+
+    await browser.wait_for_text_to_equal('#login-error', 'Invalid credentials')
+    await auth_app.stop()
