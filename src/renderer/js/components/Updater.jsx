@@ -360,16 +360,12 @@ export default class Updater extends React.Component {
             };
             this.ws.onclose = () => {
                 const reconnect = () => {
-                    try {
-                        tries++;
-                        connexion();
-                    } catch (e) {
-                        if (tries < this.props.retries) {
-                            setTimeout(reconnect, 1000);
-                        }
-                    }
+                    tries++;
+                    connexion();
                 };
-                setTimeout(reconnect, 1000);
+                if (tries < this.props.retries) {
+                    setTimeout(reconnect, 1000);
+                }
             };
         };
         connexion();
