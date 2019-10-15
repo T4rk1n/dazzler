@@ -10,7 +10,6 @@ from dazzler import Dazzler
 from dazzler.components import core, auth as _auth
 from dazzler.system import Page, Trigger
 from dazzler.system.auth import DazzlerAuth, Authenticator, User
-from dazzler.system.session import SessionMiddleware, RedisSessionBackend
 
 
 class DummyAuthenticator(Authenticator):

@@ -12,7 +12,9 @@ from concurrent.futures import ThreadPoolExecutor
 
 import precept
 
-
+from .system.session import(
+    SessionMiddleware, FileSessionBackEnd, RedisSessionBackend
+)
 from .system import (
     Package,
     generate_components,
@@ -26,7 +28,7 @@ from .system import (
 from ._config import DazzlerConfig
 from ._server import Server
 from ._version import __version__
-from .errors import PageConflictError, ServerStartedError
+from .errors import PageConflictError, ServerStartedError, SessionError
 from ._assets import assets_path
 # noinspection PyProtectedMember
 from .system._requirements import _internal_data_dir
@@ -146,6 +148,22 @@ class Dazzler(precept.Precept):
                 self.config.requirements.internal_styles
         ):
             self.requirements.append(Requirement(internal=internal))
+
+        if self.config.session.enable:
+
+            if self.config.session.backend == 'File':
+                backend = FileSessionBackEnd(self)
+            elif self.config.session.backend == 'Redis':
+                backend = RedisSessionBackend(self)
+            else:
+                raise SessionError(
+                    'No valid session backend defined.\n',
+                    'Please choose from "File" or "Redis"'
+                )
+
+            self.middlewares.insert(
+                0, SessionMiddleware(self, backend=backend)
+            )
 
         # Copy all requirements to make sure all is latest.
         await self.copy_requirements()
