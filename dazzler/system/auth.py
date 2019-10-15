@@ -11,7 +11,6 @@ from ._page import Page
 
 def _default_page(default_redirect):
     from dazzler.components import core, auth
-    from dazzler.system import Page
 
     async def layout(request: web.Request):
         next_url = request.query.get('next_url') or default_redirect
@@ -108,11 +107,15 @@ class AuthSessionBackend(AuthBackend):
         username = await request['session'].get('username')
         return username is not UNDEFINED
 
-    async def login(self, username: str, request: web.Request, *args):
+    async def login(
+            self, user: User,
+            request: web.Request,
+            response: web.Response
+    ):
         session = request['session']
-        await session.set('username', username)
+        await session.set('username', user.username)
 
-    async def logout(self, user, request, *args):
+    async def logout(self, user, request, response):
         session = request['session']
         await session.delete('username')
 
@@ -212,16 +215,16 @@ class DazzlerAuth:
         response = web.HTTPSeeOther(location=next_url)
         user = await self.authenticator.authenticate(username, password)
         if user:
-            await self.backend.login(username, request, response)
+            await self.backend.login(user, request, response)
             raise response
-        else:
-            # Cheap throttling on failures.
-            await asyncio.sleep(0.25)
-            if self.login_page:
-                raise web.HTTPFound(
-                    location=request.app.router[self.login_page.name].url_for()
-                )
-            raise web.HTTPUnauthorized()
+
+        # Cheap throttling on failures.
+        await asyncio.sleep(0.25)
+        if self.login_page:
+            raise web.HTTPFound(
+                location=request.app.router[self.login_page.name].url_for()
+            )
+        raise web.HTTPUnauthorized()
 
     async def logout(self, request: web.Request):
         data = await request.post()
@@ -237,7 +240,7 @@ class DazzlerAuth:
     def require_page_login(self, func, redirect=True):
 
         @functools.wraps(func)
-        async def auth_page_wrapper(request:  web.Request, page: Page):
+        async def auth_page_wrapper(request: web.Request, page: Page):
             if page.require_login:
                 if not await self.backend.is_authenticated(request):
                     if self.login_page and redirect:

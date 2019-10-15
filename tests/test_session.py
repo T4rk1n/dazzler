@@ -39,7 +39,7 @@ async def test_session(start_visit, browser, backend):
         await ctx.set_aspect('session-output', children=f'Clicked {clicks}')
 
     @page.bind(Trigger('remove-session', 'clicks'))
-    async def on_session(ctx: BindingContext):
+    async def on_remove(ctx: BindingContext):
         session = ctx.request['session']
         await session.delete('clicks')
 
@@ -55,4 +55,4 @@ async def test_session(start_visit, browser, backend):
     # Delete session item
     await browser.click('#remove-session')
     await browser.click('#session-click')
-    await browser.wait_for_text_to_equal('#session-output',  f'Clicked 1')
+    await browser.wait_for_text_to_equal('#session-output', f'Clicked 1')

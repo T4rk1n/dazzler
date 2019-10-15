@@ -1,9 +1,8 @@
 from enum import auto
 from typing import Callable, Awaitable, Union
 
-from precept import AutoNameEnum
-
 from aiohttp import web
+from precept import AutoNameEnum
 
 
 class RouteMethod(AutoNameEnum):

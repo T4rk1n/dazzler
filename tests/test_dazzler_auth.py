@@ -70,4 +70,3 @@ async def test_login_logout(browser):
     )
 
     await app.stop()
-
