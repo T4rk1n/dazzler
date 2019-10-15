@@ -30,6 +30,7 @@ class Page:
             favicon: str = '',
             meta_tags: typing.List[typing.Dict[str, str]] = None,
             packages: typing.List[str] = None,
+            require_login: bool = False,
     ):
         """
         :param name: Unique name for the page, usually give __name__.
@@ -47,6 +48,7 @@ class Page:
         :param meta_tags: Meta tags of the page.
         :param packages: Packages list to use on the page instead
             of the whole registry.
+        :param require_login: Page requires that user is logged in.
         """
         self.name = name.split('.')[-1]
         self.base_name = name
@@ -81,6 +83,7 @@ class Page:
         self.packages = packages
         self.lang = lang
         self._bindings = {str(x.trigger): x for x in self.bindings}
+        self.require_login = require_login
 
     async def prepare(
             self,
