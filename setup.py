@@ -1,3 +1,7 @@
 from setuptools import setup
 
-setup()
+setup(
+    extras_requires={
+        'redis': ['aioredis==1.3.0']
+    }
+)
