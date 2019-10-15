@@ -3,7 +3,7 @@ import pytest
 from aiohttp import web
 
 from dazzler.components import core
-from dazzler.system import Page
+from dazzler.system import Page, Route
 
 
 @pytest.mark.async_test
@@ -18,7 +18,7 @@ async def test_package_route(start_page, browser):
 
     await start_page(
         Page('package', core.Container(), routes=[
-            web.get('/package-route', package_route)
+            Route('/package-route', package_route)
         ])
     )
 
