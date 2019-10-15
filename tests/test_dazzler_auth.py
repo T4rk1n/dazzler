@@ -1,3 +1,4 @@
+# pylint: disable=redefined-outer-name
 from typing import Optional
 
 import pytest
