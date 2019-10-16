@@ -127,5 +127,27 @@ class DazzlerConfig(Config):
 
     renderer: Renderer
 
+    class Authentication(Nestable):
+        enable = ConfigProperty(
+            default=False,
+            config_type=bool,
+        )
+
+        authenticator = ConfigProperty(
+            config_type=str,
+            comment='Path to an instance or subclass of '
+                    '`dazzler.system.auth.Authenticator',
+            default=''
+        )
+
+        backend = ConfigProperty(
+            config_type=str,
+            comment='Path to an instance or subclass of '
+                    '`dazzler.system.auth.AuthBackend',
+            default='',
+        )
+
+    authentication: Authentication
+
     def __init__(self):
         super().__init__(root_name='dazzler', config_format=ConfigFormat.TOML)
