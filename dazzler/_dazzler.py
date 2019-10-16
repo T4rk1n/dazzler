@@ -12,7 +12,9 @@ from concurrent.futures import ThreadPoolExecutor
 
 import precept
 
-from .system.session import(
+from .system.auth import Authenticator, DazzlerAuth, AuthBackend
+from .tools import get_member
+from .system.session import (
     SessionMiddleware, FileSessionBackEnd, RedisSessionBackend
 )
 from .system import (
@@ -28,7 +30,7 @@ from .system import (
 from ._config import DazzlerConfig
 from ._server import Server
 from ._version import __version__
-from .errors import PageConflictError, ServerStartedError, SessionError
+from .errors import PageConflictError, ServerStartedError, SessionError, AuthError
 from ._assets import assets_path
 # noinspection PyProtectedMember
 from .system._requirements import _internal_data_dir
@@ -56,6 +58,7 @@ class Dazzler(precept.Precept):
         ),
     ]
     server: Server
+    auth: DazzlerAuth
 
     def __init__(self, module_name, app_name=None):
         module = importlib.import_module(module_name)
@@ -164,6 +167,9 @@ class Dazzler(precept.Precept):
             self.middlewares.insert(
                 0, SessionMiddleware(self, backend=backend)
             )
+
+        if self.config.authentication.enable:
+            await self._enable_auth()
 
         # Copy all requirements to make sure all is latest.
         await self.copy_requirements()
@@ -298,6 +304,45 @@ class Dazzler(precept.Precept):
 
     async def _on_shutdown(self, _):
         await self.events.dispatch('dazzler_stop', application=self)
+
+    async def _enable_auth(self):
+        self.logger.debug('Enabling authentication system')
+        backend = None
+
+        if self.config.authentication.authenticator:
+            authenticator = get_member(
+                self.config.authentication.authenticator
+            )
+            if isinstance(authenticator, type):
+                authenticator = authenticator()
+
+            if not isinstance(authenticator, Authenticator):
+                raise AuthError(
+                    f'{self.config.authentication.authenticator} '
+                    f'is not an instance of '
+                    f'`dazzler.system.auth.Authenticator`'
+                    f'{repr(authenticator)}'
+                )
+        else:
+            raise AuthError(
+                'No authenticator provided in config'
+            )
+
+        if self.config.authentication.backend:
+            backend = get_member(
+                self.config.authentication.backend,
+            )
+            if isinstance(backend, type):
+                backend = backend()
+
+            if not isinstance(backend, AuthBackend):
+                raise AuthError(
+                    f'{self.config.authentication.backend} '
+                    f'is not an instance of '
+                    f'`dazzler.system.auth.AuthBackend`'
+                )
+
+        self.auth = DazzlerAuth(self, authenticator, backend=backend)
 
 
 def cli():
