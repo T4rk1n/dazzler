@@ -109,3 +109,28 @@ async def test_unauthenticated_ws(auth_app):
         assert context.value.status == 401
 
     await auth_app.stop()
+
+
+@pytest.mark.async_test
+async def test_auth_from_configs(browser):
+    app = Dazzler(__name__)
+    app.config.authentication.enable = True
+    app.config.secret_key = 'SecretKey'
+    app.config.authentication.authenticator = \
+        'tests.test_dazzler_auth:DummyAuthenticator'
+
+    page = Page(
+        __name__,
+        core.Container('my-page', identity='content'),
+        require_login=True,
+        url='/'
+    )
+    app.add_page(page)
+
+    await app.main(blocking=False)
+    await browser.get('http://localhost:8150/')
+
+    await proceed_login(browser, 'AgentSmith', 'SuperSecret1')
+    await browser.wait_for_text_to_equal('#content', 'my-page')
+
+    await app.stop()
