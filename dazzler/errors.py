@@ -44,3 +44,7 @@ class RequirementNotFoundError(RequirementError):
 
 class SessionError(DazzlerError):
     """Error related to session system."""
+
+
+class AuthError(DazzlerError):
+    """Error related to authentication system."""
