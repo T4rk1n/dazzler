@@ -29,7 +29,7 @@ def auth_app():
         core.Html('h2', 'logged-in', identity='header'),
         core.Container(identity='username-output'),
         _auth.Logout('/auth/logout', identity='logout')
-    ]), url='/safe', require_login=True)
+    ]), url='/', require_login=True)
 
     @page.bind(Trigger('header', 'children'))
     async def on_username(ctx):
@@ -58,9 +58,8 @@ async def proceed_login(browser, username, password):
 
 
 @pytest.mark.async_test
-async def test_login_logout(auth_app, browser):
-    await auth_app.main(blocking=False, debug=True)
-    await browser.get('http://localhost:8150/safe')
+async def test_login_logout(auth_app, start_visit, browser):
+    await start_visit(auth_app)
 
     await proceed_login(browser, 'AgentSmith', 'SuperSecret1')
 
@@ -72,50 +71,47 @@ async def test_login_logout(auth_app, browser):
         '#login-form .login-header', 'Please sign in'
     )
 
-    await auth_app.stop()
-
 
 @pytest.mark.async_test
-async def test_invalid_login(auth_app, browser):
-    await auth_app.main(blocking=False, debug=True)
-    await browser.get('http://localhost:8150/safe')
-
+async def test_invalid_login(auth_app, start_visit, browser):
+    await start_visit(auth_app)
     await proceed_login(browser, 'NotGood', 'NoGood')
-
     await browser.wait_for_text_to_equal('#login-error', 'Invalid credentials')
-    await auth_app.stop()
 
 
 @pytest.mark.async_test
 async def test_unauthenticated_data(auth_app):
     await auth_app.main(blocking=False)
-    async with client.ClientSession() as session:
-        rep = await session.request('post', 'http://localhost:8150/safe')
-        assert rep.status == 401
-
-    await auth_app.stop()
+    try:
+        async with client.ClientSession() as session:
+            rep = await session.request('post', 'http://localhost:8150/')
+            assert rep.status == 401
+    finally:
+        await auth_app.stop()
 
 
 @pytest.mark.async_test
 async def test_unauthenticated_ws(auth_app):
     await auth_app.main(blocking=False)
+    try:
 
-    async with client.ClientSession() as session:
-        with pytest.raises(aiohttp.WSServerHandshakeError) as context:
-            async with session.ws_connect(
-                    'http://localhost:8150/safe/ws') as ws:
-                await ws.close()
+        async with client.ClientSession() as session:
+            with pytest.raises(aiohttp.WSServerHandshakeError) as context:
+                async with session.ws_connect(
+                        'ws://localhost:8150//ws') as ws:
+                    await ws.close()
 
-        assert context.value.status == 401
-
-    await auth_app.stop()
+            assert context.value.status == 401
+    finally:
+        await auth_app.stop()
 
 
 @pytest.mark.async_test
-async def test_auth_from_configs(browser):
+async def test_auth_from_configs(start_visit, browser):
     app = Dazzler(__name__)
     app.config.authentication.enable = True
     app.config.secret_key = 'SecretKey'
+    app.config.session.backend = 'Redis'
     app.config.authentication.authenticator = \
         'tests.test_dazzler_auth:DummyAuthenticator'
 
@@ -127,10 +123,8 @@ async def test_auth_from_configs(browser):
     )
     app.add_page(page)
 
-    await app.main(blocking=False)
+    await start_visit(app)
     await browser.get('http://localhost:8150/')
 
     await proceed_login(browser, 'AgentSmith', 'SuperSecret1')
     await browser.wait_for_text_to_equal('#content', 'my-page')
-
-    await app.stop()
