@@ -37,7 +37,6 @@ def auth_app():
         await ctx.set_aspect('username-output', children=user.username)
 
     app.add_page(page)
-    app.config.secret_key = 'SecretKey'
     app.config.session.backend = 'Redis'
 
     DazzlerAuth(app, DummyAuthenticator())
@@ -110,7 +109,6 @@ async def test_unauthenticated_ws(auth_app):
 async def test_auth_from_configs(start_visit, browser):
     app = Dazzler(__name__)
     app.config.authentication.enable = True
-    app.config.secret_key = 'SecretKey'
     app.config.session.backend = 'Redis'
     app.config.authentication.authenticator = \
         'tests.test_dazzler_auth:DummyAuthenticator'
