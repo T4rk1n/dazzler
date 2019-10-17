@@ -1,4 +1,5 @@
 """Page system specifics tests."""
+import asyncio
 import json
 
 import pytest
@@ -24,6 +25,7 @@ async def test_page_meta_attributes(start_page, browser):
             meta_tags=meta
         )
     )
+    await asyncio.sleep(0.001)
     meta_tags = await browser.wait_for_elements_by_css_selector('meta')
 
     # Meta charset + http-equiv always present (+2)
@@ -59,6 +61,7 @@ async def test_page_title(start_page, browser):
     await start_page(
         Page('page-title', core.Container(), title='Custom title')
     )
+    await asyncio.sleep(0.001)
     assert browser.driver.title == 'Custom title'
 
 
@@ -68,6 +71,7 @@ async def test_page_default(start_page, browser):
     await start_page(
         Page('page-title', core.Container())
     )
+    await asyncio.sleep(0.001)
     assert browser.driver.title == 'page-title'
 
 
