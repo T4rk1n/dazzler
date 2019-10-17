@@ -30,7 +30,9 @@ from .system import (
 from ._config import DazzlerConfig
 from ._server import Server
 from ._version import __version__
-from .errors import PageConflictError, ServerStartedError, SessionError, AuthError
+from .errors import (
+    PageConflictError, ServerStartedError, SessionError, AuthError
+)
 from ._assets import assets_path
 # noinspection PyProtectedMember
 from .system._requirements import _internal_data_dir
