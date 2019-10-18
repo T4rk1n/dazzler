@@ -6,6 +6,7 @@ Subpackages
 
 .. toctree::
 
+   dazzler.components.auth
    dazzler.components.calendar
    dazzler.components.core
    dazzler.components.extra
