@@ -389,7 +389,13 @@ export default class Updater extends React.Component {
             this.loadRequirements(
                 response.requirements,
                 response.packages
-            ).then(() => this._connectWS());
+            ).then(() => {
+                if (Object.keys(response.bindings).length) {
+                    this._connectWS();
+                } else {
+                    this.setState({ready: true});
+                }
+            });
         });
     }
 

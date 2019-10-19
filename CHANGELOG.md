@@ -2,6 +2,11 @@
 
 Versions follow [Semantic Versioning](https://www.semver.org)
 
+## Unreleased
+### Added
+
+- :hammer: Connect websocket only if page has bindings. [#7](https://github.com/T4rk1n/dazzler/issues/7)
+
 ## [0.1.0]
 ### Added
 
