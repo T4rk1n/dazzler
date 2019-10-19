@@ -2,15 +2,14 @@
 
 Versions follow [Semantic Versioning](https://www.semver.org)
 
-## Unreleased
-
+## [0.1.0]
 ### Added
 
-:sparkles: Add page route decorator with auto prefix.
-:rice: Add auth components package.
-:sparkles: Add middleware support.
-:sparkles: Add Sessions.
-:sparkles: Add authentication for pages.
+- :sparkles: Add page route decorator with auto prefix.
+- :rice: Add auth components package.
+- :sparkles: Add middleware support.
+- :sparkles: Add Sessions.
+- :sparkles: Add authentication for pages.
 
 ### Changed
 
