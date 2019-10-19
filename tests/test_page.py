@@ -1,4 +1,5 @@
 """Page system specifics tests."""
+import asyncio
 import json
 
 import pytest
@@ -24,6 +25,7 @@ async def test_page_meta_attributes(start_page, browser):
             meta_tags=meta
         )
     )
+    await asyncio.sleep(0.001)
     meta_tags = await browser.wait_for_elements_by_css_selector('meta')
 
     # Meta charset + http-equiv always present (+2)
@@ -59,6 +61,7 @@ async def test_page_title(start_page, browser):
     await start_page(
         Page('page-title', core.Container(), title='Custom title')
     )
+    await asyncio.sleep(0.001)
     assert browser.driver.title == 'Custom title'
 
 
@@ -68,11 +71,17 @@ async def test_page_default(start_page, browser):
     await start_page(
         Page('page-title', core.Container())
     )
+    await asyncio.sleep(0.001)
     assert browser.driver.title == 'page-title'
 
 
 @pytest.mark.async_test
 async def test_page_routes(start_page, browser):
+
+    page = Page('page-routes', core.Container())
+
+    # pylint: disable=unused-variable
+    @page.route('/page-route')
     async def page_route(_):
         return web.Response(
             body='<html><head></head><body>'
@@ -81,13 +90,9 @@ async def test_page_routes(start_page, browser):
             content_type='text/html'
         )
 
-    await start_page(
-        Page('page-routes', core.Container(), routes=[
-            web.get('/page-route', page_route)
-        ])
-    )
+    await start_page(page)
 
-    await browser.get('http://localhost:8150/page-route')
+    await browser.get('http://localhost:8150/page-routes/page-route')
     await browser.wait_for_text_to_equal('#content', 'Page route')
 
 

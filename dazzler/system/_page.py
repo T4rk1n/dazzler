@@ -7,6 +7,7 @@ from ._binding import Binding, BoundAspect, Trigger, State
 from ._component import Component
 from ._package import Package
 from ._requirements import Requirement, collect_requirements
+from ._route import Route, RouteMethod
 
 
 # pylint: disable=too-many-instance-attributes
@@ -19,7 +20,7 @@ class Page:
             layout: typing.Union[Component, typing.Callable[[web.Request], typing.Awaitable[Component]]],  # noqa: E501
             url: str = None,
             bindings: list = None,
-            routes: list = None,
+            routes: typing.List[Route] = None,
             requirements: typing.List[Requirement] = None,
             requirements_dir: str = 'requirements',
             title: str = None,
@@ -29,6 +30,7 @@ class Page:
             favicon: str = '',
             meta_tags: typing.List[typing.Dict[str, str]] = None,
             packages: typing.List[str] = None,
+            require_login: bool = False,
     ):
         """
         :param name: Unique name for the page, usually give __name__.
@@ -46,6 +48,7 @@ class Page:
         :param meta_tags: Meta tags of the page.
         :param packages: Packages list to use on the page instead
             of the whole registry.
+        :param require_login: Page requires that user is logged in.
         """
         self.name = name.split('.')[-1]
         self.base_name = name
@@ -80,6 +83,7 @@ class Page:
         self.packages = packages
         self.lang = lang
         self._bindings = {str(x.trigger): x for x in self.bindings}
+        self.require_login = require_login
 
     async def prepare(
             self,
@@ -132,6 +136,7 @@ class Page:
             binding = Binding(trigger, list(states))(func)
             self.bindings.append(binding)
             self._bindings[str(binding.trigger)] = binding
+            return func
 
         return _wrapper
 
@@ -143,6 +148,35 @@ class Page:
         :return:
         """
         return self._bindings.get(key)
+
+    def route(
+            self,
+            path,
+            method: typing.Union[str, RouteMethod] = RouteMethod.GET,
+            name=None,
+            prefix=True
+    ):
+        """
+        Add a route with a decorator.
+
+        :param path: Url to handle.
+        :param method: Method of the route.
+        :param name: Unique name for the route.
+        :param prefix: Prefix the path with the page path.
+        :return:
+        """
+        if prefix:
+            url = '/'.join([self.url.rstrip('/'), path.lstrip('/')])
+        else:
+            url = path
+
+        def _page_route(func):
+            self.routes.append(
+                Route(url, func, name=name, method=method)
+            )
+            return func
+
+        return _page_route
 
     def __str__(self):
         return f'{self.name}@{self.url}'

@@ -3,6 +3,7 @@ jobs:
   build:
     docker:
       - image: circleci/python:3.7-stretch-node-browsers
+      - image: circleci/redis:latest
     environment:
       PYTHONPATH: ~/repo
 

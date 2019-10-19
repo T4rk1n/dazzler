@@ -10,16 +10,29 @@ import typing
 
 from concurrent.futures import ThreadPoolExecutor
 
-from aiohttp import web
 import precept
 
-from .system import Package, generate_components, Requirement, Page
-from .tools import get_package_path
+from .system.auth import Authenticator, DazzlerAuth, AuthBackend
+from .tools import get_member
+from .system.session import (
+    SessionMiddleware, FileSessionBackEnd, RedisSessionBackend
+)
+from .system import (
+    Package,
+    generate_components,
+    Requirement,
+    Page,
+    Middleware,
+    Route,
+    RouteMethod,
+)
 
 from ._config import DazzlerConfig
 from ._server import Server
 from ._version import __version__
-from .errors import PageConflictError, ServerStartedError
+from .errors import (
+    PageConflictError, ServerStartedError, SessionError, AuthError
+)
 from ._assets import assets_path
 # noinspection PyProtectedMember
 from .system._requirements import _internal_data_dir
@@ -47,9 +60,14 @@ class Dazzler(precept.Precept):
         ),
     ]
     server: Server
+    auth: DazzlerAuth
 
-    def __init__(self, module_name):
-        self.root_path = get_package_path(module_name)
+    def __init__(self, module_name, app_name=None):
+        module = importlib.import_module(module_name)
+        self.root_path = os.path.dirname(module.__file__)
+        self.app_name = app_name or \
+            os.path.basename(module.__file__).rstrip('.py')
+
         super().__init__(
             config_file=[
                 'dazzler.toml',
@@ -59,7 +77,9 @@ class Dazzler(precept.Precept):
             executor=ThreadPoolExecutor(),
             print_version=False,
         )
+
         self.requirements: typing.List[Requirement] = []
+        self.middlewares: typing.List[Middleware] = []
         self.server = Server(self, loop=self.loop)
         self.pages = {}
         self.stop_event = asyncio.Event()
@@ -134,6 +154,25 @@ class Dazzler(precept.Precept):
         ):
             self.requirements.append(Requirement(internal=internal))
 
+        if self.config.session.enable:
+
+            if self.config.session.backend == 'File':
+                backend = FileSessionBackEnd(self)
+            elif self.config.session.backend == 'Redis':
+                backend = RedisSessionBackend(self)
+            else:
+                raise SessionError(
+                    'No valid session backend defined.\n',
+                    'Please choose from "File" or "Redis"'
+                )
+
+            self.middlewares.insert(
+                0, SessionMiddleware(self, backend=backend)
+            )
+
+        if self.config.authentication.enable:
+            await self._enable_auth()
+
         # Copy all requirements to make sure all is latest.
         await self.copy_requirements()
 
@@ -141,6 +180,8 @@ class Dazzler(precept.Precept):
         # Served by default by the index.
         if 'dazzler_renderer' in Package.package_registry:
             Package.package_registry.pop('dazzler_renderer')
+
+        await self.events.dispatch('dazzler_setup', application=self)
 
         # Add package defined routes
         routes = [x.routes for x in Package.package_registry.values()]
@@ -150,16 +191,23 @@ class Dazzler(precept.Precept):
             # Pages are not prefixed
             # noinspection PyTypeChecker
             routes += [[
-                web.get(
+                Route(
                     page.url,
                     functools.partial(self.server.route_page, page=page),
                     name=page.name,
                 ),
-                web.post(
+                Route(
                     page.url,
                     functools.partial(self.server.route_page_json, page=page),
-                    name=f'{page.name}-api'
-                )
+                    name=f'{page.name}-api',
+                    method=RouteMethod.POST,
+                ),
+                Route(
+                    f'{page.url}/ws',
+                    functools.partial(self.server.route_update, page=page),
+                    name=f'{page.name}-ws',
+                    method=RouteMethod.GET,
+                ),
             ]]
             routes += [page.routes]
 
@@ -171,7 +219,6 @@ class Dazzler(precept.Precept):
         self._prepared = True
         self.server.app.on_startup.append(self._on_startup)
         self.server.app.on_shutdown.append(self._on_shutdown)
-        await self.events.dispatch('dazzler_setup', application=self)
 
     async def application(self):
         """Call for wsgi application"""
@@ -259,6 +306,45 @@ class Dazzler(precept.Precept):
 
     async def _on_shutdown(self, _):
         await self.events.dispatch('dazzler_stop', application=self)
+
+    async def _enable_auth(self):
+        self.logger.debug('Enabling authentication system')
+        backend = None
+
+        if self.config.authentication.authenticator:
+            authenticator = get_member(
+                self.config.authentication.authenticator
+            )
+            if isinstance(authenticator, type):
+                authenticator = authenticator()
+
+            if not isinstance(authenticator, Authenticator):
+                raise AuthError(
+                    f'{self.config.authentication.authenticator} '
+                    f'is not an instance of '
+                    f'`dazzler.system.auth.Authenticator`'
+                    f'{repr(authenticator)}'
+                )
+        else:
+            raise AuthError(
+                'No authenticator provided in config'
+            )
+
+        if self.config.authentication.backend:
+            backend = get_member(
+                self.config.authentication.backend,
+            )
+            if isinstance(backend, type):
+                backend = backend()
+
+            if not isinstance(backend, AuthBackend):
+                raise AuthError(
+                    f'{self.config.authentication.backend} '
+                    f'is not an instance of '
+                    f'`dazzler.system.auth.AuthBackend`'
+                )
+
+        self.auth = DazzlerAuth(self, authenticator, backend=backend)
 
 
 def cli():

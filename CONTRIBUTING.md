@@ -77,6 +77,7 @@ Prefix your commit messages with an emoji according to this list:
 | Code review changes        | :ok_hand: `:ok_hand:`                         |
 | Accessibility              | :wheelchair: `:wheelchair:`                   |
 | Move/rename repository     | :truck: `:truck:`                             |
+| Add component(s)           | :rice: `:rice:`                               |
 | Other                      | [Be creative](http://www.emoji-cheat-sheet.com/)  |
 
 ## Guides

@@ -1,0 +1,57 @@
+@import '../../commons/scss/colors';
+
+.dazzler-auth-login {
+  display: inline-block;
+
+  .login-field {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.125rem;
+
+    .login-label {
+      margin-right: 1rem;
+      flex-grow: 1;
+      font-weight: bold;
+    }
+    .login-input {
+      flex-grow: 3;
+    }
+  }
+  .login-button {
+    border-style: solid;
+    border-width: 0;
+    cursor: pointer;
+    color: white;
+    padding: 0.25rem 0.5rem;
+    height: auto;
+    border-color: $primary-dark;
+    background-color: $primary;
+    border-radius: 5px;
+    width: 100%;
+
+    &:hover {
+      background-color: $primary-light;
+    }
+
+    &:focus {
+      outline: none;
+    }
+  }
+  &.horizontal {
+    .login-button {
+      display: inline-block;
+      width: auto;
+      margin-left: 0.325rem;
+    }
+    .login-field {
+      display: inline-flex;
+      &:not(:first-child) {
+        margin-left: 0.325rem;
+      }
+    }
+  }
+  &.bordered {
+    border: 1px solid $neutral-dark;
+    padding: 0.5rem;
+  }
+}

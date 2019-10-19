@@ -1,0 +1,17 @@
+@import '../../commons/scss/colors';
+
+.dazzler-auth-logout {
+  .logout-button {
+    cursor: pointer;
+    padding: 0.25rem;
+    margin: 0.1325rem;
+    border: 1px solid $neutral-dark;
+    background-color: $neutral;
+    color: #606060;
+    border-radius: 5px;
+
+    &:focus {
+      outline: none;
+    }
+  }
+}

@@ -51,7 +51,7 @@ export default class Container extends React.Component {
 }
 
 Container.defaultProps = {
-    n_clicks: 0,
+    clicks: 0,
 };
 
 Container.propTypes = {

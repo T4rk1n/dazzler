@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {any, merge, type, omit, map} from 'ramda';
+import {merge, type, omit, map} from 'ramda';
 import Wrapper from './Wrapper';
 import {apiRequest} from '../requests';
 import {loadCss, loadScript} from '../../../commons/js';
@@ -350,8 +350,8 @@ export default class Updater extends React.Component {
             this.ws = new WebSocket(
                 `ws${
                     window.location.href.startsWith('https') ? 's' : ''
-                }://${this.props.baseUrl ||
-                    window.location.host}/dazzler/update`
+                }://${(this.props.baseUrl && this.props.baseUrl) ||
+                    window.location.host}${window.location.pathname}/ws`
             );
             this.ws.addEventListener('message', this.onMessage);
             this.ws.onopen = () => {
@@ -360,16 +360,12 @@ export default class Updater extends React.Component {
             };
             this.ws.onclose = () => {
                 const reconnect = () => {
-                    try {
-                        tries++;
-                        connexion();
-                    } catch (e) {
-                        if (tries < this.props.retries) {
-                            setTimeout(reconnect, 1000);
-                        }
-                    }
+                    tries++;
+                    connexion();
                 };
-                setTimeout(reconnect, 1000);
+                if (tries < this.props.retries) {
+                    setTimeout(reconnect, 1000);
+                }
             };
         };
         connexion();

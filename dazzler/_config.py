@@ -42,6 +42,39 @@ class DazzlerConfig(Config):
         comment='Prefix for the static route'
     )
 
+    secret_key = ConfigProperty(
+        default='Please change me',
+        comment='Secret key to use for signing sessions.',
+        config_type=str,
+    )
+
+    class Session(Nestable):
+        enable = ConfigProperty(
+            config_type=bool,
+            default=True
+        )
+        backend = ConfigProperty(
+            comment='Type of session backend to use. Choices: File, Redis',
+            default='File',
+            config_type=str,
+        )
+        salt = ConfigProperty(
+            config_type=str,
+            comment='Salt for signing sessions ids.'
+        )
+        cookie_name = ConfigProperty(
+            config_type=str,
+            comment='Name of the session cookie.',
+            default='sessionid'
+        )
+        duration = ConfigProperty(
+            config_type=int,
+            comment='Maximum duration of a session in seconds.',
+            default=86400,
+        )
+
+    session: Session
+
     class Requirements(Nestable):
         prefer_external = ConfigProperty(
             default=False,
@@ -93,6 +126,28 @@ class DazzlerConfig(Config):
         )
 
     renderer: Renderer
+
+    class Authentication(Nestable):
+        enable = ConfigProperty(
+            default=False,
+            config_type=bool,
+        )
+
+        authenticator = ConfigProperty(
+            config_type=str,
+            comment='Path to an instance or subclass of '
+                    '`dazzler.system.auth.Authenticator',
+            default=''
+        )
+
+        backend = ConfigProperty(
+            config_type=str,
+            comment='Path to an instance or subclass of '
+                    '`dazzler.system.auth.AuthBackend',
+            default='',
+        )
+
+    authentication: Authentication
 
     def __init__(self):
         super().__init__(root_name='dazzler', config_format=ConfigFormat.TOML)
