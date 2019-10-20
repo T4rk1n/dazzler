@@ -2,12 +2,15 @@ import asyncio
 import json
 import keyword
 import os
+import sys
 import textwrap
 import re
+import shlex
 
 import stringcase
 
 from ..tools import OrderedSet, replace_all
+from .._assets import meta_path
 
 
 def _default_prop_type(_):
@@ -298,10 +301,27 @@ def generate_imports(output_path, components):
         f.write(imports_string)
 
 
+async def generate_meta(source_dir: str) -> dict:
+    cmd = shlex.split(
+        f'node {meta_path} {source_dir}',
+        posix=not sys.platform == 'win32'
+    )
+    proc = await asyncio.create_subprocess_shell(
+        ' '.join(cmd),
+        stdout=asyncio.subprocess.PIPE,
+        stderr=asyncio.subprocess.PIPE,
+    )
+    out, err = await proc.communicate()
+    if err:
+        print(err, file=sys.stderr)
+        sys.exit(1)
+    else:
+        return json.loads(out.decode())
+
+
 async def generate_components(metadata, output_path, executor):
     futures = []
     names = []
-    metadata = json.load(metadata)
 
     for data in metadata.values():
         name = data['displayName']
