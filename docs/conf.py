@@ -195,3 +195,17 @@ def skip(app, what, name, obj, skip, options):
 def setup(app):
     app.connect("autodoc-skip-member", skip)
     app.add_stylesheet('styles.css')
+
+    # Generate components for docstrings.
+    from dazzler import Dazzler
+
+    dazz = Dazzler('dazzler')
+
+    for source, output in (
+            ('../src/core/js/components', 'dazzler/components/core'),
+            ('../src/extra/js/components', 'dazzler/components/extra'),
+            ('../src/calendar/js/components', 'dazzler/components/calendar'),
+            ('../src/markdown/js/components', 'dazzler/components/markdown'),
+            ('../src/auth/js/components', 'dazzler/components/auth')
+    ):
+        dazz.start(['generate', source, output])
