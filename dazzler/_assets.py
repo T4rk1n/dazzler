@@ -23,4 +23,4 @@ if os.path.exists(_asset_json_dev):
     with open(_asset_json_dev) as _file:
         assets_dev = json.load(_file)['chunks']
 else:
-    assets = {}
+    assets_dev = {}
