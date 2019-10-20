@@ -304,7 +304,7 @@ def generate_imports(output_path, components):
 async def generate_meta(source_dir: str) -> dict:
     cmd = shlex.split(
         f'node {meta_path} {source_dir}',
-        posix=not sys.platform == 'win32'
+        posix=sys.platform != 'win32'
     )
     proc = await asyncio.create_subprocess_shell(
         ' '.join(cmd),
