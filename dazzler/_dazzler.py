@@ -1,4 +1,3 @@
-import argparse
 import functools
 import importlib
 import itertools
@@ -20,6 +19,7 @@ from .system.session import (
 from .system import (
     Package,
     generate_components,
+    generate_meta,
     Requirement,
     Page,
     Middleware,
@@ -230,10 +230,8 @@ class Dazzler(precept.Precept):
 
     @precept.Command(
         precept.Argument(
-            'metadata',
-            type=argparse.FileType('r'),
-            default=sys.stdin,
-            help='react-docgen output'
+            'source_directory',
+            help='Components source directory'
         ),
         precept.Argument(
             'output_dir',
@@ -241,8 +239,9 @@ class Dazzler(precept.Precept):
         ),
         description='Generate dazzler components from react-docgen output'
     )
-    async def generate(self, metadata, output_dir):
+    async def generate(self, source_directory, output_dir):
         os.makedirs(output_dir, exist_ok=True)
+        metadata = await generate_meta(source_directory)
         await generate_components(metadata, output_dir, self.executor)
 
     @precept.Command(
