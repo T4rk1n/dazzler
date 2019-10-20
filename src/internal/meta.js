@@ -9,13 +9,13 @@ const src = args[0];
 function walk(directory, components=null) {
     return new Promise(resolve => {
         components = components || {};
-        fs.readdirSync(src, {withFileTypes: true}).forEach(f => {
-           if (f.isDirectory()) {
+        fs.readdirSync(src).forEach(f => {
+            const filepath = path.join(directory, f);
+            if (fs.lstatSync(filepath).isDirectory()) {
                components = walk(f, components);
-           } else {
-               const filepath = path.join(directory, f.name);
+            } else {
                components[filepath] = reactDocs.parse(fs.readFileSync(filepath));
-           }
+            }
         });
         resolve(components);
     });
