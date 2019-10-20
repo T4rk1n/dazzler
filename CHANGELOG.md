@@ -6,6 +6,7 @@ Versions follow [Semantic Versioning](https://www.semver.org)
 ### Added
 
 - :hammer: Connect websocket only if page has bindings. [#7](https://github.com/T4rk1n/dazzler/issues/7)
+- :hammer: Generate react-docs metadata from dazzler command. [#4](https://github.com/T4rk1n/dazzler/issues/4)
 
 ## [0.1.0]
 ### Added
