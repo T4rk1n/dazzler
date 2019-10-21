@@ -1,5 +1,10 @@
 # Dazzler
 
+[![Build](https://img.shields.io/circleci/build/github/T4rk1n/dazzler/master)](https://circleci.com/gh/T4rk1n/dazzler)
+[![Documentation Status](https://readthedocs.org/projects/dazzler/badge/?version=latest)](https://dazzler.readthedocs.io/en/latest/?badge=latest)
+![Version](https://img.shields.io/pypi/v/dazzler)
+![License](https://img.shields.io/pypi/l/dazzler)
+
 Dazzler is a Python (>=3.6) async web framework. 
 Create dazzling fast pages with a layout of python components and bindings to update from the backend.
 
