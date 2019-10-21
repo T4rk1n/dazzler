@@ -25,8 +25,8 @@ package = _Package(
     _package_name,
     components=_components,
     requirements=_ass_to_req(
-        _dist_path, _assets[_name],
-        dev_data=_dev[_name],
+        _dist_path, _assets.get(_name, {}),
+        dev_data=_dev.get(_name, {}),
         dev_path=_dev_path,
         package_name=_package_name,
     )
