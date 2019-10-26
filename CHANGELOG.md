@@ -5,6 +5,7 @@ Versions follow [Semantic Versioning](https://www.semver.org)
 ## Unreleased
 ### Added
 
+- :rice: Add PopUp extra component. [#14](https://github.com/T4rk1n/dazzler/issues/14)
 - :hammer: Connect websocket only if page has bindings. [#7](https://github.com/T4rk1n/dazzler/issues/7)
 - :hammer: Generate react-docs metadata from dazzler command. [#4](https://github.com/T4rk1n/dazzler/issues/4)
 
