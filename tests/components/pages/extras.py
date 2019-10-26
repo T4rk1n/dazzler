@@ -13,6 +13,10 @@ page = Page(
         core.Button('Notify', identity='notify-btn'),
         extra.Notice('Notice', identity='notice'),
         extra.Spinner(identity='spin'),
+        extra.PopUp(
+            core.Container('Click on me to open a pop up.'),
+            core.Container('Content'),
+        ),
         core.Container([
             core.Container('lorem', style={'padding': '2rem'})
             for _ in range(20)

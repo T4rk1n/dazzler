@@ -37,8 +37,7 @@ export default class Container extends React.Component {
                 style={style}
                 title={title}
                 draggable={draggable}
-                onClick={e => {
-                    e.stopPropagation();
+                onClick={() => {
                     this.props.updateAspects({
                         clicks: this.props.clicks + 1,
                     });
