@@ -1,0 +1,54 @@
+@import '../../commons/scss/colors';
+
+.dazzler-extra-pop-up {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+
+  .popup-content {
+    position: absolute;
+    z-index: 1;
+    padding: 0.5rem;
+    bottom: 125%;
+    left: 0.5rem;
+    background-color: $neutral-dark;
+    border-radius: 5px;
+    visibility: hidden;
+
+    &::after {
+      content: "";
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      text-align: center;
+      margin-left: -5px;
+      border-width: 5px;
+      border-style: solid;
+      border-color: $neutral-dark transparent transparent transparent;
+    }
+    &.visible {
+      visibility: visible;
+      -webkit-animation: fadeIn 1s;
+      -moz-animation: fadeIn 1s;
+      animation: fadeIn 1s;
+    }
+  }
+
+  @-webkit-keyframes fadeIn {
+    from {opacity: 0;}
+    to {opacity: 1;}
+  }
+  @-moz-keyframes fadeIn {
+    from {opacity: 0;}
+    to {opacity: 1;}
+  }
+
+  @keyframes fadeIn {
+    from {opacity: 0;}
+    to {opacity: 1;}
+  }
+}

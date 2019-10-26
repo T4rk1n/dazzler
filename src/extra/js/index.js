@@ -5,5 +5,6 @@ import Pager from './components/Pager';
 import Spinner from './components/Spinner';
 import Sticky from './components/Sticky';
 import Drawer from './components/Drawer';
+import PopUp from './components/PopUp';
 
-export {Notice, Pager, Spinner, Sticky, Drawer};
+export {Notice, Pager, Spinner, Sticky, Drawer, PopUp};
