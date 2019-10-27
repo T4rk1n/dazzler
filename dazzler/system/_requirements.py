@@ -1,26 +1,15 @@
 import re
 import os
 import warnings
-import shutil
 
 # Create a data dir for the requirements once and for all.
 import typing
 
-import appdirs
 from dazzler.tools import format_tag
 
 from dazzler.errors import (
     InvalidRequirementError, InvalidRequirementKindError
 )
-
-_internal_data_dir = appdirs.user_data_dir('dazzler')
-
-if not os.path.exists(_internal_data_dir):
-    os.makedirs(_internal_data_dir)
-else:
-    # Delete the whole structure so old files are not there when reloading.
-    shutil.rmtree(_internal_data_dir, ignore_errors=True)
-    os.makedirs(_internal_data_dir, exist_ok=True)
 
 
 class RequirementWarning(UserWarning):
@@ -55,19 +44,17 @@ class Requirement:
         self.external_only = external and not internal
         self.internal_only = internal and not external
 
-        paths = [_internal_data_dir, 'dist', self.name]
+        paths = ['dist', self.name]
         url = ['/dazzler', 'requirements', 'static', 'dist', self.name]
         if package:
-            paths.insert(1, package)
+            paths.insert(0, package)
             url.insert(3, package)
 
         if page:
-            paths.insert(1, page)
+            paths.insert(0, page)
             url.insert(3, page)
 
         self.internal_static = os.path.join(*paths)
-        os.makedirs(os.path.dirname(self.internal_static), exist_ok=True)
-
         self.internal_url = '/'.join(url)
 
         if dev:
@@ -75,7 +62,6 @@ class Requirement:
             dev_name = os.path.basename(dev)
             paths[paths.index(self.name)] = dev_name
             self.dev_static = os.path.join(*paths)
-            os.makedirs(os.path.dirname(self.dev_static), exist_ok=True)
             url[url.index('dist')] = 'dev'
             url[url.index(self.name)] = dev_name
             self.dev_url = '/'.join(url)
