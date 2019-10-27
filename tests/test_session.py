@@ -41,6 +41,7 @@ def session_app():
 async def test_session(start_visit, browser, backend):
     app = Dazzler(__name__)
     app.config.session.enable = False
+    app.config.session.duration = 3
     app.middlewares.append(SessionMiddleware(app, backend=backend(app)))
 
     page = Page(
