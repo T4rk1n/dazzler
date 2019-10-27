@@ -350,9 +350,9 @@ class SessionMiddleware(Middleware):
                 delta = time.time() - created
                 if delta > self.app.config.session.refresh_after:
                     session_id, callback = self._set_session(session_id)
-            except BadSignature as e:
+            except BadSignature as error:
                 session_id, callback = self._set_session()
-                self.app.logger.exception(e)
+                self.app.logger.exception(error)
 
         request['session'] = Session(
             session_id,
