@@ -144,8 +144,7 @@ class FileSessionBackEnd(SessionBackEnd):
     def __init__(self, app):
         super().__init__(app)
         self.save_directory = os.path.join(
-            appdirs.user_data_dir('dazzler-data'),
-            app.app_name,
+            app.data_dir, 'session-data'
         )
         if not os.path.exists(self.save_directory):
             os.makedirs(self.save_directory)
