@@ -109,6 +109,7 @@ class Page:
         ] if self.packages is not None else [
             x.prepare(dev=debug, external=external)
             for x in Package.package_registry.values()
+            if x.name != 'dazzler_renderer'
         ]
 
         # noinspection PyProtectedMember

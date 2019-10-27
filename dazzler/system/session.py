@@ -9,7 +9,6 @@ import base64
 
 from typing import Any, Optional
 
-import appdirs
 from itsdangerous import Signer, BadSignature
 from aiohttp import web
 
@@ -144,8 +143,7 @@ class FileSessionBackEnd(SessionBackEnd):
     def __init__(self, app):
         super().__init__(app)
         self.save_directory = os.path.join(
-            appdirs.user_data_dir('dazzler-data'),
-            app.app_name,
+            app.data_dir, 'session-data'
         )
         if not os.path.exists(self.save_directory):
             os.makedirs(self.save_directory)
@@ -168,8 +166,10 @@ class FileSessionBackEnd(SessionBackEnd):
 
         await self.acquire(session_id)
 
-        with open(self._session_path(session_id)) as f:
+        with open(path) as f:
             data = json.load(f)
+
+        os.utime(path, None)
 
         self.release(session_id)
         return data

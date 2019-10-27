@@ -12,8 +12,6 @@ from aiohttp import web, WSCloseCode
 
 from .system import Page, UNDEFINED, Route
 
-# noinspection PyProtectedMember
-from .system._requirements import _internal_data_dir
 from .tools import replace_all, format_tag
 from ._renderer import package as renderer
 
@@ -88,7 +86,7 @@ class Server:
         # Main internal static directory where requirements are copied.
         self.app.router.add_static(
             f'{prefix}/dazzler/requirements/static',
-            _internal_data_dir,
+            self.dazzler.requirements_dir,
         )
 
     async def route_update(self, request: web.Request, page: Page):

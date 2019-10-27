@@ -27,60 +27,51 @@ async def test_click_output(start_page, browser):
 
 
 @pytest.mark.async_test
-async def test_multi_page(browser):
+async def test_multi_page(start_visit, browser):
     from tests.apps.multi_page import app
 
-    await app.main(blocking=False)
+    await start_visit(app)
 
     for num in ('one', 'two', 'three', 'four'):
         await browser.get(f'http://localhost:8150/{num}')
         await browser.wait_for_text_to_equal('#content', f'Page {num}')
 
-    await app.stop()
-
 
 @pytest.mark.async_test
-async def test_binding_return_component(browser):
+async def test_binding_return_component(start_visit, browser):
     # Bindings can return components successfully.
     from tests.apps.binding_return_component import app
 
-    await app.main(blocking=False)
+    await start_visit(app)
 
     await browser.get('http://localhost:8150/')
 
     await browser.click('#clicker')
     await browser.wait_for_text_to_equal('#from-binding', 'from binding')
 
-    await app.stop()
-
 
 @pytest.mark.async_test
-async def test_layout_as_function(browser):
+async def test_layout_as_function(start_visit, browser):
     # Functions can be used as layout to be evaluated on page request.
     from tests.apps.layout_as_function import app
 
-    await app.main(blocking=False)
+    await start_visit(app)
 
     await browser.get('http://localhost:8150')
     await browser.wait_for_text_to_equal('#layout', 'Layout as function')
 
-    await app.stop()
-
 
 @pytest.mark.async_test
-async def test_generated_component_trigger_binding(browser):
+async def test_generated_component_trigger_binding(start_visit, browser):
     # A component not in the initial layout can trigger other binding.
     from tests.apps.generated_component_trigger_binding import app
 
-    await app.main(blocking=False)
-
-    await browser.get('http://localhost:8150')
+    await start_visit(app)
 
     await browser.click('#click')
     await browser.click('#generated')
 
     await browser.wait_for_text_to_equal('#output2', 'Generated')
-    await app.stop()
 
 
 @pytest.mark.async_test
@@ -100,11 +91,10 @@ async def test_click_with_state(start_page, browser):
 
 
 @pytest.mark.async_test
-async def test_bindings_continue_after_error(browser):
+async def test_bindings_continue_after_error(start_visit, browser):
     from tests.apps.bindings_continue_after_error import app
-    await app.main(blocking=False)
+    await start_visit(app)
 
-    await browser.get('http://localhost:8150/')
     clicker = await browser.wait_for_element_by_id('click')
     clicker_err = await browser.wait_for_element_by_id('click-error')
 
@@ -116,7 +106,6 @@ async def test_bindings_continue_after_error(browser):
     clicker.click()
 
     await browser.wait_for_text_to_equal('#output', 'Clicked 2')
-    await app.stop()
 
     # FIXME Bug with caplog and the logger not working.
     # _, err = capsys.readouterr()
@@ -125,14 +114,13 @@ async def test_bindings_continue_after_error(browser):
 
 
 @pytest.mark.async_test
-async def test_aspect_rendering(browser):
+async def test_aspect_rendering(start_visit, browser):
     from tests.apps import aspect_rendering
 
     app = aspect_rendering.app
     types = aspect_rendering.aspect_types
 
-    await app.main(blocking=False)
-    await browser.get('http://localhost:8150/')
+    await start_visit(app)
 
     for name, aspect in types.items():
         await browser.click(f'#set-{name}')
@@ -143,8 +131,6 @@ async def test_aspect_rendering(browser):
             expected = str(expected)
 
         await browser.wait_for_text_to_equal(f'#spec-output .{name}', expected)
-
-    await app.stop()
 
 
 @pytest.mark.async_test
@@ -392,12 +378,10 @@ async def test_storage(start_page, browser):
 
 
 @pytest.mark.async_test
-async def test_prefer_external(browser):
+async def test_prefer_external(start_visit, browser):
     from tests.apps.prefer_external import app
 
-    await app.main(blocking=False)
-
-    await browser.get('http://localhost:8150/')
+    await start_visit(app)
 
     scripts = await browser.wait_for_elements_by_xpath(
         '//script[contains(@src, '
@@ -405,19 +389,15 @@ async def test_prefer_external(browser):
     )
     assert len(scripts) == 1
 
-    await app.stop()
-
 
 @pytest.mark.async_test
-async def test_global_requirements(browser):
+async def test_global_requirements(start_visit, browser):
     from tests.apps.app_requirements import app
 
-    await app.main(blocking=False)
+    await start_visit(app)
     await browser.get('http://localhost:8150/')
 
     scripts = await browser.wait_for_elements_by_xpath(
         '//script[contains(@src, "withRequirements.js")]'
     )
     assert len(scripts) == 1
-
-    await app.stop()

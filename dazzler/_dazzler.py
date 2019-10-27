@@ -9,6 +9,7 @@ import typing
 
 from concurrent.futures import ThreadPoolExecutor
 
+import appdirs
 import precept
 
 from .system.auth import Authenticator, DazzlerAuth, AuthBackend
@@ -34,8 +35,6 @@ from .errors import (
     PageConflictError, ServerStartedError, SessionError, AuthError
 )
 from ._assets import assets_path
-# noinspection PyProtectedMember
-from .system._requirements import _internal_data_dir
 
 
 class Dazzler(precept.Precept):
@@ -85,6 +84,10 @@ class Dazzler(precept.Precept):
         self.stop_event = asyncio.Event()
         self._prepared = False
         self._started = False
+        self.data_dir = os.path.join(
+            appdirs.user_data_dir('dazzler'), self.app_name
+        )
+        self.requirements_dir = os.path.join(self.data_dir, 'requirements')
 
     def add_page(self, *pages: Page):
         if self._started:
@@ -176,11 +179,6 @@ class Dazzler(precept.Precept):
         # Copy all requirements to make sure all is latest.
         await self.copy_requirements()
 
-        # Remove the renderer from package_list once copied.
-        # Served by default by the index.
-        if 'dazzler_renderer' in Package.package_registry:
-            Package.package_registry.pop('dazzler_renderer')
-
         await self.events.dispatch('dazzler_setup', application=self)
 
         # Add package defined routes
@@ -250,6 +248,13 @@ class Dazzler(precept.Precept):
     )
     async def copy_requirements(self, packages=tuple()):
         self.logger.debug('Copying requirements.')
+
+        if not os.path.exists(self.data_dir):
+            os.makedirs(self.data_dir)
+
+        shutil.rmtree(self.requirements_dir, ignore_errors=True)
+        os.makedirs(self.requirements_dir, exist_ok=True)
+
         for package in packages:
             self.logger.debug(f'Importing package: {package}')
             importlib.import_module(package)
@@ -268,25 +273,33 @@ class Dazzler(precept.Precept):
         for requirement in itertools.chain(*requirements):
             if not requirement.internal:
                 continue
+            destination = os.path.join(
+                self.requirements_dir, requirement.internal_static
+            )
             self.logger.debug(
                 f'Copying {requirement.internal} '
-                f'to {requirement.internal_static}'
+                f'to {destination}'
             )
+            os.makedirs(os.path.dirname(destination), exist_ok=True)
             futures.append(self.executor.execute(
                 shutil.copy,
                 requirement.internal,
-                requirement.internal_static
+                destination,
             ))
             if requirement.dev:
+                destination = os.path.join(
+                    self.requirements_dir, requirement.dev_static
+                )
                 self.logger.debug(
                     f'Copying {requirement.dev} '
-                    f'to {requirement.dev_static}'
+                    f'to {destination}'
                 )
+                os.makedirs(os.path.dirname(destination), exist_ok=True)
                 futures.append(
                     self.executor.execute(
                         shutil.copy,
                         requirement.dev,
-                        requirement.dev_static
+                        destination,
                     )
                 )
 
@@ -295,7 +308,7 @@ class Dazzler(precept.Precept):
             self.executor.execute(
                 shutil.copy,
                 os.path.join(assets_path, 'index.js'),
-                os.path.join(_internal_data_dir)
+                self.requirements_dir
             )
         )
         await asyncio.gather(*futures)
