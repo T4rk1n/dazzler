@@ -69,8 +69,15 @@ class DazzlerConfig(Config):
         )
         duration = ConfigProperty(
             config_type=int,
-            comment='Maximum duration of a session in seconds.',
-            default=86400,
+            comment='Maximum duration of a session in seconds. '
+                    '(Default=30 days)',
+            default=2592000,
+        )
+        refresh_after = ConfigProperty(
+            config_type=int,
+            comment='Refresh the session when accessed '
+                    'after this number of seconds. (Default=7 days)',
+            default=604800
         )
 
     session: Session

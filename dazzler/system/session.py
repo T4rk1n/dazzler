@@ -5,6 +5,7 @@ import time
 import weakref
 import uuid
 import enum
+import base64
 
 from typing import Any, Optional
 
@@ -39,7 +40,7 @@ class Session:
         :param session_id: The session id to perform operations.
         :param query_queue: To send commands up.
         """
-        self._session_id = session_id
+        self.session_id = session_id
         self._query_queue = query_queue
 
     async def get(self, key: str) -> Any:
@@ -51,7 +52,7 @@ class Session:
         """
         queue = asyncio.Queue()
         await self._query_queue.put(
-            (SessionAction.GET, self._session_id, key, queue)
+            (SessionAction.GET, self.session_id, key, queue)
         )
         return await queue.get()
 
@@ -64,7 +65,7 @@ class Session:
         :return:
         """
         await self._query_queue.put(
-            (SessionAction.SET, self._session_id, key, value)
+            (SessionAction.SET, self.session_id, key, value)
         )
 
     async def delete(self, key):
@@ -75,7 +76,7 @@ class Session:
         :return:
         """
         await self._query_queue.put(
-            (SessionAction.DELETE, self._session_id, key, 0)
+            (SessionAction.DELETE, self.session_id, key, 0)
         )
 
     async def pop(self, key):
@@ -305,11 +306,10 @@ class SessionMiddleware(Middleware):
         ]
         self.app.events.subscribe('dazzler_stop', self._on_stop)
 
-    def generate_session_id(self):
-        return self.signer.sign(uuid.uuid4().hex).decode()
-
-    def verify_session_id(self, session_id):
-        return self.signer.unsign(session_id).decode()
+    def verify_session(self, session_id):
+        unsigned = self.signer.unsign(session_id).decode()
+        session, created = unsigned.split('#')
+        return session, int(base64.b64decode(created))
 
     async def _handle_queries(self):
         while not self.app.stop_event.is_set():
@@ -322,31 +322,37 @@ class SessionMiddleware(Middleware):
             elif action == SessionAction.DELETE:
                 await self._backend.delete(session_id, key)
 
+    def _set_session(self, session_id: str = None):
+        session_id = session_id or uuid.uuid4().hex
+
+        created = base64.b64encode(str(int(time.time())).encode()).decode()
+
+        async def set_cookie(response):
+            response.set_cookie(
+                self.app.config.session.cookie_name,
+                self.signer.sign(f'{session_id}#{created}').decode(),
+                httponly=True,
+                max_age=self.app.config.session.duration,
+            )
+        return session_id, set_cookie
+
     async def __call__(self, request: web.Request):
-        session_id = request.cookies.get(
+        cookie = request.cookies.get(
             self.app.config.session.cookie_name
         )
         callback = None
 
-        if not session_id:
-            session_id = self.generate_session_id()
-
-            async def set_cookie(response):
-                response.set_cookie(
-                    self.app.config.session.cookie_name,
-                    session_id,
-                    httponly=True,
-                    max_age=self.app.config.session.duration,
-                )
-
-            callback = set_cookie
-        try:
-            # TODO improve by regenerating a good key instead.
-            self.verify_session_id(session_id)
-        except BadSignature:
-            error = web.HTTPUnauthorized()
-            error.del_cookie(self.app.config.session.cookie_name)
-            raise error
+        if not cookie:
+            session_id, callback = self._set_session()
+        else:
+            try:
+                session_id, created = self.verify_session(cookie)
+                delta = time.time() - created
+                if delta > self.app.config.session.refresh_after:
+                    session_id, callback = self._set_session(session_id)
+            except BadSignature as error:
+                session_id, callback = self._set_session()
+                self.app.logger.exception(error)
 
         request['session'] = Session(
             session_id,
