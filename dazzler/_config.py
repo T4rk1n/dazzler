@@ -70,7 +70,7 @@ class DazzlerConfig(Config):
         duration = ConfigProperty(
             config_type=int,
             comment='Maximum duration of a session in seconds.',
-            default=86400,
+            default=2592000,
         )
 
     session: Session
