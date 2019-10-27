@@ -10,6 +10,7 @@ Versions follow [Semantic Versioning](https://www.semver.org)
 - :hammer: Generate react-docs metadata from dazzler command. [#4](https://github.com/T4rk1n/dazzler/issues/4)
 - :wrench: Set default session duration to 30 days. [#22](https://github.com/T4rk1n/dazzler/issues/22)
 - :sparkles: Add session refresh. [#22](https://github.com/T4rk1n/dazzler/issues/22)
+- :hammer: Add app requirements scope. [#21](https://github.com/T4rk1n/dazzler/issues/21)
 
 ## [0.1.0]
 ### Added
