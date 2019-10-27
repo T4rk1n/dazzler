@@ -1,6 +1,6 @@
 # pylint: disable=redefined-outer-name
 import asyncio
-
+import uuid
 import pytest
 
 from dazzler import Dazzler
@@ -15,6 +15,7 @@ from dazzler.system.session import (
 def session_app():
     app = Dazzler(__name__)
     app.config.session.duration = 3
+    app.config.secret_key = uuid.uuid4().hex
 
     page = Page(
         __name__,
