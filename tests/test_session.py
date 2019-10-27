@@ -1,3 +1,5 @@
+import asyncio
+
 import pytest
 
 from dazzler import Dazzler
@@ -56,3 +58,35 @@ async def test_session(start_visit, browser, backend):
     await browser.click('#remove-session')
     await browser.click('#session-click')
     await browser.wait_for_text_to_equal('#session-output', f'Clicked 1')
+
+
+@pytest.mark.async_test
+async def test_expired_session(start_visit, browser):
+    app = Dazzler(__name__)
+    app.config.session.duration = 3
+
+    page = Page(
+        __name__,
+        core.Container([
+            core.Container(identity='session-output', clicks=1)
+        ]),
+        url='/'
+    )
+
+    @page.bind(Trigger('session-output', 'clicks'))
+    async def on_session(ctx: BindingContext):
+        await ctx.set_aspect('session-output', children=ctx.session.session_id)
+
+    app.add_page(page)
+
+    await start_visit(app)
+    await asyncio.sleep(0.5)
+
+    first = (await browser.wait_for_element_by_id('session-output')).text
+
+    await asyncio.sleep(4)
+    await browser.get('http://localhost:8150/')
+
+    second = (await browser.wait_for_element_by_id('session-output')).text
+
+    assert first != second, 'Session should be changed after expiration'
