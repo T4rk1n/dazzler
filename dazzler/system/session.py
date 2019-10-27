@@ -9,7 +9,6 @@ import base64
 
 from typing import Any, Optional
 
-import appdirs
 from itsdangerous import Signer, BadSignature
 from aiohttp import web
 
