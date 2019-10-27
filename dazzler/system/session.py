@@ -167,8 +167,10 @@ class FileSessionBackEnd(SessionBackEnd):
 
         await self.acquire(session_id)
 
-        with open(self._session_path(session_id)) as f:
+        with open(path) as f:
             data = json.load(f)
+
+        os.utime(path, None)
 
         self.release(session_id)
         return data
