@@ -37,9 +37,22 @@ def start_visit(browser):  # pylint: disable=redefined-outer-name
         'app': None
     }
 
-    async def _start_app(app, url='http://localhost:8150/', debug=False):
+    async def _start_app(
+            app,
+            url='http://localhost:8150/',
+            debug=False,
+            start_event=None,
+            **kwargs
+    ):
         namespace['app'] = app
-        await app.main(blocking=False, debug=debug)
+        await app.main(
+            blocking=False,
+            debug=debug,
+            start_event=start_event,
+            **kwargs
+        )
+        if start_event:
+            await start_event.wait()
         await browser.get(url)
 
     yield _start_app
