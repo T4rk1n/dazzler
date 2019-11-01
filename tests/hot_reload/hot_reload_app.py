@@ -8,4 +8,4 @@ app.add_page(hot_reload_page.page)
 
 
 if __name__ == '__main__':
-    app.start(['--reload'])
+    app.start('--v --reload --debug')
