@@ -75,7 +75,6 @@ class Page:
                 self.requirements_dir, page=self.name
             )
 
-        self.requirements_dir = requirements_dir
         self.header = header
         self.footer = footer
         self.favicon = favicon
