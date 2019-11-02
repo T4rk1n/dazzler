@@ -277,7 +277,10 @@ class Dazzler(precept.Precept):
 
     def requirement_from_file(self, file) -> typing.Optional[Requirement]:
         for requirement in self.collect_requirements():
-            if any(file in r for r in (requirement.internal, requirement.dev) if r):
+            if any(
+                    file in r for r in (requirement.internal, requirement.dev)
+                    if r
+            ):
                 return requirement
         return None
 
