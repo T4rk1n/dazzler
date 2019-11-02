@@ -32,9 +32,11 @@ from ._config import DazzlerConfig
 from ._server import Server
 from ._version import __version__
 from .errors import (
-    PageConflictError, ServerStartedError, SessionError, AuthError
+    PageConflictError, ServerStartedError, SessionError, AuthError,
+    NoInstanceFoundError
 )
 from ._assets import assets_path
+from ._reloader import start_reloader
 
 
 class Dazzler(precept.Precept):
@@ -57,12 +59,18 @@ class Dazzler(precept.Precept):
             help='Path to the application',
             type=str
         ),
+        precept.Argument(
+            '--reloaded',
+            action='store_true'
+        ),
     ]
     server: Server
     auth: DazzlerAuth
 
     def __init__(self, module_name, app_name=None):
         module = importlib.import_module(module_name)
+        self.module_file = module.__file__
+        self.module_name = module_name
         self.root_path = os.path.dirname(module.__file__)
         self.app_name = app_name or \
             os.path.basename(module.__file__).rstrip('.py')
@@ -104,7 +112,9 @@ class Dazzler(precept.Precept):
             self.pages[page.name] = page
 
     async def stop(self):
-        await self.server.site.stop()
+        self.stop_event.set()
+        if self.server.site:
+            await self.server.site.stop()
 
     # pylint: disable=arguments-differ
     async def main(
@@ -112,30 +122,59 @@ class Dazzler(precept.Precept):
             application=None,
             blocking=True,
             debug=False,
+            reload=False,
+            reloaded=False,
+            start_event=None,
             **kwargs
     ):
         if application:
             # When running from the command line need to insert the path.
             # Otherwise it will never find it.
             sys.path.insert(0, '.')
-            mod_path, app_name = application.split(':')
-            module = importlib.import_module(mod_path)
-            app: Dazzler = getattr(module, app_name)
+            module = importlib.import_module(application)
+
+            app: typing.Optional[Dazzler] = None
+
+            # Search for instance so you don't have to supply a name
+            # with weird syntax.
+            for instance in vars(module).values():
+                if isinstance(instance, Dazzler):
+                    app: Dazzler = instance
+
+            if app is None:
+                raise NoInstanceFoundError(
+                    f'No dazzler application found in {application}'
+                )
+
             # Set cli for arguments
             app.cli = self.cli
+            await app._on_parse(self._args)
         else:
             app = self
 
-        await app.setup_server(debug=debug or app.config.debug)
+        reloader = None
 
-        await app.server.start(
-            app.config.host, app.config.port,
-        )
+        if reload:
+            app.config.development.reload = True
+            reloader = self.loop.create_task(
+                start_reloader(app, reloaded, start_event)
+            )
+
+        if not reload or (reload and reloaded):
+            if debug:
+                app.config.debug = debug
+            await app.setup_server(debug=app.config.debug)
+
+            await app.server.start(
+                app.config.host, app.config.port,
+            )
 
         # Test needs it to run without loop
         # Otherwise the server closes when the event loop ends.
-        if blocking:
+        if blocking and not reloader:
             await self._loop()
+        elif blocking and reloader:
+            await reloader
 
     async def _loop(self):
         while not self.stop_event.is_set():
@@ -224,6 +263,24 @@ class Dazzler(precept.Precept):
             await self.setup_server()
         return self.server.app
 
+    def collect_requirements(self) -> typing.Set[Requirement]:
+        requirements = [
+            package.requirements for package
+            in Package.package_registry.values()
+        ]
+        requirements += [self.requirements]
+        requirements += [
+            page.requirements for page in self.pages.values()
+        ]
+
+        return set(itertools.chain(*requirements))
+
+    def requirement_from_file(self, file) -> typing.Optional[Requirement]:
+        for requirement in self.collect_requirements():
+            if any(file in r for r in (requirement.internal, requirement.dev) if r):
+                return requirement
+        return None
+
     # Commands
 
     @precept.Command(
@@ -261,16 +318,7 @@ class Dazzler(precept.Precept):
 
         futures = []
 
-        requirements = [
-            package.requirements for package
-            in Package.package_registry.values()
-        ]
-        requirements += [self.requirements]
-        requirements += [
-            page.requirements for page in self.pages.values()
-        ]
-
-        for requirement in itertools.chain(*requirements):
+        for requirement in self.collect_requirements():
             if not requirement.internal:
                 continue
             destination = os.path.join(
@@ -313,10 +361,39 @@ class Dazzler(precept.Precept):
         )
         await asyncio.gather(*futures)
 
+    # Handlers
+
+    async def on_file_change(self, filenames: typing.List[str]):
+        hot = False  # Restart the server & Reload the page api/layout.
+        refresh = False  # Refresh the page because the root bundles changed.
+        files = set()
+        for filename in filenames:
+            if filename.endswith('.py'):
+                hot = True
+            elif filename.endswith('.js') or filename.endswith('.css'):
+                if 'dazzler_renderer' in filename:
+                    refresh = True
+                requirement = self.requirement_from_file(filename)
+                if requirement:
+                    files.add(requirement)
+                else:
+                    requirement = Requirement(internal=filename)
+                    files.add(requirement)
+                    self.requirements.append(requirement)
+        if not hot:
+            await self.copy_requirements()
+        await self.server.send_reload(
+            [r.prepare(dev=self.config.debug) for r in files],
+            hot,
+            refresh
+        )
+        return hot
+
     async def _on_startup(self, _):
         await self.events.dispatch('dazzler_start', application=self)
 
     async def _on_shutdown(self, _):
+        self.stop_event.set()
         await self.events.dispatch('dazzler_stop', application=self)
 
     async def _enable_auth(self):

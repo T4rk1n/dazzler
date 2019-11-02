@@ -3,6 +3,12 @@ import Updater from './Updater';
 import PropTypes from 'prop-types';
 
 export default class Renderer extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            reloadKey: 1,
+        };
+    }
     componentWillMount() {
         window.dazzler_base_url = this.props.baseUrl;
     }
@@ -10,7 +16,13 @@ export default class Renderer extends React.Component {
     render() {
         return (
             <div className="dazzler-renderer">
-                <Updater {...this.props} />
+                <Updater
+                    {...this.props}
+                    key={`upd-${this.state.reloadKey}`}
+                    hotReload={() =>
+                        this.setState({reloadKey: this.state.reloadKey + 1})
+                    }
+                />
             </div>
         );
     }

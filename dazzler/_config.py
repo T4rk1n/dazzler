@@ -156,5 +156,30 @@ class DazzlerConfig(Config):
 
     authentication: Authentication
 
+    class Development(Nestable):
+        reload = ConfigProperty(
+            default=False,
+            config_type=bool,
+            auto_global=True,
+            global_name='reload',
+            comment='Enable hot reload when files used by the application'
+                    ' are changed.'
+        )
+
+        reload_interval = ConfigProperty(
+            default=0.5,
+            config_type=float,
+            comment='Interval at which the reload checks for file changes.'
+        )
+
+        reload_threshold = ConfigProperty(
+            default=3.0,
+            config_type=float,
+            comment='Time to wait from first detected change '
+                    'to actual reload.'
+        )
+
+    development: Development
+
     def __init__(self):
         super().__init__(root_name='dazzler', config_format=ConfigFormat.TOML)

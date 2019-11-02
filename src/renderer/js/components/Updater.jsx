@@ -133,6 +133,8 @@ export default class Updater extends React.Component {
             bindings: {},
             packages: [],
             requirements: [],
+            reloading: false,
+            needRefresh: false,
         };
         // The api url for the page is the same but a post.
         // Fetch bindings, packages & requirements
@@ -261,6 +263,18 @@ export default class Updater extends React.Component {
                     })
                 );
                 break;
+            case 'reload':
+                const {filenames, hot, refresh} = data;
+                if (refresh) {
+                    return this.setState({reloading: true, needRefresh: true});
+                }
+                if (hot) {
+                    // The ws connection will close, when it
+                    // reconnect it will do a hard reload of the page api.
+                    return this.setState({reloading: true});
+                }
+                this.loadRequirements(filenames, {});
+                break;
             case 'ping':
                 // Just do nothing.
                 break;
@@ -346,6 +360,7 @@ export default class Updater extends React.Component {
     _connectWS() {
         // Setup websocket for updates
         let tries = 0;
+        let hardClose = false;
         const connexion = () => {
             this.ws = new WebSocket(
                 `ws${
@@ -355,15 +370,25 @@ export default class Updater extends React.Component {
             );
             this.ws.addEventListener('message', this.onMessage);
             this.ws.onopen = () => {
-                this.setState({ready: true});
-                tries = 0;
+                if (this.state.reloading) {
+                    hardClose = true;
+                    this.ws.close();
+                    if (this.state.needRefresh) {
+                        window.location.reload();
+                    } else {
+                        this.props.hotReload();
+                    }
+                } else {
+                    this.setState({ready: true});
+                    tries = 0;
+                }
             };
             this.ws.onclose = () => {
                 const reconnect = () => {
                     tries++;
                     connexion();
                 };
-                if (tries < this.props.retries) {
+                if (!hardClose && tries < this.props.retries) {
                     setTimeout(reconnect, 1000);
                 }
             };
@@ -390,7 +415,7 @@ export default class Updater extends React.Component {
                 response.requirements,
                 response.packages
             ).then(() => {
-                if (Object.keys(response.bindings).length) {
+                if (Object.keys(response.bindings).length || response.reload) {
                     this._connectWS();
                 } else {
                     this.setState({ready: true});
@@ -400,8 +425,9 @@ export default class Updater extends React.Component {
     }
 
     render() {
-        const {layout, ready} = this.state;
+        const {layout, ready, reloading} = this.state;
         if (!ready) return <div>Loading...</div>;
+        if (reloading) return <div>Reloading...</div>;
         if (!isComponent(layout)) {
             throw new Error(`Layout is not a component: ${layout}`);
         }
@@ -434,4 +460,5 @@ Updater.propTypes = {
     ping: PropTypes.bool,
     ping_interval: PropTypes.number,
     retries: PropTypes.number,
+    hotReload: PropTypes.func,
 };

@@ -18,6 +18,10 @@ class BindingError(DazzlerError):
     """Error in the binding system"""
 
 
+class NoInstanceFoundError(DazzlerError):
+    """No instance was found when the application is run by command line."""
+
+
 class GetAspectError(BindingError):
     """Error while retrieving an aspect from the frontend."""
 
