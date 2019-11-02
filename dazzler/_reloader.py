@@ -92,6 +92,79 @@ async def watch(
         await asyncio.sleep(interval)
 
 
+async def run_reloaded(app, start_event):
+    run_stop = asyncio.Event()
+
+    if app.module_name == '__main__':
+        # Main can't be called so get the path from the file instead.
+        app_path = pathlib.Path(app.module_file).relative_to(os.getcwd())
+        app_path = str(app_path).replace('.py', '').replace(os.sep, '.')
+    else:
+        app_path = app.module_name
+
+    app.logger.debug(f'Starting app in reloaded mode: {app_path}')
+
+    args = OrderedSet(*f'{sys.executable} -m dazzler'.split())
+    for arg in itertools.chain(
+            app.cli.raw_args,
+            ['--application', app_path, '--reload', '--reloaded']
+    ):
+        args.add(arg)
+
+    proc = subprocess.Popen(
+        list(args),
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+    )
+
+    def handle_std(stream, outfile):
+        while not run_stop.is_set() and not app.stop_event.is_set():
+            data = stream.readline()
+            if app.stop_event.is_set():
+                proc.kill()
+                proc.wait()
+                return
+            if data:
+                data = data.decode().strip()
+                if start_event and 'Started server' in data:
+                    start_event.set()
+                print(data, file=outfile)
+
+    async def handle_poll():
+        while proc.poll() is None:
+            if app.stop_event.is_set():
+                proc.kill()
+                proc.wait()
+                run_stop.set()
+                return
+            await asyncio.sleep(0.001)
+        run_stop.set()
+
+    async def cleanup(_):
+        if proc.poll() is None:
+            proc.kill()
+            proc.wait()
+
+    async def handle_stop():
+        await app.stop_event.wait()
+        await cleanup(None)
+
+    # Keyboard interrupt prevent the subprocess from terminating and
+    # would otherwise require a KILL signal.
+    app.events.subscribe('KeyboardInterrupt', cleanup)
+    app.events.subscribe('dazzler_stop', cleanup)
+    stopper = app.loop.create_task(handle_stop())
+
+    await asyncio.gather(
+        # Run these in threads since they block and get stuck
+        app.executor.execute(handle_std, proc.stdout, None),
+        app.executor.execute(handle_std, proc.stderr, sys.stderr),
+        handle_poll(),
+    )
+    if not stopper.done():
+        stopper.cancel()
+
+
 async def start_reloader(app, reloaded=False, start_event=None):
     """
     Start the reload mechanism.
@@ -107,83 +180,11 @@ async def start_reloader(app, reloaded=False, start_event=None):
     :return:
     """
 
-    async def run():
-        run_stop = asyncio.Event()
-
-        if app.module_name == '__main__':
-            # Main can't be called so get the path from the file instead.
-            app_path = pathlib.Path(app.module_file).relative_to(os.getcwd())
-            app_path = str(app_path).replace('.py', '').replace(os.sep, '.')
-        else:
-            app_path = app.module_name
-
-        app.logger.debug(f'Starting app in reloaded mode: {app_path}')
-
-        args = OrderedSet(*f'{sys.executable} -m dazzler'.split())
-        for arg in itertools.chain(
-                app.cli.raw_args,
-                ['--application', app_path, '--reload', '--reloaded']
-        ):
-            args.add(arg)
-
-        proc = subprocess.Popen(
-            list(args),
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-        )
-
-        def handle_std(stream, outfile):
-            while not run_stop.is_set() and not app.stop_event.is_set():
-                data = stream.readline()
-                if app.stop_event.is_set():
-                    proc.kill()
-                    proc.wait()
-                    return
-                if data:
-                    data = data.decode().strip()
-                    if start_event and 'Started server' in data:
-                        start_event.set()
-                    print(data, file=outfile)
-
-        async def handle_poll():
-            while proc.poll() is None:
-                if app.stop_event.is_set():
-                    proc.kill()
-                    proc.wait()
-                    run_stop.set()
-                    return
-                await asyncio.sleep(0.001)
-            run_stop.set()
-
-        async def cleanup(_):
-            if proc.poll() is None:
-                proc.kill()
-                proc.wait()
-
-        async def handle_stop():
-            await app.stop_event.wait()
-            await cleanup(None)
-
-        # Keyboard interrupt prevent the subprocess from terminating and
-        # would otherwise require a KILL signal.
-        app.events.subscribe('KeyboardInterrupt', cleanup)
-        app.events.subscribe('dazzler_stop', cleanup)
-        stopper = app.loop.create_task(handle_stop())
-
-        await asyncio.gather(
-            # Run these in threads since they block and get stuck
-            app.executor.execute(handle_std, proc.stdout, None),
-            app.executor.execute(handle_std, proc.stderr, sys.stderr),
-            handle_poll(),
-        )
-        if not stopper.done():
-            stopper.cancel()
-
     if not reloaded:
         while not app.stop_event.is_set():
             # Run this forever reloading every time the watch detect python
             # file change
-            await run()
+            await run_reloaded(app, start_event)
             app.logger.info('Reloading...')
     else:
         # Watch files on live server to send reload update thru ws.
