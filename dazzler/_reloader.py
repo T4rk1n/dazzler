@@ -160,17 +160,24 @@ async def start_reloader(app, reloaded=False, start_event=None):
                 proc.kill()
                 proc.wait()
 
+        async def handle_stop():
+            await app.stop_event.wait()
+            await cleanup(None)
+
         # Keyboard interrupt prevent the subprocess from terminating and
         # would otherwise require a KILL signal.
         app.events.subscribe('KeyboardInterrupt', cleanup)
         app.events.subscribe('dazzler_stop', cleanup)
+        stopper = app.loop.create_task(handle_stop())
 
         await asyncio.gather(
             # Run these in threads since they block and get stuck
             app.executor.execute(handle_std, proc.stdout, None),
             app.executor.execute(handle_std, proc.stderr, sys.stderr),
-            handle_poll()
+            handle_poll(),
         )
+        if not stopper.done():
+            stopper.cancel()
 
     if not reloaded:
         while not app.stop_event.is_set():

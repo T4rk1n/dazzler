@@ -112,9 +112,9 @@ class Dazzler(precept.Precept):
             self.pages[page.name] = page
 
     async def stop(self):
-        self.stop_event.set()
         if self.server.site:
             await self.server.site.stop()
+        self.stop_event.set()
 
     # pylint: disable=arguments-differ
     async def main(
