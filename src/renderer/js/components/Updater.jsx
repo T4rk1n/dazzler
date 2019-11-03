@@ -253,8 +253,12 @@ export default class Updater extends React.Component {
 
     render() {
         const {layout, ready, reloading} = this.state;
-        if (!ready) return <div>Loading...</div>;
-        if (reloading) return <div>Reloading...</div>;
+        if (!ready) {
+            return <div className="dazzler-loading">Loading...</div>;
+        }
+        if (reloading) {
+            return <div className="dazzler-loading">Reloading...</div>;
+        }
         if (!isComponent(layout)) {
             throw new Error(`Layout is not a component: ${layout}`);
         }
