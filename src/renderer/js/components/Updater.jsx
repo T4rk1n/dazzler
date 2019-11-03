@@ -25,8 +25,6 @@ export default class Updater extends React.Component {
         // The api url for the page is the same but a post.
         // Fetch bindings, packages & requirements
         this.pageApi = apiRequest(
-            this.getHeaders.bind(this),
-            this.refresh.bind(this),
             window.location.href
         );
         // All components get connected.
@@ -230,12 +228,6 @@ export default class Updater extends React.Component {
         };
         connexion();
     }
-
-    // TODO implement or remove dependence on these functions.
-    getHeaders() {
-        return {};
-    }
-    refresh() {}
 
     componentWillMount() {
         this.pageApi('', {method: 'POST'}).then(response => {
