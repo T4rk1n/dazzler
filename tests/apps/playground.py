@@ -43,4 +43,4 @@ app.add_page(*pages)
 
 
 if __name__ == '__main__':
-    app.start('-v --debug=1 --port 8188'.split())
+    app.start('-v --debug --port 8188 --reload')

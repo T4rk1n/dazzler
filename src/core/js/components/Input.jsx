@@ -49,10 +49,7 @@ export default class Input extends React.Component {
                 autoCorrect={auto_correct}
                 minLength={min_length}
                 maxLength={max_length}
-                {...omit(
-                    omitted,
-                    this.props
-                )}
+                {...omit(omitted, this.props)}
                 onChange={e => {
                     const payload = {};
                     switch (this.props.type) {

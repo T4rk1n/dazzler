@@ -15,6 +15,7 @@ module.exports = function(env, argv) {
         sourceMapFilename: 'dazzler_[name]_[hash].js.map',
         library: 'dazzler_[name]',
         libraryTarget: 'umd',
+        devtoolModuleFilenameTemplate: 'webpack:///[resource-path]?[loaders]'
     };
 
     if (devMode) {

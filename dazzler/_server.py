@@ -29,7 +29,7 @@ class Server:
     runner: web.AppRunner
     loop: asyncio.AbstractEventLoop
     app: web.Application
-    site: web.TCPSite
+    site: Optional[web.TCPSite]
 
     def __init__(self, dazzler, loop=None, app: web.Application = None):
         """
@@ -47,6 +47,7 @@ class Server:
         self.logger = self.dazzler.logger
         self.websockets = weakref.WeakSet()
         self.debug = False
+        self.site = None
 
     def setup_routes(self, routes: List[Route] = None, debug: bool = False):
         """
@@ -252,6 +253,11 @@ class Server:
                 external=self.dazzler.config.requirements.prefer_external
             ) for x in self.dazzler.requirements
         ] + prepared['requirements']
+
+        if self.dazzler.config.development.reload:
+            # Reload mode needs the websocket even if no binding.
+            prepared['reload'] = True
+
         return web.json_response(prepared)
 
     async def route_get_page(self, request: web.Request):
@@ -299,6 +305,16 @@ class Server:
         for ws in set(self.websockets):
             await ws.close(code=WSCloseCode.GOING_AWAY,
                            message='Server shutdown')
+
+    async def send_reload(self, filenames, hot, refresh, deleted):
+        for ws in set(self.websockets):
+            await ws.send_json({
+                'kind': 'reload',
+                'filenames': filenames,
+                'hot': hot,
+                'refresh': refresh,
+                'deleted': deleted
+            })
 
     def _apply_middleware(self, handler):
         if not self.dazzler.middlewares:

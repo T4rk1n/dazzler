@@ -1,127 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {merge, type, omit, map} from 'ramda';
-import Wrapper from './Wrapper';
 import {apiRequest} from '../requests';
-import {loadCss, loadScript} from '../../../commons/js';
-
-function isComponent(c) {
-    return (
-        type(c) === 'Object' &&
-        (c.hasOwnProperty('package') &&
-            c.hasOwnProperty('aspects') &&
-            c.hasOwnProperty('name') &&
-            c.hasOwnProperty('identity'))
-    );
-}
-
-function hydrateProps(props, updateAspects, connect, disconnect) {
-    const replace = {};
-    Object.entries(props).forEach(([k, v]) => {
-        if (type(v) === 'Array') {
-            replace[k] = v.map(c => {
-                if (!isComponent(c)) {
-                    // Mixing components and primitives
-                    return c;
-                }
-                const newProps = hydrateProps(
-                    c.aspects,
-                    updateAspects,
-                    connect,
-                    disconnect
-                );
-                if (!newProps.key) {
-                    newProps.key = c.identity;
-                }
-                return hydrateComponent(
-                    c.name,
-                    c.package,
-                    c.identity,
-                    newProps,
-                    updateAspects,
-                    connect,
-                    disconnect
-                );
-            });
-        } else if (isComponent(v)) {
-            const newProps = hydrateProps(
-                v.aspects,
-                updateAspects,
-                connect,
-                disconnect
-            );
-            replace[k] = hydrateComponent(
-                v.name,
-                v.package,
-                v.identity,
-                newProps,
-                updateAspects,
-                connect,
-                disconnect
-            );
-        } else if (type(v) === 'Object') {
-            replace[k] = hydrateProps(v, updateAspects, connect, disconnect);
-        }
-    });
-    return merge(props, replace);
-}
-
-function hydrateComponent(
-    name,
-    package_name,
-    identity,
-    props,
-    updateAspects,
-    connect,
-    disconnect
-) {
-    const pack = window[package_name];
-    const element = React.createElement(pack[name], props);
-    return (
-        <Wrapper
-            identity={identity}
-            updateAspects={updateAspects}
-            component={element}
-            connect={connect}
-            package_name={package_name}
-            component_name={name}
-            aspects={props}
-            disconnect={disconnect}
-            key={`wrapper-${identity}`}
-        />
-    );
-}
-
-function prepareProp(prop) {
-    if (React.isValidElement(prop)) {
-        return {
-            identity: prop.props.identity,
-            aspects: map(
-                prepareProp,
-                omit(
-                    [
-                        'identity',
-                        'updateAspects',
-                        '_name',
-                        '_package',
-                        'aspects',
-                        'key',
-                    ],
-                    prop.props.aspects // You actually in the wrapper here.
-                )
-            ),
-            name: prop.props.component_name,
-            package: prop.props.package_name,
-        };
-    }
-    if (type(prop) === 'Array') {
-        return prop.map(prepareProp);
-    }
-    if (type(prop) === 'Object') {
-        return map(prepareProp, prop);
-    }
-    return prop;
-}
+import {
+    hydrateComponent,
+    hydrateProps,
+    isComponent,
+    prepareProp,
+} from '../hydrator';
+import {loadRequirement, loadRequirements} from '../requirements';
+import {disableCss} from '../../../commons/js/utils';
 
 export default class Updater extends React.Component {
     constructor(props) {
@@ -133,14 +20,12 @@ export default class Updater extends React.Component {
             bindings: {},
             packages: [],
             requirements: [],
+            reloading: false,
+            needRefresh: false,
         };
         // The api url for the page is the same but a post.
         // Fetch bindings, packages & requirements
-        this.pageApi = apiRequest(
-            this.getHeaders.bind(this),
-            this.refresh.bind(this),
-            window.location.href
-        );
+        this.pageApi = apiRequest(window.location.href);
         // All components get connected.
         this.boundComponents = {};
         this.ws = null;
@@ -261,6 +146,20 @@ export default class Updater extends React.Component {
                     })
                 );
                 break;
+            case 'reload':
+                const {filenames, hot, refresh, deleted} = data;
+                if (refresh) {
+                    this.ws.close();
+                    return this.setState({reloading: true, needRefresh: true});
+                }
+                if (hot) {
+                    // The ws connection will close, when it
+                    // reconnect it will do a hard reload of the page api.
+                    return this.setState({reloading: true});
+                }
+                filenames.forEach(loadRequirement);
+                deleted.forEach(r => disableCss(r.url));
+                break;
             case 'ping':
                 // Just do nothing.
                 break;
@@ -292,60 +191,10 @@ export default class Updater extends React.Component {
         this.ws.send(JSON.stringify(payload));
     }
 
-    loadRequirements(requirements, packages) {
-        return new Promise((resolve, reject) => {
-            let loadings = [];
-            // Load packages first.
-            Object.keys(packages).forEach(pack_name => {
-                const pack = packages[pack_name];
-                loadings = loadings.concat(
-                    pack.requirements.map(this.loadRequirement)
-                );
-            });
-            // Then load requirements so they can use packages
-            // and override css.
-            Promise.all(loadings)
-                .then(() => {
-                    let i = 0;
-                    // Load in order.
-                    const handler = () => {
-                        if (i < requirements.length) {
-                            this.loadRequirement(requirements[i]).then(() => {
-                                i++;
-                                handler();
-                            });
-                        } else {
-                            resolve();
-                        }
-                    };
-                    handler();
-                })
-                .catch(reject);
-        });
-    }
-
-    loadRequirement(requirement) {
-        return new Promise((resolve, reject) => {
-            const {url, kind, meta} = requirement;
-            let method;
-            if (kind === 'js') {
-                method = loadScript;
-            } else if (kind === 'css') {
-                method = loadCss;
-            } else if (kind === 'map') {
-                return resolve();
-            } else {
-                return reject({error: `Invalid requirement kind: ${kind}`});
-            }
-            method(url, meta)
-                .then(resolve)
-                .catch(reject);
-        });
-    }
-
     _connectWS() {
         // Setup websocket for updates
         let tries = 0;
+        let hardClose = false;
         const connexion = () => {
             this.ws = new WebSocket(
                 `ws${
@@ -355,27 +204,31 @@ export default class Updater extends React.Component {
             );
             this.ws.addEventListener('message', this.onMessage);
             this.ws.onopen = () => {
-                this.setState({ready: true});
-                tries = 0;
+                if (this.state.reloading) {
+                    hardClose = true;
+                    this.ws.close();
+                    if (this.state.needRefresh) {
+                        window.location.reload();
+                    } else {
+                        this.props.hotReload();
+                    }
+                } else {
+                    this.setState({ready: true});
+                    tries = 0;
+                }
             };
             this.ws.onclose = () => {
                 const reconnect = () => {
                     tries++;
                     connexion();
                 };
-                if (tries < this.props.retries) {
+                if (!hardClose && tries < this.props.retries) {
                     setTimeout(reconnect, 1000);
                 }
             };
         };
         connexion();
     }
-
-    // TODO implement or remove dependence on these functions.
-    getHeaders() {
-        return {};
-    }
-    refresh() {}
 
     componentWillMount() {
         this.pageApi('', {method: 'POST'}).then(response => {
@@ -386,22 +239,29 @@ export default class Updater extends React.Component {
                 packages: response.packages,
                 requirements: response.requirements,
             });
-            this.loadRequirements(
-                response.requirements,
-                response.packages
-            ).then(() => {
-                if (Object.keys(response.bindings).length) {
-                    this._connectWS();
-                } else {
-                    this.setState({ready: true});
+            loadRequirements(response.requirements, response.packages).then(
+                () => {
+                    if (
+                        Object.keys(response.bindings).length ||
+                        response.reload
+                    ) {
+                        this._connectWS();
+                    } else {
+                        this.setState({ready: true});
+                    }
                 }
-            });
+            );
         });
     }
 
     render() {
-        const {layout, ready} = this.state;
-        if (!ready) return <div>Loading...</div>;
+        const {layout, ready, reloading} = this.state;
+        if (!ready) {
+            return <div className="dazzler-loading">Loading...</div>;
+        }
+        if (reloading) {
+            return <div className="dazzler-loading">Reloading...</div>;
+        }
         if (!isComponent(layout)) {
             throw new Error(`Layout is not a component: ${layout}`);
         }
@@ -434,4 +294,5 @@ Updater.propTypes = {
     ping: PropTypes.bool,
     ping_interval: PropTypes.number,
     retries: PropTypes.number,
+    hotReload: PropTypes.func,
 };

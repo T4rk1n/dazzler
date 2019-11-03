@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-
 /**
  * Update ``times`` aspect every interval to trigger a binding.
  */

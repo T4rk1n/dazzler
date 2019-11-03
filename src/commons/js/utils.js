@@ -39,6 +39,14 @@ export function loadScript(uri, timeout = 3000) {
     });
 }
 
+export function disableCss(uri) {
+    const element = document.getElementById(`css-${uri}`);
+    if (element) {
+        element.setAttribute('disabled', 'disabled');
+        element.id = null;
+    }
+}
+
 export function loadCss(uri, timeout = 3000) {
     return new Promise((resolve, reject) => {
         /* eslint-disable prefer-const */
@@ -47,12 +55,13 @@ export function loadCss(uri, timeout = 3000) {
             clearTimeout(timeoutId);
             resolve(uri);
         };
-        document.querySelector('head');
+        disableCss(uri);
         const attributes = {
             rel: 'stylesheet',
             type: 'text/css',
             href: uri,
             media: 'all',
+            id: `css-${uri}`
         };
         const element = document.createElement('link');
         Object.keys(attributes).forEach(k =>

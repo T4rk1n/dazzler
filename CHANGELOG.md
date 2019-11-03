@@ -2,9 +2,10 @@
 
 Versions follow [Semantic Versioning](https://www.semver.org)
 
-## Unreleased
+## [0.2.0]
 ### Added
 
+- :hot_pepper: Add hot reload. [#29](https://github.com/T4rk1n/dazzler/pull/29)
 - :rice: Add PopUp extra component. [#14](https://github.com/T4rk1n/dazzler/issues/14)
 - :hammer: Connect websocket only if page has bindings. [#7](https://github.com/T4rk1n/dazzler/issues/7)
 - :hammer: Generate react-docs metadata from dazzler command. [#4](https://github.com/T4rk1n/dazzler/issues/4)

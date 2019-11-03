@@ -78,33 +78,13 @@ export function xhrRequest(url, options = defaultXhrOptions) {
  * @param {function} refresh
  * @param {string} baseUrl
  */
-export function apiRequest(getHeaders, refresh, baseUrl = '') {
+export function apiRequest(baseUrl = '') {
     return function() {
-        let retried = false;
         const url = baseUrl + arguments[0];
         const options = arguments[1] || {};
-        options.headers = {...getHeaders(), ...options.headers};
-        return new Promise((resolve, reject) => {
-            xhrRequest(url, options)
-                .then(resolve)
-                .catch(err => {
-                    if (err.status === 401 && !retried) {
-                        retried = true;
-                        refresh()
-                            .then(() =>
-                                xhrRequest(url, {
-                                    ...options,
-                                    headers: {
-                                        ...options.headers,
-                                        ...getHeaders(),
-                                    },
-                                }).then(resolve)
-                            )
-                            .catch(reject);
-                    } else {
-                        reject(err);
-                    }
-                });
+        options.headers = {...options.headers};
+        return new Promise(resolve => {
+            xhrRequest(url, options).then(resolve);
         });
     };
 }
