@@ -6,9 +6,14 @@ import typing
 import pathlib
 import subprocess
 import time
+import re
 
 from ._assets import assets_path
 from .tools import OrderedSet
+
+
+# aioredis likes to changes it's files at runtime...
+redis_exclude = re.compile(r'(stringprep\.py|aioredis|hiredis|idna\.py)')
 
 
 async def watch(
@@ -72,7 +77,11 @@ async def watch(
                 (
                     x.__file__
                     for x in sys.modules.values()
-                    if hasattr(x, '__file__') and x.__file__
+                    if (
+                            hasattr(x, '__file__')
+                            and x.__file__
+                            and not redis_exclude.search(x.__file__)
+                    )
                 ),
                 extra_files,
         ):
