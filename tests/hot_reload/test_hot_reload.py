@@ -123,3 +123,24 @@ async def test_reload_requirement_new(reloader, browser):
     await browser.wait_for_style_to_equal(
         '#content', 'padding', '10px'
     )
+
+
+@pytest.mark.async_test
+async def test_reload_requirement_css_deleted(reloader, browser):
+
+    filename = 'tests/hot_reload/requirements/delete_me.css'
+    with open(filename) as f:
+        initial = f.read()
+
+    async def finisher():
+        await browser.executor.execute(write_file, filename, initial)
+
+    await reloader(finisher)
+
+    os.remove(filename)
+
+    assert not os.path.exists(filename)
+
+    await browser.wait_for_style_to_equal(
+        '#content', 'margin', '0px'
+    )
