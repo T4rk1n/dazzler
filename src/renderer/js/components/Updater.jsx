@@ -24,9 +24,7 @@ export default class Updater extends React.Component {
         };
         // The api url for the page is the same but a post.
         // Fetch bindings, packages & requirements
-        this.pageApi = apiRequest(
-            window.location.href
-        );
+        this.pageApi = apiRequest(window.location.href);
         // All components get connected.
         this.boundComponents = {};
         this.ws = null;
@@ -238,16 +236,18 @@ export default class Updater extends React.Component {
                 packages: response.packages,
                 requirements: response.requirements,
             });
-            loadRequirements(
-                response.requirements,
-                response.packages
-            ).then(() => {
-                if (Object.keys(response.bindings).length || response.reload) {
-                    this._connectWS();
-                } else {
-                    this.setState({ready: true});
+            loadRequirements(response.requirements, response.packages).then(
+                () => {
+                    if (
+                        Object.keys(response.bindings).length ||
+                        response.reload
+                    ) {
+                        this._connectWS();
+                    } else {
+                        this.setState({ready: true});
+                    }
                 }
-            });
+            );
         });
     }
 

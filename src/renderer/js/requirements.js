@@ -13,12 +13,11 @@ export function loadRequirement(requirement) {
         } else {
             return reject({error: `Invalid requirement kind: ${kind}`});
         }
-        method(url, meta)
+        return method(url, meta)
             .then(resolve)
             .catch(reject);
     });
 }
-
 
 export function loadRequirements(requirements, packages) {
     return new Promise((resolve, reject) => {
@@ -26,9 +25,7 @@ export function loadRequirements(requirements, packages) {
         // Load packages first.
         Object.keys(packages).forEach(pack_name => {
             const pack = packages[pack_name];
-            loadings = loadings.concat(
-                pack.requirements.map(loadRequirement)
-            );
+            loadings = loadings.concat(pack.requirements.map(loadRequirement));
         });
         // Then load requirements so they can use packages
         // and override css.
@@ -51,4 +48,3 @@ export function loadRequirements(requirements, packages) {
             .catch(reject);
     });
 }
-

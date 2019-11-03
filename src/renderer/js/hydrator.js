@@ -104,7 +104,7 @@ export function prepareProp(prop) {
                         'aspects',
                         'key',
                     ],
-                    prop.props.aspects // You actually in the wrapper here.
+                    prop.props.aspects
                 )
             ),
             name: prop.props.component_name,

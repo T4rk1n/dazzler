@@ -83,9 +83,8 @@ export function apiRequest(baseUrl = '') {
         const url = baseUrl + arguments[0];
         const options = arguments[1] || {};
         options.headers = {...options.headers};
-        return new Promise((resolve) => {
-            xhrRequest(url, options)
-                .then(resolve)
+        return new Promise(resolve => {
+            xhrRequest(url, options).then(resolve);
         });
     };
 }
