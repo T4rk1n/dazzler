@@ -149,6 +149,7 @@ export default class Updater extends React.Component {
             case 'reload':
                 const {filenames, hot, refresh, deleted} = data;
                 if (refresh) {
+                    this.ws.close();
                     return this.setState({reloading: true, needRefresh: true});
                 }
                 if (hot) {

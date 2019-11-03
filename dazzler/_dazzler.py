@@ -39,7 +39,7 @@ from ._assets import assets_path
 from ._reloader import start_reloader
 
 
-class Dazzler(precept.Precept):
+class Dazzler(precept.Precept):  # pylint: disable=too-many-instance-attributes
     """
     Dazzler web application & cli.
 
@@ -407,7 +407,7 @@ class Dazzler(precept.Precept):
             requirement = self.requirement_from_file(removed)
             if removed.endswith('.js'):
                 refresh = True
-            elif requirement:
+            if requirement:
                 self._remove_requirement(requirement)
                 deleted_files.add(requirement)
 
