@@ -4,5 +4,6 @@ from dazzler.system import Page
 page = Page(
     __name__,
     core.Container('Initial', identity='content'),
-    url='/'
+    url='/',
+    header='<div id="injected">Static</div>'
 )

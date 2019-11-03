@@ -134,8 +134,25 @@ async def test_reload_requirement_css_deleted(reloader, browser):
 
     os.remove(filename)
 
-    assert not os.path.exists(filename)
-
     await browser.wait_for_style_to_equal(
         '#content', 'margin', '0px'
     )
+
+
+@pytest.mark.async_test
+async def test_reload_requirement_js_deleted(reloader, browser):
+    filename = 'tests/hot_reload/requirements/injector.js'
+
+    with open(filename) as f:
+        initial = f.read()
+
+    async def finisher():
+        await browser.executor.execute(write_file, filename, initial)
+
+    await reloader(finisher)
+
+    await browser.wait_for_text_to_equal('#injected', 'Injected')
+
+    os.remove(filename)
+
+    await browser.wait_for_text_to_equal('#injected', 'Static')
