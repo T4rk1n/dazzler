@@ -2,7 +2,7 @@
 
 Versions follow [Semantic Versioning](https://www.semver.org)
 
-## Unreleased
+## [0.2.0]
 ### Added
 
 - :hot_pepper: Add hot reload. [#29](https://github.com/T4rk1n/dazzler/pull/29)
