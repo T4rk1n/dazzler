@@ -284,6 +284,20 @@ class Dazzler(precept.Precept):
                 return requirement
         return None
 
+    def _remove_requirement(self, requirement: Requirement):
+        # Remove from page requirement most probably
+        for page in self.pages.values():
+            if requirement in page.requirements:
+                page.requirements.remove(requirement)
+                return
+        if requirement in self.requirements:
+            self.requirements.remove(requirement)
+            return
+        for package in Package.package_registry.values():
+            if requirement in package.requirements:
+                package.requirements.remove(requirement)
+                return
+
     # Commands
 
     @precept.Command(
@@ -366,10 +380,15 @@ class Dazzler(precept.Precept):
 
     # Handlers
 
-    async def on_file_change(self, filenames: typing.List[str]):
+    async def on_file_change(
+            self,
+            filenames: typing.List[str],
+            deleted: typing.List[str]
+    ):
         hot = False  # Restart the server & Reload the page api/layout.
         refresh = False  # Refresh the page because the root bundles changed.
         files = set()
+        deleted_files = set()
         for filename in filenames:
             if filename.endswith('.py'):
                 hot = True
@@ -383,12 +402,22 @@ class Dazzler(precept.Precept):
                     requirement = Requirement(internal=filename)
                     files.add(requirement)
                     self.requirements.append(requirement)
+
+        for removed in deleted:
+            requirement = self.requirement_from_file(removed)
+            if removed.endswith('.js'):
+                refresh = True
+            elif requirement:
+                self._remove_requirement(requirement)
+                deleted_files.add(requirement)
+
         if not hot:
             await self.copy_requirements()
         await self.server.send_reload(
             [r.prepare(dev=self.config.debug) for r in files],
             hot,
-            refresh
+            refresh,
+            [r.prepare(dev=self.config.debug) for r in deleted_files]
         )
         return hot
 

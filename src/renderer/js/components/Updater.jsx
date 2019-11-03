@@ -8,6 +8,7 @@ import {
     prepareProp,
 } from '../hydrator';
 import {loadRequirement, loadRequirements} from '../requirements';
+import {disableCss} from '../../../commons/js/utils';
 
 export default class Updater extends React.Component {
     constructor(props) {
@@ -146,7 +147,7 @@ export default class Updater extends React.Component {
                 );
                 break;
             case 'reload':
-                const {filenames, hot, refresh} = data;
+                const {filenames, hot, refresh, deleted} = data;
                 if (refresh) {
                     return this.setState({reloading: true, needRefresh: true});
                 }
@@ -156,6 +157,7 @@ export default class Updater extends React.Component {
                     return this.setState({reloading: true});
                 }
                 filenames.forEach(loadRequirement);
+                deleted.forEach(r => disableCss(r.url));
                 break;
             case 'ping':
                 // Just do nothing.

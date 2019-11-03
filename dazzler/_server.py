@@ -306,13 +306,14 @@ class Server:
             await ws.close(code=WSCloseCode.GOING_AWAY,
                            message='Server shutdown')
 
-    async def send_reload(self, filenames, hot, refresh):
+    async def send_reload(self, filenames, hot, refresh, deleted):
         for ws in set(self.websockets):
             await ws.send_json({
                 'kind': 'reload',
                 'filenames': filenames,
                 'hot': hot,
-                'refresh': refresh
+                'refresh': refresh,
+                'deleted': deleted
             })
 
     def _apply_middleware(self, handler):

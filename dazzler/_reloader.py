@@ -56,8 +56,10 @@ async def watch(
 
     change_start = None
     changed = set()
+    deleted_files = set()
 
     while True:
+        looped = set()
         for file in itertools.chain(
                 (
                     os.path.join(current, f)
@@ -74,18 +76,25 @@ async def watch(
                 ),
                 extra_files,
         ):
+            looped.add(file)
             if handle_file(file):
                 changed.add(file)
 
-        if changed:
+        missings = set(timestamps.keys()).difference(looped)
+        for removed in missings:
+            deleted_files.add(removed)
+            timestamps.pop(removed)
+
+        if changed or deleted_files:
             if change_start is None:
                 change_start = time.time()
 
             if time.time() - change_start > threshold:
-                stop = await on_change(changed)
+                stop = await on_change(changed, deleted_files)
                 if stop:
                     return
                 changed = set()
+                deleted_files = set()
                 change_start = None
 
         initial = False
