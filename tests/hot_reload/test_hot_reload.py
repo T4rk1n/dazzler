@@ -15,6 +15,7 @@ def reload_app(browser):
     from tests.hot_reload.hot_reload_app import app
 
     app.started = False
+    app.finishers = []
 
     async def _start():
         if not app.started:
@@ -29,31 +30,25 @@ def reload_app(browser):
             await start_event.wait()
             app.started = True
         await browser.get('http://localhost:8150/')
+        return app
 
     yield _start
 
     task = app.loop.create_task(app.stop())
     app.loop.run_until_complete(task)
+    for finisher in app.finishers:
+        app.loop.run_until_complete(app.loop.create_task(finisher()))
 
 
 @pytest.fixture
 def reloader(reload_app):
 
-    namespace = {
-        'finisher': None
-    }
-
     async def _start(finisher=None):
-        await reload_app()
-        namespace['finisher'] = finisher
+        app = await reload_app()
+        if finisher:
+            app.finishers.append(finisher)
 
     yield _start
-
-    if namespace['finisher']:
-        loop = asyncio.get_event_loop()
-        # pylint: disable=not-callable
-        task = loop.create_task(namespace['finisher']())
-        loop.run_until_complete(task)
 
 
 @pytest.mark.async_test
