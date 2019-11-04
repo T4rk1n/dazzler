@@ -39,6 +39,12 @@ jobs:
             npm run build
 
       - run:
+          name: Lint/Format test
+          command: |
+            npm run lint
+            npm run format:test
+
+      - run:
           name: Test
           command: |
             . venv/bin/activate
