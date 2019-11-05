@@ -1,12 +1,41 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import {join} from 'ramda';
 
 /**
  * Html Textarea wrapper.
  */
 export default class TextArea extends React.Component {
+    resize() {
+        this.elem.style.height = 'auto';
+        this.elem.style.height = `${this.elem.scrollHeight}px`;
+    }
+
+    componentDidMount() {
+        if (this.props.autosize) {
+            this.resize();
+        }
+    }
+
     render() {
-        const {value, identity, cols, rows, name, required} = this.props;
+        const {
+            value,
+            identity,
+            cols,
+            rows,
+            name,
+            required,
+            class_name,
+            style,
+            autosize,
+        } = this.props;
+
+        const css = [class_name];
+
+        if (autosize) {
+            css.push('autosize');
+        }
+
         return (
             <textarea
                 name={name}
@@ -15,9 +44,15 @@ export default class TextArea extends React.Component {
                 rows={rows}
                 value={value}
                 required={required}
-                onChange={e =>
-                    this.props.updateAspects({value: e.target.value})
-                }
+                ref={r => (this.elem = r)}
+                className={join(' ', css)}
+                style={{...style}}
+                onChange={e => {
+                    this.props.updateAspects({value: e.target.value});
+                    if (autosize) {
+                        this.resize();
+                    }
+                }}
             />
         );
     }
@@ -62,6 +97,14 @@ TextArea.propTypes = {
      * Max length of the value.
      */
     max_length: PropTypes.number,
+
+    /**
+     * Auto size the
+     */
+    autosize: PropTypes.bool,
+
+    style: PropTypes.object,
+    class_name: PropTypes.string,
 
     /**
      *  Unique id for this component
