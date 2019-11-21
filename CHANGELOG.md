@@ -2,6 +2,11 @@
 
 Versions follow [Semantic Versioning](https://www.semver.org)
 
+## UNRELEASED
+### Added
+
+- :rice: Add TextArea autosize. [#20](https://github.com/T4rk1n/dazzler/issues/20)
+
 ## [0.2.0]
 ### Added
 
