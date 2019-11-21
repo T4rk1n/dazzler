@@ -9,7 +9,8 @@ page = Page(
     __name__,
     core.Container([
         core.TextArea(identity='textarea'),
-        core.Container(identity='output')
+        core.Container(identity='output'),
+        core.TextArea(identity='autosizer', autosize=True),
     ])
 )
 
