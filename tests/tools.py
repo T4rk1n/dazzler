@@ -1,6 +1,7 @@
 """Tests tools for running selenium with asyncio."""
 import functools
 
+from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.select import By
@@ -129,7 +130,15 @@ def wait_for_text_to_equal(driver, selector, text, timeout=10):
     def condition(d):
         return text == d.find_element_by_css_selector(selector).text
 
-    _wait_for(driver, condition, timeout=timeout)
+    try:
+        _wait_for(driver, condition, timeout=timeout)
+    except TimeoutException:
+        value = driver.find_element_by_css_selector(selector).text
+        raise AssertionError(
+            f'Element Text assertion failed: {selector}\n'
+            f'Expected: {text}\n'
+            f'Found: {value}'
+        )
 
 
 def wait_for_style_to_equal(
@@ -155,7 +164,16 @@ def wait_for_style_to_equal(
         return style_assertion == d.find_element_by_css_selector(selector)\
             .value_of_css_property(style_attribute)
 
-    _wait_for(driver, condition, timeout=timeout)
+    try:
+        _wait_for(driver, condition, timeout=timeout)
+    except TimeoutException:
+        value = driver.find_element_by_css_selector(selector)\
+            .value_of_css_property(style_attribute)
+        raise AssertionError(
+            f'Style assertion failed: {style_attribute} of {selector}\n'
+            f'Expected: {style_assertion}\n'
+            f'Found: {value}'
+        )
 
 
 def wait_for_property_to_equal(
@@ -180,7 +198,17 @@ def wait_for_property_to_equal(
         return prop_value == d.find_element_by_css_selector(selector)\
             .get_property(prop_name)
 
-    _wait_for(driver, condition, timeout=timeout)
+    try:
+        _wait_for(driver, condition, timeout=timeout)
+    except TimeoutException:
+        value = driver.find_element_by_css_selector(selector)\
+            .get_property(prop_name)
+
+        raise AssertionError(
+            f'Element property assertion failed: {prop_name} of {selector}\n'
+            f'Expected: {prop_value}\n'
+            f'Found: {value}'
+        )
 
 
 def _async_wrap(func):
