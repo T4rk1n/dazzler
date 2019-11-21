@@ -23,7 +23,7 @@ jobs:
             . venv/bin/activate
             pip install -r requirements.txt --quiet
             pip install -r requirements-dev.txt --quiet
-            npm i
+            npm ci
 
       - save_cache:
           paths:
