@@ -1,0 +1,39 @@
+component:
+  - src/**/components/**/*.jsx
+
+core:
+  - src/core/**/*
+  - dazzler/components/core/*
+
+extra:
+  - src/extra/**/*
+  - dazzler/components/extra/*
+
+calendar:
+  - src/calendar/**/*
+  - dazzler/components/calendar/*
+
+auth:
+  - src/auth/**/*
+  - dazzler/components/auth/*
+  - dazzler/system/auth.py
+
+renderer:
+  - src/renderer/**/*
+  - dazzler/_renderer.py
+
+documentation:
+  - docs/**/*
+
+system:
+  - dazzler/system/**/*
+
+component-generator:
+  - dazzler/system/_generator.py
+
+server:
+  - dazzler/_dazzler.py
+  - dazzler/_server.py
+
+session:
+  - dazzler/system/session.py
