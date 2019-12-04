@@ -187,7 +187,7 @@ def generate_component(display_name, description, props, output_path):
         required = prop.get('required')
         type_info = prop.get('type')
         if not type_info:
-            print(f'Invalid prop: {display_name}.{name}')
+            print(f'Invalid prop: {display_name}.{name}', file=sys.stderr)
             continue
         type_name = type_info.get('name')
         default = prop.get('defaultValue')
@@ -250,7 +250,14 @@ def generate_component(display_name, description, props, output_path):
         if is_component_aspect(type_info):
             aspect_args.append('children=True')
 
+        if docstring:
+            aspect_args.append(
+                f'docstring="{docstring.lstrip().replace(os.linesep, "")}"'
+            )
+
         aspect = f'{name} = Aspect({", ".join(aspect_args)})'
+        if len(aspect) > 79:
+            aspect += '  # noqa: E501'
         aspects.append(aspect)
 
     if aspects:
