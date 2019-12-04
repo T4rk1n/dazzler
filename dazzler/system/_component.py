@@ -1,4 +1,4 @@
-import uuid
+import secrets
 
 from ._undefined import UNDEFINED
 
@@ -31,7 +31,7 @@ def prepare_aspects(aspects: dict):
 
 
 def _generate_identity():
-    return uuid.uuid4().hex
+    return hex(secrets.randbits(40)).lstrip('0x')
 
 
 # noinspection PyProtectedMember
