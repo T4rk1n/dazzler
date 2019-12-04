@@ -43,15 +43,15 @@ class Aspect:
             self,
             name=None,
             default=UNDEFINED,
-            type_info=None,
             required=False,
-            children=False
+            children=False,
+            docstring=None,
     ):
         self.name = name
         self.default = default
-        self.type_info = type_info
         self.required = required
         self.children = children
+        self.__doc__ = docstring
 
     def __set_name__(self, owner, name):
         self.name = name
