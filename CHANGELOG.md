@@ -9,6 +9,7 @@ Versions follow [Semantic Versioning](https://www.semver.org)
 
 ### Fixed
 
+- :bug: Fix page requirements url. [#35](https://github.com/T4rk1n/dazzler/issues/35)
 - :bug: Fix aspect docstrings. [#34](https://github.com/T4rk1n/dazzler/issues/34)
 
 ## [0.2.0]
