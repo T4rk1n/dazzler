@@ -1,3 +1,4 @@
+import pathlib
 import re
 import os
 import warnings
@@ -175,14 +176,12 @@ def collect_requirements(directory: str, page: str = None):
                 ]
         ):
             path = os.path.join(current, file)
-            name = path.replace(
-                os.path.commonpath([directory, path]), ''
-            ).lstrip(os.sep)
+            path_obj = pathlib.Path(path)
             requirements.append(
                 Requirement(
                     internal=path,
                     page=page,
-                    name=name
+                    name=path_obj.name
                 )
             )
     return requirements
