@@ -7,6 +7,10 @@ Versions follow [Semantic Versioning](https://www.semver.org)
 
 - :rice: Add TextArea autosize. [#20](https://github.com/T4rk1n/dazzler/issues/20)
 
+### Fixed
+
+- :bug: Fix aspect docstrings. [#34](https://github.com/T4rk1n/dazzler/issues/34)
+
 ## [0.2.0]
 ### Added
 
