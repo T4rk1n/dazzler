@@ -176,12 +176,11 @@ def collect_requirements(directory: str, page: str = None):
                 ]
         ):
             path = os.path.join(current, file)
-            path_obj = pathlib.Path(path)
             requirements.append(
                 Requirement(
                     internal=path,
                     page=page,
-                    name=path_obj.name
+                    name=str(pathlib.Path(path).relative_to(directory))
                 )
             )
     return requirements
