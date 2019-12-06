@@ -256,7 +256,7 @@ def generate_component(display_name, description, props, output_path):
             )
 
         aspect = f'{name} = Aspect({", ".join(aspect_args)})'
-        if len(aspect) > 79:
+        if len(aspect) > 75:
             aspect += '  # noqa: E501'
         aspects.append(aspect)
 
