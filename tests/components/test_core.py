@@ -497,3 +497,49 @@ async def test_form(start_page, browser):
     await browser.click('.form-submit')
 
     await browser.wait_for_text_to_equal('#output', 'Foo bar')
+
+
+@pytest.mark.parametrize(
+    'operation, max_size, times, multiplier',
+    [
+        ('append', None, 3, 1),
+        ('append', 10, 10, 1),
+        ('prepend', None, 3, 1),
+        ('prepend', 10, 10, 1),
+        ('concat', None, 3, 2),
+        ('concat', 10, 5, 3),
+        ('concat', 10, 5, 10),
+        ('insert', None, 1, 4),
+        ('insert', 10, 5, 1),
+    ]
+)
+@pytest.mark.async_test
+async def test_list_box_additions(
+        start_page, browser, operation, max_size, times, multiplier
+):
+    from tests.components.pages import list_box
+
+    list_box.lb_component.max_size = max_size
+    original_size = len(list_box.lb_component.items)
+
+    await start_page(list_box.page)
+
+    multiplier_input = await browser.wait_for_element_by_id('index-input')
+    multiplier_input.send_keys(str(multiplier))
+
+    for i in range(1, times + 1):
+        await browser.click(f'#{operation}-btn')
+        await asyncio.sleep(0.1)
+
+        items = await browser.wait_for_elements_by_css_selector('.item')
+
+        if max_size:
+            assert len(items) <= max_size
+        else:
+            assert len(items) == original_size + (
+                    i * (multiplier if operation != 'insert' else 1)
+            )
+
+        if operation == 'insert':
+            inserted = items[multiplier]
+            assert 'insert' in inserted.get_attribute('class')

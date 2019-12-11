@@ -5,10 +5,11 @@ from tests.apps.pages import component_as_trigger, binding_return_trigger, \
 from tests.components.pages import checklist, store, html, interval, \
     input_output, radio, link, viewport, progress, select, button, slider, \
     modal, textarea, table, grid, form, markdown, calendar, pager, extras, \
-    login
+    login, list_box
 
 app = Dazzler(__name__)
 app.config.session.backend = 'Redis'
+app.config.development.reload_threshold = 5.0
 
 pages = [
     component_as_trigger.page,
@@ -40,6 +41,7 @@ pages = [
     extras.page,
     login.page,
     regex_bindings.page,
+    list_box.page,
 ]
 
 app.add_page(*pages)
