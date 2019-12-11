@@ -543,3 +543,19 @@ async def test_list_box_additions(
         if operation == 'insert':
             inserted = items[multiplier]
             assert 'insert' in inserted.get_attribute('class')
+
+
+@pytest.mark.async_test
+async def test_list_box_deletions(start_page, browser):
+    from tests.components.pages import list_box
+
+    original_size = len(list_box.lb_component.items)
+
+    await start_page(list_box.page)
+    index_input = await browser.wait_for_element_by_id('index-input')
+    index_input.send_keys('0')
+    await browser.click('#delete-btn')
+
+    items = await browser.wait_for_elements_by_css_selector('.item')
+
+    assert len(items) == original_size - 1
