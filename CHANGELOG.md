@@ -5,6 +5,7 @@ Versions follow [Semantic Versioning](https://www.semver.org)
 ## UNRELEASED
 ### Added
 
+- :rice: Add ListBox Component. [#36](https://github.com/T4rk1n/dazzler/issues/36)
 - :rice: Add TextArea autosize. [#20](https://github.com/T4rk1n/dazzler/issues/20)
 - :sparkles: Add regex support for binding trigger & states [#52](https://github.com/T4rk1n/dazzler/pull/52)
 
