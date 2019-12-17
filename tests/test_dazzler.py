@@ -204,7 +204,7 @@ async def test_dev_requirements(start_page, browser):
 
     await browser.wait_for_element_by_xpath(
         '//script[@src="/dazzler/requirements/'
-        'static/dev/react-16-8-6.development.js"]'
+        'static/dev/react-16-12-0.development.js"]'
     )
     await browser.wait_for_element_by_xpath(
         '//script[contains(@src, '
@@ -385,7 +385,7 @@ async def test_prefer_external(start_visit, browser):
 
     scripts = await browser.wait_for_elements_by_xpath(
         '//script[contains(@src, '
-        '"https://unpkg.com/react@16.8.6/umd/react.production.min.js")]'
+        '"https://unpkg.com/react@16.12.0/umd/react.production.min.js")]'
     )
     assert len(scripts) == 1
 
