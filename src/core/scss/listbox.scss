@@ -1,0 +1,13 @@
+.dazzler-core-list-box {
+  &.vertical {
+    &.scrollable {
+      overflow-y: auto;
+    }
+  }
+  &.horizontal {
+    display: flex;
+    &.scrollable {
+      overflow-x: auto;
+    }
+  }
+}

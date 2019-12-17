@@ -519,7 +519,7 @@ async def test_list_box_additions(
 ):
     from tests.components.pages import list_box
 
-    list_box.lb_component.max_size = max_size
+    list_box.lb_component.max_length = max_size
     original_size = len(list_box.lb_component.items)
 
     await start_page(list_box.page)
