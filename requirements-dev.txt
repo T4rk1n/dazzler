@@ -4,7 +4,7 @@ pytest-pylint==0.14.0
 pytest-flake8==1.0.4
 pytest-cov==2.7.1
 python-coveralls
-mypy==0.701
+mypy==0.760
 selenium==3.141.0
 sphinx==2.1.1
 m2r==0.2.1
