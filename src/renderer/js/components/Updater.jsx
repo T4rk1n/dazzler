@@ -196,12 +196,11 @@ export default class Updater extends React.Component {
         let tries = 0;
         let hardClose = false;
         const connexion = () => {
-            this.ws = new WebSocket(
-                `ws${
-                    window.location.href.startsWith('https') ? 's' : ''
-                }://${(this.props.baseUrl && this.props.baseUrl) ||
-                    window.location.host}${window.location.pathname}/ws`
-            );
+            const url = `ws${
+                window.location.href.startsWith('https') ? 's' : ''
+            }://${(this.props.baseUrl && this.props.baseUrl) ||
+                window.location.host}/${this.state.page}/ws`;
+            this.ws = new WebSocket(url);
             this.ws.addEventListener('message', this.onMessage);
             this.ws.onopen = () => {
                 if (this.state.reloading) {
@@ -232,24 +231,28 @@ export default class Updater extends React.Component {
 
     componentWillMount() {
         this.pageApi('', {method: 'POST'}).then(response => {
-            this.setState({
-                page: response.page,
-                layout: response.layout,
-                bindings: response.bindings,
-                packages: response.packages,
-                requirements: response.requirements,
-            });
-            loadRequirements(response.requirements, response.packages).then(
-                () => {
-                    if (
-                        Object.keys(response.bindings).length ||
-                        response.reload
-                    ) {
-                        this._connectWS();
-                    } else {
-                        this.setState({ready: true});
-                    }
-                }
+            this.setState(
+                {
+                    page: response.page,
+                    layout: response.layout,
+                    bindings: response.bindings,
+                    packages: response.packages,
+                    requirements: response.requirements,
+                },
+                () =>
+                    loadRequirements(
+                        response.requirements,
+                        response.packages
+                    ).then(() => {
+                        if (
+                            Object.keys(response.bindings).length ||
+                            response.reload
+                        ) {
+                            this._connectWS();
+                        } else {
+                            this.setState({ready: true});
+                        }
+                    })
             );
         });
     }

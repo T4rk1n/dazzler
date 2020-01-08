@@ -240,7 +240,7 @@ class Dazzler(precept.Precept):  # pylint: disable=too-many-instance-attributes
                     method=RouteMethod.POST,
                 ),
                 Route(
-                    f'{page.url}/ws',
+                    f'/{page.name}/ws',
                     functools.partial(self.server.route_update, page=page),
                     name=f'{page.name}-ws',
                     method=RouteMethod.GET,
