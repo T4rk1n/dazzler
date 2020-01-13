@@ -298,6 +298,7 @@ class SessionMiddleware(Middleware):
             salt=app.config.session.salt
         )
         self._backend = backend or FileSessionBackEnd(app)
+        # pylint: disable=E1121
         self._sessions_queues = weakref.WeakValueDictionary()
         self._query_queue = asyncio.Queue()
         loop = asyncio.get_event_loop()

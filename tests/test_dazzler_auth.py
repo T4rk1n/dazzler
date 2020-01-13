@@ -25,7 +25,7 @@ class DummyAuthenticator(Authenticator):
 @pytest.fixture
 def auth_app():
     app = Dazzler(__name__)
-    page = Page(__name__, core.Container([
+    page = Page('test-auth', core.Container([
         core.Html('h2', 'logged-in', identity='header'),
         core.Container(identity='username-output'),
         _auth.Logout('/auth/logout', identity='logout')
@@ -97,7 +97,7 @@ async def test_unauthenticated_ws(auth_app):
         async with client.ClientSession() as session:
             with pytest.raises(aiohttp.WSServerHandshakeError) as context:
                 async with session.ws_connect(
-                        'ws://localhost:8150//ws') as ws:
+                        'ws://localhost:8150/test-auth/ws') as ws:
                     await ws.close()
 
             assert context.value.status == 401
