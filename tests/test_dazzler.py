@@ -401,3 +401,25 @@ async def test_global_requirements(start_visit, browser):
         '//script[contains(@src, "withRequirements.js")]'
     )
     assert len(scripts) == 1
+
+
+@pytest.mark.async_test
+async def test_regex_bindings(start_page, browser):
+    from tests.apps.pages.regex_bindings import page
+
+    await start_page(page)
+
+    await browser.click('#btn1')
+
+    for i in range(1, 3):
+        await browser.wait_for_text_to_equal(
+            f'#output{i}', 'clicked from button btn1'
+        )
+
+    await browser.click('#btn2')
+
+    for i in range(1, 3):
+        await browser.wait_for_text_to_equal(
+            f'#output{i}',
+            'clicked from button btn2'
+        )
