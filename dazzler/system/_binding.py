@@ -50,12 +50,13 @@ class BoundValue(typing.NamedTuple):
 
 
 class _Bind:
-    def __init__(self, identity: str, aspect: str):
+    def __init__(self, identity: str, aspect: str, regex=False):
         self.identity = identity
         self.aspect = aspect
+        self.regex = regex
 
     def __str__(self):
-        return f'{self.identity}.{self.aspect}'
+        return f'{self.aspect}@{self.identity}'
 
     def __repr__(self):
         return f'<{self.__class__.__name__} {self}>'
@@ -75,6 +76,7 @@ class _Bind:
         return {
             'identity': self.identity,
             'aspect': self.aspect,
+            'regex': self.regex,
         }
 
 
@@ -115,7 +117,8 @@ class BoundAspect:
         return {
             'trigger': self.trigger.prepare(),
             'states': [state.prepare() for state in self.states],
-            'key': str(self.trigger)
+            'key': str(self.trigger),
+            'regex': self.trigger.regex
         }
 
     async def __call__(self, *args, **kwargs):
@@ -175,9 +178,15 @@ class BindingContext:
                     f'Setting the same aspect that triggered: {trigger_key}'
                 )
 
+        regex = isinstance(identity, typing.Pattern)
+
+        if regex:
+            identity = identity.pattern
+
         await self.websocket.send_json({
             'kind': 'set-aspect',
-            'identity': identity,
+            'identity': str(identity),
+            'regex': regex,
             'payload': prepare_aspects(aspects)
         })
 
@@ -261,8 +270,8 @@ class Binding:
         @functools.wraps(func)
         async def bound(request, data, ws, request_queue):
             trigger = BoundValue(
-                self.trigger.identity,
-                self.trigger.aspect,
+                data['trigger']['identity'],
+                data['trigger']['aspect'],
                 hydrate(data['trigger']['value'])
             )
             states = {}

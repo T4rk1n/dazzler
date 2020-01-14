@@ -8,7 +8,8 @@ import {
     prepareProp,
 } from '../hydrator';
 import {loadRequirement, loadRequirements} from '../requirements';
-import {disableCss} from '../../../commons/js/utils';
+import {disableCss} from 'commons';
+import {pickBy, keys, map, evolve, concat, find} from 'ramda';
 
 export default class Updater extends React.Component {
     constructor(props) {
@@ -38,18 +39,43 @@ export default class Updater extends React.Component {
 
     updateAspects(identity, aspects) {
         return new Promise(resolve => {
-            const bindings = Object.keys(aspects)
-                .map(key => this.state.bindings[`${identity}.${key}`])
-                .filter(e => e);
+            const aspectKeys = keys(aspects);
+            let bindings = aspectKeys
+                .map(key => ({
+                    ...this.state.bindings[`${key}@${identity}`],
+                    value: aspects[key],
+                }))
+                .filter(e => e.trigger);
+
+            this.state.rebindings.forEach(binding => {
+                if (binding.trigger.identity.test(identity)) {
+                    bindings = concat(
+                        bindings,
+                        aspectKeys
+                            .filter(k => binding.trigger.aspect.test(k))
+                            .map(k => ({
+                                ...binding,
+                                value: aspects[k],
+                                trigger: {
+                                    ...binding.trigger,
+                                    identity,
+                                    aspect: k
+                                }
+                            }))
+                    );
+                    bindings.push();
+                }
+            });
 
             if (!bindings) {
+                console.log('binding');
                 return resolve(0);
             }
 
             bindings.forEach(binding =>
-                this.sendBinding(binding, aspects[binding.trigger.aspect])
+                this.sendBinding(binding, binding.value)
             );
-            resolve();
+            resolve(bindings.length);
         });
     }
 
@@ -75,37 +101,26 @@ export default class Updater extends React.Component {
         }
         switch (kind) {
             case 'set-aspect':
-                const component = this.boundComponents[identity];
-                if (!component) {
-                    const error = `Component not found: ${identity}`;
-                    this.ws.send(JSON.stringify({error, kind: 'error'}));
-                    console.error(error);
-                    return;
-                }
-
-                component
-                    .setAspects(
-                        hydrateProps(
-                            payload,
-                            this.updateAspects,
-                            this.connect,
-                            this.disconnect
+                const setAspects = component =>
+                    component
+                        .setAspects(
+                            hydrateProps(
+                                payload,
+                                this.updateAspects,
+                                this.connect,
+                                this.disconnect
+                            )
                         )
-                    )
-                    .then(() => {
-                        Object.keys(payload).forEach(k => {
-                            const key = `${identity}.${k}`;
-                            const binding = this.state.bindings[key];
-                            if (binding) {
-                                this.sendBinding(
-                                    binding,
-                                    component.getAspect(k)
-                                );
-                            }
-                            // What about returned components ?
-                            // They get their Wrapper.
-                        });
-                    });
+                        .then(() => this.updateAspects(identity, payload));
+                if (data.regex) {
+                    const pattern = new RegExp(data.identity);
+                    keys(this.boundComponents)
+                        .filter(k => pattern.test(k))
+                        .map(k => this.boundComponents[k])
+                        .forEach(setAspects);
+                } else {
+                    setAspects(this.boundComponents[identity]);
+                }
                 break;
             case 'get-aspect':
                 const {aspect} = data;
@@ -229,13 +244,25 @@ export default class Updater extends React.Component {
         connexion();
     }
 
-    componentWillMount() {
+    componentDidMount() {
         this.pageApi('', {method: 'POST'}).then(response => {
+            const toRegex = x => new RegExp(x);
             this.setState(
                 {
                     page: response.page,
                     layout: response.layout,
-                    bindings: response.bindings,
+                    bindings: pickBy(b => !b.regex, response.bindings),
+                    rebindings: map(x => {
+                        const binding = response.bindings[x];
+                        binding.trigger = evolve(
+                            {
+                                identity: toRegex,
+                                aspect: toRegex,
+                            },
+                            binding.trigger
+                        );
+                        return binding;
+                    }, keys(pickBy(b => b.regex, response.bindings))),
                     packages: response.packages,
                     requirements: response.requirements,
                 },
@@ -244,10 +271,7 @@ export default class Updater extends React.Component {
                         response.requirements,
                         response.packages
                     ).then(() => {
-                        if (
-                            Object.keys(response.bindings).length ||
-                            response.reload
-                        ) {
+                        if (keys(response.bindings).length || response.reload) {
                             this._connectWS();
                         } else {
                             this.setState({ready: true});
