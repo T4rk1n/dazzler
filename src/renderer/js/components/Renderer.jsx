@@ -1,32 +1,22 @@
-import React from 'react';
+import React, {useState} from 'react';
 import Updater from './Updater';
 import PropTypes from 'prop-types';
 
-export default class Renderer extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            reloadKey: 1,
-        };
-    }
-    componentWillMount() {
-        window.dazzler_base_url = this.props.baseUrl;
-    }
+const Renderer = (props) => {
+    const [reloadKey, setReloadKey] = useState(1);
 
-    render() {
-        return (
-            <div className="dazzler-renderer">
-                <Updater
-                    {...this.props}
-                    key={`upd-${this.state.reloadKey}`}
-                    hotReload={() =>
-                        this.setState({reloadKey: this.state.reloadKey + 1})
-                    }
-                />
-            </div>
-        );
-    }
-}
+    // FIXME find where this is used and refactor/remove
+    window.dazzler_base_url = props.baseUrl;
+    return (
+        <div className="dazzler-renderer">
+            <Updater
+                {...props}
+                key={`upd-${reloadKey}`}
+                hotReload={() => setReloadKey(reloadKey + 1)}
+            />
+        </div>
+    );
+};
 
 Renderer.propTypes = {
     baseUrl: PropTypes.string.isRequired,
@@ -34,3 +24,6 @@ Renderer.propTypes = {
     ping_interval: PropTypes.number,
     retries: PropTypes.number,
 };
+
+
+export default Renderer;
