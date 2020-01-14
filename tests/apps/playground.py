@@ -1,13 +1,14 @@
 from dazzler import Dazzler
 
 from tests.apps.pages import component_as_trigger, binding_return_trigger, \
-    same_identity, component_as_aspect, storage
+    same_identity, component_as_aspect, storage, regex_bindings
 from tests.components.pages import checklist, store, html, interval, \
     input_output, radio, link, viewport, progress, select, button, slider, \
     modal, textarea, table, grid, form, markdown, calendar, pager, extras, \
     login
 
 app = Dazzler(__name__)
+app.config.session.backend = 'Redis'
 
 pages = [
     component_as_trigger.page,
@@ -38,7 +39,9 @@ pages = [
     pager.page,
     extras.page,
     login.page,
+    regex_bindings.page,
 ]
+
 app.add_page(*pages)
 
 
