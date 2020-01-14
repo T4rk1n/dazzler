@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Calendar from './Calendar';
 import {format} from 'date-fns';
-import {toTimestamp} from '../../../commons/js';
+import {toTimestamp} from 'commons';
 
 /**
  * Pick a date from a calendar.

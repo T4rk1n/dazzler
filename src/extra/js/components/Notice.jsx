@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {timestampProp} from '../../../commons/js';
+import {timestampProp} from 'commons';
 import {merge} from 'ramda';
 
 /**

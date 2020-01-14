@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {join, concat} from 'ramda';
-import {collectTruePropKeys} from '../../../commons/js';
+import {collectTruePropKeys} from 'commons';
 
 /**
  * A button to click on!
