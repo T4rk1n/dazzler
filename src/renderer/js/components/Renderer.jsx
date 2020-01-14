@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import Updater from './Updater';
 import PropTypes from 'prop-types';
 
-const Renderer = (props) => {
+const Renderer = props => {
     const [reloadKey, setReloadKey] = useState(1);
 
     // FIXME find where this is used and refactor/remove
@@ -24,6 +24,5 @@ Renderer.propTypes = {
     ping_interval: PropTypes.number,
     retries: PropTypes.number,
 };
-
 
 export default Renderer;

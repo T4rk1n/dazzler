@@ -59,8 +59,8 @@ export default class Updater extends React.Component {
                                 trigger: {
                                     ...binding.trigger,
                                     identity,
-                                    aspect: k
-                                }
+                                    aspect: k,
+                                },
                             }))
                     );
                     bindings.push();
