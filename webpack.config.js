@@ -114,6 +114,11 @@ module.exports = function(env, argv) {
 
         plugins,
         devtool,
+        resolve: {
+            alias: {
+                commons: path.resolve(__dirname, 'src/commons/js/')
+            }
+        },
         module: {
             rules: [
                 {

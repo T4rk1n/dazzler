@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {debounce} from '../../../commons/js';
+import {debounce} from 'commons';
 
 /**
  * A slider with a caret contained within a min and max value.

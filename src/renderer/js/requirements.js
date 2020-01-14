@@ -1,4 +1,4 @@
-import {loadCss, loadScript} from '../../commons/js';
+import {loadCss, loadScript} from 'commons';
 
 export function loadRequirement(requirement) {
     return new Promise((resolve, reject) => {

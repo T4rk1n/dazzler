@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import {format} from 'date-fns';
 import {firstDayOfTheMonth, monthLength, prevMonth, nextMonth} from '../utils';
 import {range, concat, join} from 'ramda';
-import {chunk} from '../../../commons/js';
+import {chunk} from 'commons';
 
 function calendar(month, year) {
     const days = monthLength(month, year);

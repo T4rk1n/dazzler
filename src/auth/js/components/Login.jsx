@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {collectTruePropKeys} from '../../../commons/js';
+import {collectTruePropKeys} from 'commons';
 import {concat, join} from 'ramda';
 
 /**

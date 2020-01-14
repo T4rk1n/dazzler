@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import ReactMarkdown from 'react-markdown';
-import {snakeToCamelCase, transformKeys} from '../../../commons/js';
+import {snakeToCamelCase, transformKeys} from 'commons';
 import {omit} from 'ramda';
 import CodeBlock from './CodeBlock';
 

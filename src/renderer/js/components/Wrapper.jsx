@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {concat, join} from 'ramda';
-import {camelToSpinal} from '../../../commons/js';
+import {camelToSpinal} from 'commons';
 
 /**
  * Wraps components for aspects updating.

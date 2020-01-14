@@ -8,6 +8,7 @@ import {
     collectTruePropKeys,
     chunk,
     toTimestamp,
+    disableCss,
 } from './utils';
 import {
     camelToSnakeCase,
@@ -28,4 +29,5 @@ export {
     transformKeys,
     collectTruePropKeys,
     chunk,
+    disableCss,
 };

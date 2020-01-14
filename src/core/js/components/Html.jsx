@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {type, map} from 'ramda';
-import {camelToSnakeCase} from '../../../commons/js';
+import {camelToSnakeCase} from 'commons';
 
 function prepareType(obj) {
     switch (type(obj)) {
