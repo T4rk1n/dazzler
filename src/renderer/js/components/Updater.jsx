@@ -9,7 +9,7 @@ import {
 } from '../hydrator';
 import {loadRequirement, loadRequirements} from '../requirements';
 import {disableCss} from 'commons';
-import {pickBy, keys, map, evolve, concat, find} from 'ramda';
+import {pickBy, keys, map, evolve, concat, flatten} from 'ramda';
 
 export default class Updater extends React.Component {
     constructor(props) {
@@ -79,10 +79,11 @@ export default class Updater extends React.Component {
         });
     }
 
-    connect(identity, setAspects, getAspect) {
+    connect(identity, setAspects, getAspect, matchAspects) {
         this.boundComponents[identity] = {
             setAspects,
             getAspect,
+            matchAspects,
         };
     }
 
@@ -187,14 +188,43 @@ export default class Updater extends React.Component {
             ...binding.trigger,
             value: prepareProp(value),
         };
-        const states = binding.states.map(state => ({
-            ...state,
-            value:
-                this.boundComponents[state.identity] &&
-                prepareProp(
-                    this.boundComponents[state.identity].getAspect(state.aspect)
-                ),
-        }));
+        const states = binding.states.reduce((acc, state) => {
+            if (state.regex) {
+                const identityPattern = new RegExp(state.identity);
+                const aspectPattern = new RegExp(state.aspect);
+                return concat(
+                    acc,
+                    flatten(
+                        keys(this.boundComponents).map(k => {
+                            let values = [];
+                            if (identityPattern.test(k)) {
+                                values = this.boundComponents[k]
+                                    .matchAspects(aspectPattern)
+                                    .map(([name, val]) => ({
+                                        ...state,
+                                        identity: k,
+                                        aspect: name,
+                                        value: prepareProp(val),
+                                    }));
+                            }
+                            return values;
+                        })
+                    )
+                );
+            }
+
+            acc.push({
+                ...state,
+                value:
+                    this.boundComponents[state.identity] &&
+                    prepareProp(
+                        this.boundComponents[state.identity].getAspect(
+                            state.aspect
+                        )
+                    ),
+            });
+            return acc;
+        }, []);
 
         const payload = {
             trigger,
@@ -252,6 +282,7 @@ export default class Updater extends React.Component {
                     page: response.page,
                     layout: response.layout,
                     bindings: pickBy(b => !b.regex, response.bindings),
+                    // Regex bindings triggers
                     rebindings: map(x => {
                         const binding = response.bindings[x];
                         binding.trigger = evolve(

@@ -61,7 +61,7 @@ export function loadCss(uri, timeout = 3000) {
             type: 'text/css',
             href: uri,
             media: 'all',
-            id: `css-${uri}`
+            id: `css-${uri}`,
         };
         const element = document.createElement('link');
         Object.keys(attributes).forEach(k =>

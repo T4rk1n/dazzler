@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {concat, join} from 'ramda';
+import {concat, join, keys} from 'ramda';
 import {camelToSpinal} from 'commons';
 
 /**
@@ -17,6 +17,7 @@ export default class Wrapper extends React.Component {
         this.setAspects = this.setAspects.bind(this);
         this.getAspect = this.getAspect.bind(this);
         this.updateAspects = this.updateAspects.bind(this);
+        this.matchAspects = this.matchAspects.bind(this);
     }
 
     updateAspects(aspects) {
@@ -38,13 +39,20 @@ export default class Wrapper extends React.Component {
         return this.state.aspects[aspect];
     }
 
+    matchAspects(pattern) {
+        return keys(this.state.aspects)
+            .filter(k => pattern.test(k))
+            .map(k => [k, this.state.aspects[k]]);
+    }
+
     componentDidMount() {
         // Only update the component when mounted.
         // Otherwise gets a race condition with willUnmount
         this.props.connect(
             this.props.identity,
             this.setAspects,
-            this.getAspect
+            this.getAspect,
+            this.matchAspects
         );
         if (!this.state.initial) {
             this.updateAspects(this.state.aspects).then(() =>
