@@ -305,8 +305,8 @@ async def test_binding_return_trigger(start_page, browser):
 
 
 @pytest.mark.skip(
-    'Not really important as you can set directly on the component'
-    ' instead of returning the same component in the same spot.')  # FIXME
+    'FIXME Same identity bug #53'
+)
 @pytest.mark.async_test
 async def test_same_identity(start_page, browser):
     # There is bug which you cannot set component with same identity as root.
@@ -408,18 +408,25 @@ async def test_regex_bindings(start_page, browser):
     from tests.apps.pages.regex_bindings import page
 
     await start_page(page)
+    state_input = await browser.wait_for_element_by_id('state1')
 
-    await browser.click('#btn1')
+    for j in range(1, 3):
 
-    for i in range(1, 3):
+        identity = f'btn{j}'
+        state_input.send_keys(Keys.BACKSPACE * 4)
+        state_input.send_keys(identity)
+        await asyncio.sleep(0.1)
+        await browser.click(f'#{identity}')
+
+        for i in range(1, 3):
+            await browser.wait_for_text_to_equal(
+                f'#output{i}', f'clicked from button {identity}'
+            )
+
         await browser.wait_for_text_to_equal(
-            f'#output{i}', 'clicked from button btn1'
+            '#data-state2-output', 'data@state2: store'
         )
 
-    await browser.click('#btn2')
-
-    for i in range(1, 3):
         await browser.wait_for_text_to_equal(
-            f'#output{i}',
-            'clicked from button btn2'
+            '#value-state1-output', f'value@state1: {identity}'
         )
