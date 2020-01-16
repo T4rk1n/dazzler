@@ -209,3 +209,5 @@ def setup(app):
             ('../src/auth/js/components', '../dazzler/components/auth')
     ):
         dazz.start(['generate', source, output])
+
+    dazz.start(['dump-configs', 'dazzler.toml'])

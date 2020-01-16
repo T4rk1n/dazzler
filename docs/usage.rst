@@ -166,51 +166,8 @@ Configuration File
 
 Generate an empty configuration file at the root of the project:
 
-``$ dazzler dump-config dazzler.toml``
+``$ dazzler dump-configs dazzler.toml``
 
-.. code-block:: toml
+.. literalinclude:: ./dazzler.toml
     :caption: dazzler.toml
     :name: default-config
-
-    # Dazzler configuration
-
-    app_title = "Dazzler" # Name of the title of the index.
-    host = "127.0.0.1" # Host address
-    port = 8150 # Port of the server
-    debug = false
-
-    # Route prefix for all dazzler related endpoints.
-    route_prefix = ""
-
-    # Path relative to project folder where files will be served.
-    static_folder = "static"
-    static_prefix = "/static" # Prefix for the static route
-
-    [requirements]
-
-    # Prefer serving external requirements when available
-    prefer_external = false
-
-    # List of urls to include as script requirement.
-    external_scripts = []
-
-    # List of files to include as script requirement.
-    internal_scripts = []
-
-    # List of urls to include as style requirement.
-    external_styles = []
-
-    # List of files to include as script requirement.
-    internal_styles = []
-
-    [renderer]
-
-    # Number of times it will try to reconnect when the websocket connection
-    # is lost.
-    retries = 20
-
-    # Enable to send a ping every interval to keep the websocket connected
-    # if it didn't send data after a delay. Some hosts providers will
-    # automatically closesidling connection after a while.
-    ping = false
-    ping_interval = 25.0 # Interval at which to send ping data.
