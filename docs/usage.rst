@@ -138,7 +138,7 @@ To update components after the initial layout, you can use page bindings. The
 ``get`` other component aspects from the backend and holds the trigger/states
 value. It can also be used to access the ``WebStorage`` of the browser.
 
-:Example:
+:Examples:
 
 Update a container on click of a button.
 
@@ -160,6 +160,12 @@ Update a container on click of a button.
     async def on_click(ctx):
         name = await ctx.get_aspect('input', 'value')
         await ctx.set_aspect('output', children=f'Hello {name}')
+
+
+Regex bindings can be used as trigger/states for identity and aspect.
+
+.. literalinclude:: ../tests/apps/pages/regex_bindings.py
+    :lines: 5-42
 
 Configuration File
 ==================
