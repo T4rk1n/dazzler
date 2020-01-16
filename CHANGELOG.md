@@ -6,6 +6,7 @@ Versions follow [Semantic Versioning](https://www.semver.org)
 ### Added
 
 - :rice: Add TextArea autosize. [#20](https://github.com/T4rk1n/dazzler/issues/20)
+- :sparkles: Add regex support for binding trigger & states [#52](https://github.com/T4rk1n/dazzler/pull/52)
 
 ### Fixed
 
