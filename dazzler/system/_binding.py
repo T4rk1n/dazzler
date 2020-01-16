@@ -51,6 +51,12 @@ class BoundValue(typing.NamedTuple):
 
 class _Bind:
     def __init__(self, identity: str, aspect: str, regex=False):
+        """
+        :param identity: The identity of the component to bind.
+        :param aspect: Aspect name to trigger/state.
+        :param regex: Identity and aspects are converted into regex and
+            matched against for trigger and states.
+        """
         self.identity = identity
         self.aspect = aspect
         self.regex = regex
@@ -97,7 +103,11 @@ StateList = typing.List[State]
 
 
 class BoundAspect:
-    """An aspect that will update other aspects when it's updated."""
+    """
+    A trigger aspect bound to a method intended to be called when changed.
+
+    Data holder for the handler, trigger and state.
+    """
     def __init__(
             self,
             handler,
