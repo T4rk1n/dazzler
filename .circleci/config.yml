@@ -45,6 +45,10 @@ jobs:
             npm run format:test
 
       - run:
+          name: Diff docs
+          command: docs/diff-docs.sh
+
+      - run:
           name: Test
           command: |
             . venv/bin/activate
