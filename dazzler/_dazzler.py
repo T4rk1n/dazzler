@@ -183,37 +183,7 @@ class Dazzler(precept.Precept):  # pylint: disable=too-many-instance-attributes
             await asyncio.sleep(100)
 
     async def setup_server(self, debug=False):
-        # Gather global requirements from configs.
-        for external in itertools.chain(
-                self.config.requirements.external_scripts,
-                self.config.requirements.external_styles
-        ):
-            self.requirements.append(Requirement(external=external))
-
-        for internal in itertools.chain(
-                self.config.requirements.internal_scripts,
-                self.config.requirements.internal_styles
-        ):
-            self.requirements.append(Requirement(internal=internal))
-
-        if self.config.session.enable:
-
-            if self.config.session.backend == 'File':
-                backend = FileSessionBackEnd(self)
-            elif self.config.session.backend == 'Redis':
-                backend = RedisSessionBackend(self)
-            else:
-                raise SessionError(
-                    'No valid session backend defined.\n',
-                    'Please choose from "File" or "Redis"'
-                )
-
-            self.middlewares.insert(
-                0, SessionMiddleware(self, backend=backend)
-            )
-
-        if self.config.authentication.enable:
-            await self._enable_auth()
+        await self._handle_configs()
 
         # Copy all requirements to make sure all is latest.
         await self.copy_requirements()
@@ -466,6 +436,39 @@ class Dazzler(precept.Precept):  # pylint: disable=too-many-instance-attributes
                 )
 
         self.auth = DazzlerAuth(self, authenticator, backend=backend)
+
+    async def _handle_configs(self):
+        # Gather global requirements from configs.
+        for external in itertools.chain(
+            self.config.requirements.external_scripts,
+            self.config.requirements.external_styles
+        ):
+            self.requirements.append(Requirement(external=external))
+
+        for internal in itertools.chain(
+            self.config.requirements.internal_scripts,
+            self.config.requirements.internal_styles
+        ):
+            self.requirements.append(Requirement(internal=internal))
+
+        if self.config.session.enable:
+
+            if self.config.session.backend == 'File':
+                backend = FileSessionBackEnd(self)
+            elif self.config.session.backend == 'Redis':
+                backend = RedisSessionBackend(self)
+            else:
+                raise SessionError(
+                    'No valid session backend defined.\n',
+                    'Please choose from "File" or "Redis"'
+                )
+
+            self.middlewares.insert(
+                0, SessionMiddleware(self, backend=backend)
+            )
+
+        if self.config.authentication.enable:
+            await self._enable_auth()
 
 
 def cli():
