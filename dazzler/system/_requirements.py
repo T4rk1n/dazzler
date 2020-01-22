@@ -18,10 +18,7 @@ class RequirementWarning(UserWarning):
 
 
 class Requirement:
-    """
-    Represents a static asset to include as dependency for rendering.
-    """
-
+    """Represents a static asset to include as dependency for rendering."""
     def __init__(
             self,
             internal: str = None,
@@ -32,6 +29,17 @@ class Requirement:
             external: str = None,
             page: str = None
     ):
+        """
+        :param internal: Local path of the requirement to include on the page.
+        :param kind: The file extension.
+        :param name: The file name.
+        :param package: The package related to this requirement.
+        :param dev: Local path of the dev asset to serve instead of internal
+            when running in debug mode.
+        :param external: URL to serve instead when running with
+            ``prefer_external`` mode enable in the configs.
+        :param page: The page related to this requirement.
+        """
         if internal is None and external is None:
             raise InvalidRequirementError(
                 'Please give either an internal or external file'
