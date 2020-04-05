@@ -440,14 +440,14 @@ class Dazzler(precept.Precept):  # pylint: disable=too-many-instance-attributes
     async def _handle_configs(self):
         # Gather global requirements from configs.
         for external in itertools.chain(
-            self.config.requirements.external_scripts,
-            self.config.requirements.external_styles
+                self.config.requirements.external_scripts,
+                self.config.requirements.external_styles
         ):
             self.requirements.append(Requirement(external=external))
 
         for internal in itertools.chain(
-            self.config.requirements.internal_scripts,
-            self.config.requirements.internal_styles
+                self.config.requirements.internal_scripts,
+                self.config.requirements.internal_styles
         ):
             self.requirements.append(Requirement(internal=internal))
 
