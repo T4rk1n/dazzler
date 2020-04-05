@@ -46,7 +46,9 @@ jobs:
 
       - run:
           name: Diff docs
-          command: docs/diff-docs.sh
+          command: |
+            . venv/bin/activate
+            docs/diff-docs.sh
 
       - run:
           name: Test
