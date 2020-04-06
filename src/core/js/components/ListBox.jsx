@@ -5,6 +5,14 @@ import {concat, isNil, insert, slice, remove, join, mergeAll} from 'ramda';
 /**
  * A component where you can ``add`` items to instead of rendering
  * the whole list again. With an optional max size.
+ *
+ * :CSS:
+ *
+ *      ``dazzler-core-list-box``
+ *
+ * :example:
+ *
+ * .. literalinclude:: ../../tests/components/pages/list_box.py
  */
 export default class ListBox extends React.Component {
     constructor(props) {
@@ -15,7 +23,7 @@ export default class ListBox extends React.Component {
         };
     }
 
-    componentDidUpdate(prevProps, prevState, snapshot) {
+    componentDidUpdate(prevProps, prevState) {
         let items = this.props.items;
         const payload = {};
         const {max_length, keep_scroll, scrollable} = this.props;

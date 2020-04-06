@@ -28,7 +28,7 @@ page = Page(
     ])
 )
 
-
+# Add an element to the end.
 @page.bind(Trigger('append-btn', 'clicks'))
 async def on_append(ctx: BindingContext):
     await ctx.set_aspect(
@@ -38,6 +38,7 @@ async def on_append(ctx: BindingContext):
     )
 
 
+# Add an element to the start of the list.
 @page.bind(Trigger('prepend-btn', 'clicks'))
 async def on_prepend(ctx: BindingContext):
     await ctx.set_aspect(
@@ -47,6 +48,7 @@ async def on_prepend(ctx: BindingContext):
     )
 
 
+# Add multiple elements to the end of the list.
 @page.bind(Trigger('concat-btn', 'clicks'))
 async def on_concat(ctx: BindingContext):
     await ctx.set_aspect(
@@ -56,7 +58,7 @@ async def on_concat(ctx: BindingContext):
         ]
     )
 
-
+# Insert at a position.
 @page.bind(Trigger('insert-btn', 'clicks'))
 async def on_insert(ctx: BindingContext):
     index = await ctx.get_aspect('index-input', 'value')
@@ -67,7 +69,7 @@ async def on_insert(ctx: BindingContext):
         }
     )
 
-
+# Delete the item at the index.
 @page.bind(Trigger('delete-btn', 'clicks'))
 async def on_delete(ctx: BindingContext):
     index = await ctx.get_aspect('index-input', 'value')
