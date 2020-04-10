@@ -100,9 +100,9 @@ const ListBox = ({
     useEffect(() => {
         if (toScroll) {
             if (direction === 'vertical') {
-                root.scrollTop = root.scrollHeight;
+                root.current.scrollTop = root.current.scrollHeight;
             } else {
-                root.scrollLeft = root.scrollWidth;
+                root.current.scrollLeft = root.current.scrollWidth;
             }
             setToScroll(false);
         }
