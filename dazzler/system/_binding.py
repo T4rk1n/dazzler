@@ -200,12 +200,12 @@ class BindingContext:
             'payload': prepare_aspects(aspects)
         })
 
-    async def get_aspect(self, identity, aspect):
+    async def get_aspect(self, identity: str, aspect: str):
         """
         Request the value of an aspect from the frontend.
 
-        :param identity:
-        :param aspect:
+        :param identity: Component to get aspect from.
+        :param aspect: Name of the aspect property.
         :return:
         """
 
@@ -221,7 +221,9 @@ class BindingContext:
 
         value, error = await response_queue.get()
         if value is UNDEFINED:
-            raise GetAspectError(error)
+            raise GetAspectError(
+                error or f'Undefined aspect {aspect}@{identity}'
+            )
 
         return hydrate(value)
 
