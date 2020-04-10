@@ -1,6 +1,14 @@
-import React from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import PropTypes from 'prop-types';
-import {concat, isNil, insert, slice, remove, join, mergeAll} from 'ramda';
+import {
+    concat as concatArray,
+    isNil,
+    insert as insertArray,
+    slice,
+    remove,
+    join,
+    mergeAll,
+} from 'ramda';
 
 /**
  * A component where you can ``add`` items to instead of rendering
@@ -14,111 +22,115 @@ import {concat, isNil, insert, slice, remove, join, mergeAll} from 'ramda';
  *
  * .. literalinclude:: ../../tests/components/pages/list_box.py
  */
-export default class ListBox extends React.Component {
-    constructor(props) {
-        super(props);
-        this.scrollToLast = this.scrollToLast.bind(this);
-        this.state = {
-            toScroll: false,
-        };
-    }
+const ListBox = ({
+    items,
+    max_length,
+    append,
+    prepend,
+    concat,
+    insert,
+    delete_index,
+    scrollable,
+    direction,
+    size,
+    keep_scroll,
+    class_name,
+    style,
+    identity,
+    updateAspects,
+}) => {
+    const root = useRef(null);
+    const [toScroll, setToScroll] = useState(false);
 
-    componentDidUpdate(prevProps, prevState) {
-        let items = this.props.items;
-        const payload = {};
-        const {max_length, keep_scroll, scrollable} = this.props;
-        if (!isNil(this.props.append)) {
-            items = concat(items, [this.props.append]);
-            if (max_length && items.length > max_length) {
-                items = slice(1, items.length, items);
+    // Operation handlers
+    useEffect(() => {
+        if (!isNil(append)) {
+            let arr = concatArray(items, [append]);
+            if (max_length && arr.length > max_length) {
+                arr = slice(1, arr.length, arr);
             }
-            payload.append = null;
+            updateAspects({append: null, items: arr});
             if (scrollable && keep_scroll) {
-                this.setState({toScroll: true});
+                setToScroll(true);
             }
         }
-        if (!isNil(this.props.prepend)) {
-            items = concat([this.props.prepend], items);
-            if (max_length && items.length > max_length) {
-                items = slice(0, items.length - 1, items);
+    }, [append, max_length, scrollable, keep_scroll]);
+
+    useEffect(() => {
+        if (!isNil(prepend)) {
+            let arr = concatArray([prepend], items);
+            if (max_length && arr.length > max_length) {
+                arr = slice(0, arr.length - 1, arr);
             }
-            payload.prepend = null;
+            updateAspects({prepend: null, items: arr});
         }
-        if (!isNil(this.props.concat)) {
-            items = concat(items, this.props.concat);
-            if (max_length && items.length > max_length) {
-                items = slice(items.length - max_length, items.length, items);
+    }, [prepend, max_length, scrollable, keep_scroll]);
+
+    useEffect(() => {
+        if (!isNil(concat)) {
+            let arr = concatArray(items, concat);
+            if (max_length && arr.length > max_length) {
+                arr = slice(arr.length - max_length, arr.length, arr);
             }
-            payload.concat = null;
+            updateAspects({concat: null, items: arr});
         }
-        if (!isNil(this.props.insert)) {
-            items = insert(
-                this.props.insert.index,
-                this.props.insert.item,
-                items
-            );
-            if (max_length && items.length > max_length) {
-                items = slice(0, items.length - 1, items);
+    }, [concat]);
+
+    useEffect(() => {
+        if (!isNil(insert)) {
+            let arr = insertArray(insert.index, insert.item, items);
+            if (max_length && arr.length > max_length) {
+                arr = slice(0, arr.length - 1, arr);
             }
-            payload.insert = null;
+            updateAspects({insert: null, items: arr});
         }
-        if (!isNil(this.props.delete_index)) {
-            items = remove(this.props.delete_index, 1, items);
-            payload.delete_index = null;
-        }
-        if (items !== this.props.items) {
-            this.props.updateAspects({items, ...payload});
-        }
-        if (this.state.toScroll && !prevState.toScroll) {
-            this.setState({toScroll: false}, () => {
-                // Somehow this needs delay
-                setTimeout(this.scrollToLast, 0);
+    }, [insert]);
+
+    useEffect(() => {
+        if (!isNil(delete_index)) {
+            updateAspects({
+                delete_index: null,
+                items: remove(delete_index, 1, items),
             });
         }
-    }
+    }, [delete_index]);
 
-    scrollToLast() {
-        const {direction} = this.props;
-        if (direction === 'vertical') {
-            this.root.scrollTop = this.root.scrollHeight;
-        } else {
-            this.root.scrollLeft = this.root.scrollWidth;
-        }
-    }
+    // Update scrolling.
 
-    render() {
-        const {
-            class_name,
-            style,
-            identity,
-            items,
-            scrollable,
-            size,
-            direction,
-        } = this.props;
-        const internalStyle = {};
-        const css = [class_name, direction];
-        if (scrollable) {
-            css.push('scrollable');
+    useEffect(() => {
+        if (toScroll) {
             if (direction === 'vertical') {
-                internalStyle.height = `${size}px`;
+                root.scrollTop = root.scrollHeight;
             } else {
-                internalStyle.width = `${size}px`;
+                root.scrollLeft = root.scrollWidth;
             }
+            setToScroll(false);
         }
+    }, [toScroll]);
 
-        return (
-            <div
-                className={join(' ', css)}
-                style={mergeAll([style, internalStyle])}
-                id={identity}
-                ref={r => (this.root = r)}
-            >
-                {items}
-            </div>
-        );
+    // Render
+
+    const internalStyle = {};
+    const css = [class_name, direction];
+    if (scrollable) {
+        css.push('scrollable');
+        if (direction === 'vertical') {
+            internalStyle.height = `${size}px`;
+        } else {
+            internalStyle.width = `${size}px`;
+        }
     }
-}
+    return (
+        <div
+            className={join(' ', css)}
+            style={mergeAll([style, internalStyle])}
+            id={identity}
+            ref={root}
+        >
+            {items}
+        </div>
+    );
+};
 
 ListBox.defaultProps = {
     items: [],
@@ -129,7 +141,7 @@ ListBox.propTypes = {
     /**
      * List of items to render.
      */
-    items: PropTypes.arrayOf(PropTypes.node),
+    items: PropTypes.arrayOf(PropTypes.node).isRequired,
 
     /**
      * Maximum amount of items in the list, extra items will be popped off.
@@ -192,3 +204,5 @@ ListBox.propTypes = {
     identity: PropTypes.string,
     updateAspects: PropTypes.func,
 };
+
+export default ListBox;
