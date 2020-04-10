@@ -8,9 +8,20 @@
 Dazzler is a Python (>=3.6) async web framework. 
 Create dazzling fast pages with a layout of python components and bindings to update from the backend.
 
-## Install 
+## Install
 
-Install with pip: `$ pip install dazzler `
+Install with pip: `$ pip install dazzler`
+
+## Features
+
+- Fast WebSocket based communication, deliver updates in realtime to thousands of connected clients at once.
+- Lightweight bundles for fast initial page load.
+- Support for third party integrations via middlewares.
+- Session & authentication systems.
+- No HTML/CSS/JS knowledge required, write everything with Python.
+- Multi page based.
+- Hot reload.
+- Tons of components.
 
 ## Basic example
 
@@ -46,3 +57,9 @@ async def on_click(context: BindingContext):
 if __name__ == '__main__':
     app.start()
 ```
+
+## Documentation
+
+Full documentation hosted on [readthedocs](https://dazzler.readthedocs.io/en/latest/).
+
+Get help for the command line tools: `$ dazzler --help`
