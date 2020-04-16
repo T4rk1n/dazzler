@@ -2,7 +2,7 @@
 
 Versions follow [Semantic Versioning](https://www.semver.org)
 
-## UNRELEASED
+## [0.3.0]
 ### Added
 
 - :rice: Add ListBox Component. [#36](https://github.com/T4rk1n/dazzler/issues/36)
