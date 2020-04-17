@@ -430,3 +430,22 @@ async def test_regex_bindings(start_page, browser):
         await browser.wait_for_text_to_equal(
             '#value-state1-output', f'value@state1: {identity}'
         )
+
+
+@pytest.mark.async_test
+async def test_str_trigger(start_page, browser):
+    from tests.apps.pages.str_trigger import page
+
+    await start_page(page)
+
+    state = await browser.wait_for_element_by_id('input')
+    state.send_keys('test')
+
+    await browser.click('#btn')
+
+    await browser.wait_for_text_to_equal(
+        '#output-state', 'test'
+    )
+    await browser.wait_for_text_to_equal(
+        '#output-trigger', '1'
+    )
