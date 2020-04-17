@@ -123,7 +123,11 @@ class Page:
             'packages': packages
         }
 
-    def bind(self, trigger: Trigger, *states: State):
+    def bind(
+        self,
+        trigger: typing.Union[Trigger, str],
+        *states: typing.Union[State, str]
+    ):
         """
         Attach a function to be called when the trigger update.
 
@@ -131,9 +135,28 @@ class Page:
         :param states:
         :return:
         """
+        trg = trigger
+        if isinstance(trigger, str):
+            s = trigger.split('@')
+            if not len(s) == 2:
+                raise Exception(f'Invalid trigger: {trigger}')
+
+            trg = Trigger(s[1], s[0])
+
+        sts = []
+
+        for state in states:
+            if isinstance(state, str):
+                s = state.split('@')
+                if not len(s) == 2:
+                    raise Exception(f'Invalid state: {state}')
+
+                sts.append(State(s[1], s[0]))
+            else:
+                sts.append(state)
 
         def _wrapper(func):
-            binding = Binding(trigger, list(states))(func)
+            binding = Binding(trg, sts)(func)
             self.bindings.append(binding)
             self._bindings[str(binding.trigger)] = binding
             return func
