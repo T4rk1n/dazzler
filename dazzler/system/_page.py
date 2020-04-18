@@ -8,6 +8,26 @@ from ._component import Component
 from ._package import Package
 from ._requirements import Requirement, collect_requirements
 from ._route import Route, RouteMethod
+from ..errors import BindingError
+
+
+def _coerce_binding(value, binding_type: typing.Type = Trigger):
+
+    if isinstance(value, list):
+        return [_coerce_binding(x, binding_type) for x in value]
+
+    if isinstance(value, binding_type):
+        return value
+
+    if isinstance(value, str):
+
+        splat = value.split('@')
+        if not len(splat) == 2:
+            raise BindingError(f'Invalid {binding_type.__name__}: {value}')
+
+        return binding_type(splat[1], splat[0])
+
+    raise BindingError(f'Invalid {binding_type.__name__}: {value}')
 
 
 # pylint: disable=too-many-instance-attributes
@@ -115,7 +135,9 @@ class Page:
         return {
             'layout': layout._prepare(),
             'page': self.name,
-            'bindings': {str(x.trigger): x.prepare() for x in self.bindings},
+            'bindings': {
+                x['key']: x for y in self.bindings for x in y.prepare()
+            },
             'requirements': [
                 x.prepare(dev=debug, external=external)
                 for x in self.requirements
@@ -124,9 +146,9 @@ class Page:
         }
 
     def bind(
-        self,
-        trigger: typing.Union[Trigger, str],
-        *states: typing.Union[State, str]
+            self,
+            trigger: typing.Union[Trigger, str],
+            *states: typing.Union[State, str]
     ):
         """
         Attach a function to be called when the trigger update.
@@ -135,30 +157,14 @@ class Page:
         :param states:
         :return:
         """
-        trg = trigger
-        if isinstance(trigger, str):
-            s = trigger.split('@')
-            if not len(s) == 2:
-                raise Exception(f'Invalid trigger: {trigger}')
-
-            trg = Trigger(s[1], s[0])
-
-        sts = []
-
-        for state in states:
-            if isinstance(state, str):
-                s = state.split('@')
-                if not len(s) == 2:
-                    raise Exception(f'Invalid state: {state}')
-
-                sts.append(State(s[1], s[0]))
-            else:
-                sts.append(state)
+        trg = _coerce_binding(trigger)
+        sts = _coerce_binding(list(states), State)
 
         def _wrapper(func):
             binding = Binding(trg, sts)(func)
             self.bindings.append(binding)
-            self._bindings[str(binding.trigger)] = binding
+            for trig in binding.triggers:
+                self._bindings[str(trig)] = binding
             return func
 
         return _wrapper
