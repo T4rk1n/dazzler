@@ -111,25 +111,33 @@ class BoundAspect:
     def __init__(
             self,
             handler,
-            trigger: Trigger,
+            trigger: typing.Union[TriggerList, Trigger],
             states: StateList = None,
     ):
         self.handler = handler
         self.trigger = trigger
         self.states = states or []
 
-    def prepare(self) -> dict:
+    def prepare(self) -> list:
         """
         Prepare the binding for serialization.
 
-        :return: dict with trigger and states definitions.
+        :return: list of dict with trigger and states definitions.
         """
-        return {
-            'trigger': self.trigger.prepare(),
-            'states': [state.prepare() for state in self.states],
-            'key': str(self.trigger),
-            'regex': self.trigger.regex
-        }
+        return [
+            {
+                'trigger': trigger.prepare(),
+                'states': [state.prepare() for state in self.states],
+                'key': str(trigger),
+                'regex': trigger.regex
+            } for trigger in self.triggers
+        ]
+
+    @property
+    def triggers(self):
+        if isinstance(self.trigger, Trigger):
+            return [self.trigger]
+        return self.trigger
 
     async def __call__(self, *args, **kwargs):
         return await self.handler(*args, **kwargs)
@@ -294,7 +302,7 @@ class Binding:
                 )
 
             context = BindingContext(
-                self.trigger.identity,
+                trigger.identity,
                 request,
                 trigger,
                 states,
