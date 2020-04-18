@@ -439,13 +439,15 @@ async def test_str_trigger(start_page, browser):
     await start_page(page)
 
     state = await browser.wait_for_element_by_id('input')
-    state.send_keys('test')
 
-    await browser.click('#btn')
+    for i in range(1, 3):
+        state.send_keys(Keys.BACKSPACE)
+        state.send_keys(str(i))
+        await browser.click(f'#btn{i}')
+        await browser.wait_for_text_to_equal(
+            '#output-trigger', f'btn{i}'
+        )
 
-    await browser.wait_for_text_to_equal(
-        '#output-state', 'test'
-    )
-    await browser.wait_for_text_to_equal(
-        '#output-trigger', '1'
-    )
+        await browser.wait_for_text_to_equal(
+            '#output-state', str(i)
+        )
