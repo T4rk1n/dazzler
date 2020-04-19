@@ -65,11 +65,6 @@ module.exports = function(env, argv) {
             path: output.path,
             filename: 'assets.json',
         }),
-        new CleanWebpackPlugin([output.path], {
-            verbose: true,
-            watch: true,
-            exclude: ['dazzler.js'],
-        }),
         new MiniCssExtractPlugin({
             filename: 'dazzler_[name]_[hash].css',
             chunkFilename: 'dazzler_[name]_[hash].css',
@@ -87,6 +82,15 @@ module.exports = function(env, argv) {
                 })
             })
         })
+    }
+
+    // Check argv is defined first for IDE analyse.
+    if (argv && !argv.watch){
+        plugins.push(new CleanWebpackPlugin([output.path], {
+            verbose: true,
+            watch: true,
+            exclude: ['dazzler.js'],
+        }));
     }
 
     return {
