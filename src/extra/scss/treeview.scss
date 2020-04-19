@@ -1,0 +1,16 @@
+.dazzler-extra-tree-view {
+  .tree-item {
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    padding: 0.25rem;
+    .selected {
+      color: #0e84b5;
+    }
+    .tree-caret {
+      margin-right: 0.5rem;
+    }
+  }
+}
