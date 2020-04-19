@@ -1,8 +1,21 @@
 @import "color-classes";
+@import "spin";
 
 .dazzler-renderer {
   font-family: Lato, 'Helvetica Neue', Arial, Helvetica, sans-serif;
 }
 .dazzler-loading {
   text-align: center;
+}
+.dazzler-loading-container {
+  margin-top: 1rem;
+  .dazzler-spin {
+    margin: 0 auto;
+    &.reload {
+      border-top-color: $warning;
+    }
+  }
+  .dazzler-loading {
+    margin-top: 0.5rem;
+  }
 }

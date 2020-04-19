@@ -68,7 +68,6 @@ export default class Updater extends React.Component {
             });
 
             if (!bindings) {
-                console.log('binding');
                 return resolve(0);
             }
 
@@ -315,17 +314,31 @@ export default class Updater extends React.Component {
     render() {
         const {layout, ready, reloading} = this.state;
         if (!ready) {
-            return <div className="dazzler-loading">Loading...</div>;
+            return (
+                <div className='dazzler-loading-container'>
+                    <div className='dazzler-spin' />
+                    <div className='dazzler-loading' >
+                        Loading...
+                    </div>
+                </div>
+            );
         }
         if (reloading) {
-            return <div className="dazzler-loading">Reloading...</div>;
+            return (
+                <div className='dazzler-loading-container'>
+                    <div className='dazzler-spin reload' />
+                    <div className='dazzler-loading' >
+                        Reloading...
+                    </div>
+                </div>
+            );
         }
         if (!isComponent(layout)) {
             throw new Error(`Layout is not a component: ${layout}`);
         }
 
         return (
-            <div className="dazzler-rendered">
+            <div className='dazzler-rendered'>
                 {hydrateComponent(
                     layout.name,
                     layout.package,
