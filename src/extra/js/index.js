@@ -6,5 +6,6 @@ import Spinner from './components/Spinner';
 import Sticky from './components/Sticky';
 import Drawer from './components/Drawer';
 import PopUp from './components/PopUp';
+import TreeView from './components/TreeView';
 
-export {Notice, Pager, Spinner, Sticky, Drawer, PopUp};
+export {Notice, Pager, Spinner, Sticky, Drawer, PopUp, TreeView};
