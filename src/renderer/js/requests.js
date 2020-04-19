@@ -46,7 +46,7 @@ export function xhrRequest(url, options = defaultXhrOptions) {
         Object.keys(head).forEach(k => xhr.setRequestHeader(k, head[k]));
         xhr.onreadystatechange = () => {
             if (xhr.readyState === XMLHttpRequest.DONE) {
-                if (xhr.status < 400) {
+                if (xhr.status === 200) {
                     let responseValue = xhr.response;
                     if (
                         jsonPattern.test(xhr.getResponseHeader('Content-Type'))
