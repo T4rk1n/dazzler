@@ -315,21 +315,17 @@ export default class Updater extends React.Component {
         const {layout, ready, reloading} = this.state;
         if (!ready) {
             return (
-                <div className='dazzler-loading-container'>
-                    <div className='dazzler-spin' />
-                    <div className='dazzler-loading' >
-                        Loading...
-                    </div>
+                <div className="dazzler-loading-container">
+                    <div className="dazzler-spin" />
+                    <div className="dazzler-loading">Loading...</div>
                 </div>
             );
         }
         if (reloading) {
             return (
-                <div className='dazzler-loading-container'>
-                    <div className='dazzler-spin reload' />
-                    <div className='dazzler-loading' >
-                        Reloading...
-                    </div>
+                <div className="dazzler-loading-container">
+                    <div className="dazzler-spin reload" />
+                    <div className="dazzler-loading">Reloading...</div>
                 </div>
             );
         }
@@ -338,7 +334,7 @@ export default class Updater extends React.Component {
         }
 
         return (
-            <div className='dazzler-rendered'>
+            <div className="dazzler-rendered">
                 {hydrateComponent(
                     layout.name,
                     layout.package,
