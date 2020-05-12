@@ -20,6 +20,8 @@ def prepare_aspects(aspects: dict):
                 for x in value:
                     if isinstance(x, Component):
                         new_value.append(x._prepare())
+                    elif isinstance(x, dict):
+                        new_value.append(prepare_aspects(x))
                     else:
                         new_value.append(x)
                 data[aspect] = new_value
