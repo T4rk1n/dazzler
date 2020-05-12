@@ -19,6 +19,12 @@ export function hydrateProps(props, updateAspects, connect, disconnect) {
             replace[k] = v.map(c => {
                 if (!isComponent(c)) {
                     // Mixing components and primitives
+                    if (type(c) === 'Object') {
+                        // Not a component but maybe it contains some ?
+                        return hydrateProps(
+                            c, updateAspects, connect, disconnect
+                        );
+                    }
                     return c;
                 }
                 const newProps = hydrateProps(
