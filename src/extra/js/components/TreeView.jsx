@@ -17,9 +17,10 @@ const TreeViewItem = ({
         () => selected && includes(identifier, selected),
         [selected, identifier]
     );
-    const isExpanded = useMemo(
-        () => includes(identifier, expanded_items),
-        [expanded_items, expanded_items]);
+    const isExpanded = useMemo(() => includes(identifier, expanded_items), [
+        expanded_items,
+        expanded_items,
+    ]);
     const css = ['tree-item-label', `level-${level}`];
     if (isSelected) {
         css.push('selected');
@@ -144,7 +145,7 @@ const TreeView = ({
             if (includes(identifier, expanded_items)) {
                 payload.expanded_items = without([identifier], expanded_items);
             } else {
-                payload.expanded_items = concat(expanded_items, [identifier])
+                payload.expanded_items = concat(expanded_items, [identifier]);
             }
         }
         updateAspects(payload);
@@ -168,7 +169,7 @@ const TreeView = ({
 TreeView.defaultProps = {
     nest_icon_collapsed: '⏵',
     nest_icon_expanded: '⏷',
-    expanded_items: []
+    expanded_items: [],
 };
 
 TreeView.propTypes = {
