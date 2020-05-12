@@ -19,7 +19,13 @@ page = Page(
                 core.Input(value=x, identity=f'array-{x}', type='number')
                 for x in arr
             ],
-            shape={'shaped': core.Button('shaped', identity='shaped')}
+            shape={'shaped': core.Button('shaped', identity='shaped')},
+            list_of_dict=[
+                {
+                    'label': core.Container(f'label{x}', identity=f'label-{x}'),
+                    'value': f'label-{x}'
+                } for x in arr
+            ]
         ),
         core.Container(identity='single-output'),
         core.Container([

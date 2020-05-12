@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 export default class ComponentAsAspect extends React.Component {
     render() {
-        const {identity, single, array, shape} = this.props;
+        const {identity, single, array, shape, list_of_dict} = this.props;
         return (
             <div id={identity}>
                 <div className="single">{single}</div>
@@ -13,6 +13,11 @@ export default class ComponentAsAspect extends React.Component {
                     ))}
                 </div>
                 <div className="shape">{shape.shaped}</div>
+                <div className="list_of_dict">
+                    {
+                        list_of_dict.map(e => <div key={e.value}>{e.label}</div>)
+                    }
+                </div>
             </div>
         );
     }
@@ -26,6 +31,11 @@ ComponentAsAspect.propTypes = {
     shape: PropTypes.shape({
         shaped: PropTypes.element,
     }),
+
+    list_of_dict: PropTypes.arrayOf(PropTypes.shape({
+        'label': PropTypes.node,
+        'value': PropTypes.any,
+    })),
 
     /**
      *  Unique id for this component

@@ -341,6 +341,8 @@ async def test_component_as_aspect(start_page, browser):
             )
             component.send_keys(Keys.ARROW_UP)
 
+        await browser.wait_for_element_by_id(f'label-{i}')
+
     for identity in ('single', 'shaped'):
         for i in range(1, 25):
             await browser.click(f'#{identity}')
