@@ -98,7 +98,7 @@ const Dropdown = props => {
         filtered_options,
         no_results_label,
         scrollable,
-        scroll_max_size
+        scroll_max_size,
     } = props;
     const mainRef = useRef(null);
     const containerRef = useRef(null);
@@ -280,8 +280,8 @@ const Dropdown = props => {
         }
 
         const toggleWidth = toggleRef.current.getBoundingClientRect().width;
-        const searchWidth = searchContentRef.current.getBoundingClientRect()
-            .width + 9;
+        const searchWidth =
+            searchContentRef.current.getBoundingClientRect().width + 9;
         const symbolWidth = symbolRef.current.getBoundingClientRect().width;
         const maxWidth = toggleWidth - symbolWidth - 16;
 
@@ -423,7 +423,6 @@ Dropdown.propTypes = {
      * Unicode character used as the toggle button.
      */
     toggle_symbol: PropTypes.string,
-
 
     /**
      * Make the menu scrollable.
