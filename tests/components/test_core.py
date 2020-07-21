@@ -559,3 +559,70 @@ async def test_list_box_deletions(start_page, browser):
     items = await browser.wait_for_elements_by_css_selector('.item')
 
     assert len(items) == original_size - 1
+
+
+@pytest.mark.async_test
+async def test_simple_dropdown(start_page, browser):
+    from tests.components.pages.dropdown import page
+
+    await start_page(page)
+
+    for i in range(1, 6):
+        await browser.click('#simple-dropdown .drop-toggle')
+        await browser.click(f'#simple-dropdown .opened > div:nth-child({i})')
+        await browser.wait_for_text_to_equal('#simple-output', str(i))
+
+
+@pytest.mark.async_test
+async def test_multi_dropdown(start_page, browser):
+    from tests.components.pages.dropdown import page
+
+    await start_page(page)
+
+    for i in range(1, 11):
+
+        await browser.click('#multi-dropdown .drop-toggle')
+        await browser.click(f'#multi-dropdown .opened > div:nth-child({i})')
+
+        output = set(
+            json.loads(
+                (await browser.wait_for_element_by_id('multi-output')).text
+            )
+        )
+        assert len(set(range(10, i + 10, -1)).difference(output)) == 0
+
+
+@pytest.mark.async_test
+async def test_search_backend(start_page, browser):
+    from tests.components.pages.dropdown import page
+
+    await start_page(page)
+
+    async def get_options():
+        return await browser.wait_for_elements_by_css_selector(
+            '#search-backend-dropdown .dropdown-item'
+        )
+
+    search_input = await browser.wait_for_element_by_css_selector(
+        '#search-backend-dropdown .dropdown-search-input'
+    )
+
+    search_input.send_keys('f')
+
+    options = await get_options()
+
+    assert len(options) == 1
+    assert options[0].text == 'foo'
+
+    search_input.send_keys(Keys.BACKSPACE)
+    search_input.send_keys('hel')
+
+    options = await get_options()
+
+    assert len(options) == 3
+
+    search_input.send_keys('l')
+
+    assert len(await get_options()) == 2
+    search_input.send_keys('o')
+    assert len(await get_options()) == 1
