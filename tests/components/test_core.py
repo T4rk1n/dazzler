@@ -153,11 +153,11 @@ async def test_store(start_page, browser):
         expected = store[0][2](store[1])
         try:
             await browser.wait_for_text_to_equal(
-                f'#type-output', expected
+                '#type-output', expected
             )
         except Exception as e:
             raise AssertionError(
-                f'Failed to update from'
+                'Failed to update from'
                 f' {i - 1}:{store_types[i - 1][0][0]} '
                 f'to {i}:{store[0][0]} ::expected:: {expected}'
             ) from e

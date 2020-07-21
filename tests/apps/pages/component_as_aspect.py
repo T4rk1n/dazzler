@@ -22,7 +22,9 @@ page = Page(
             shape={'shaped': core.Button('shaped', identity='shaped')},
             list_of_dict=[
                 {
-                    'label': core.Container(f'label{x}', identity=f'label-{x}'),
+                    'label': core.Container(
+                        f'label{x}', identity=f'label-{x}'
+                    ),
                     'value': f'label-{x}'
                 } for x in arr
             ]

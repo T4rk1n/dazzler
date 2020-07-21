@@ -32,7 +32,7 @@ async def test_pager(start_page, browser):
 
         try:
             button = await browser.wait_for_element_by_xpath(
-                f"//*[@id='pager']/span[contains(text(), 'next')]",
+                '//*[@id=\'pager\']/span[contains(text(), \'next\')]',
                 timeout=1,
             )
             button.click()
