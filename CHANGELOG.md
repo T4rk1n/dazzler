@@ -2,6 +2,19 @@
 
 Versions follow [Semantic Versioning](https://www.semver.org)
 
+## [0.4.0]
+### Added
+
+- :rice: Add Dropdown core component. [#5](https://github.com/T4rk1n/dazzler/issues/5)
+- :rice: Add TreeView extra component. [#15](https://github.com/T4rk1n/dazzler/issues/15)
+- :hammer: Allow binding arguments to be strings. [#56](https://github.com/T4rk1n/dazzler/issues/56)
+- :hammer: Allow lists as binding arguments. [#56](https://github.com/T4rk1n/dazzler/issues/56)
+- :hammer: Add spinner to loading/reloading ui.
+
+### Fixed
+
+- :bug: Fix rendering of list of object containing components. [#61](https://github.com/T4rk1n/dazzler/issues/61)
+
 ## [0.3.0]
 ### Added
 
