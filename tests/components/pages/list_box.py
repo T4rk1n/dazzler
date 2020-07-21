@@ -28,6 +28,7 @@ page = Page(
     ])
 )
 
+
 # Add an element to the end.
 @page.bind(Trigger('append-btn', 'clicks'))
 async def on_append(ctx: BindingContext):
@@ -58,6 +59,7 @@ async def on_concat(ctx: BindingContext):
         ]
     )
 
+
 # Insert at a position.
 @page.bind(Trigger('insert-btn', 'clicks'))
 async def on_insert(ctx: BindingContext):
@@ -68,6 +70,7 @@ async def on_insert(ctx: BindingContext):
             'item': core.Container('inserted', class_name='item insert')
         }
     )
+
 
 # Delete the item at the index.
 @page.bind(Trigger('delete-btn', 'clicks'))

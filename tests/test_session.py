@@ -82,7 +82,7 @@ async def test_session(start_visit, browser, backend):
     # Delete session item
     await browser.click('#remove-session')
     await browser.click('#session-click')
-    await browser.wait_for_text_to_equal('#session-output', f'Clicked 1')
+    await browser.wait_for_text_to_equal('#session-output', 'Clicked 1')
 
 
 @pytest.mark.async_test

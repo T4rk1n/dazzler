@@ -60,7 +60,7 @@ app.add_page(page)
 async def on_click_render_type(context: BindingContext):
     identity = context.trigger.identity.replace('set-', '')
     await context.set_aspect(
-        f'spec-output',
+        'spec-output',
         **{f'{identity}_prop': aspect_types[identity]['value']}
     )
 
