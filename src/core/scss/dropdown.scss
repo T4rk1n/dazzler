@@ -1,0 +1,97 @@
+@import '../../commons/scss/colors';
+
+
+.dazzler-core-dropdown {
+  position: relative;
+  .drop-toggle {
+    cursor: pointer;
+    border: solid 1px $neutral-dark;
+    border-radius: 3px;
+    user-select: none;
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    >div:first-child { flex-grow: 1; }
+    .drop-symbol {
+      justify-self: flex-end;
+      padding: 0.5rem;
+    }
+  }
+  .drop-container {
+    display: none;
+    border: solid 1px $neutral-dark;
+    border-top: none;
+    border-radius: 3px;
+    position: absolute;
+    z-index: 100;
+    background-color: #fff;
+    &.opened { display: block; }
+    &.scrollable {
+      overflow-y: auto;
+    }
+  }
+  .dropdown-item {
+    padding: 0.5rem;
+    cursor: pointer;
+
+    &:hover, &:focus {
+      background-color: $neutral-dark;
+      &.selected {
+        background-color: initial;
+      }
+    }
+    &.selected {
+      width: 100%;
+    }
+  }
+  .selected-items {
+    display: flex;
+    flex-wrap: wrap;
+
+    .drop-selected-item {
+      display: flex;
+      align-items: center;
+      background-color: $neutral-light;
+      border: 1px solid $neutral-dark;
+      border-radius: 3px;
+      margin: 0.125rem;
+      .selected-label {
+        margin-left: 0.25rem;
+      }
+      .selected-remover {
+        display: flex;
+        align-items: center;
+        margin-left: 0.25rem;
+        &:hover, &:focus {
+          background-color: $neutral-dark;
+        }
+        border-radius: 0 3px 3px 0;
+        padding-left: 0.25rem;
+        padding-right: 0.25rem;
+        height: 100%;
+      }
+    }
+  }
+
+  .no-results {
+    padding: 0.5rem;
+    text-align: center;
+    user-select: none;
+  }
+
+  .search-content {
+    height: 0;
+    visibility: hidden;
+    position: absolute;
+    top: 0;
+  }
+  .dropdown-search-input {
+    border: none;
+    margin: 2px 4px;
+  }
+
+  .drop-controls {
+    display: flex;
+    flex-wrap: wrap;
+  }
+}

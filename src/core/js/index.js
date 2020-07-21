@@ -21,6 +21,7 @@ import Table from './components/Table';
 import Grid from './components/Grid';
 import Form from './components/Form';
 import ListBox from './components/ListBox';
+import Dropdown from './components/Dropdown';
 
 export {
     Container,
@@ -44,4 +45,5 @@ export {
     Grid,
     Form,
     ListBox,
+    Dropdown,
 };
