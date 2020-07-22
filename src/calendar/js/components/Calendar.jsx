@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import {format} from 'date-fns';
 import {firstDayOfTheMonth, monthLength, prevMonth, nextMonth} from '../utils';
@@ -40,17 +40,27 @@ function calendar(month, year) {
  *     - ``calendar-week``
  *     - ``empty``
  */
-export default class Calendar extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            month: null,
-            year: null,
-        };
+const Calendar = props => {
+    const {
+        class_name,
+        identity,
+        week_labels,
+        month_format,
+        selected,
+        use_selected,
+        updateAspects,
+        month_timestamp
+    } = props;
+    const [{month, year}, setDate] = useState({});
+    const date = new Date(year, month);
+
+    let css = class_name;
+
+    if (!css) {
+        css = 'dazzler-calendar-calendar'
     }
 
-    componentWillMount() {
-        const {selected, month_timestamp, use_selected} = this.props;
+    useEffect(() => {
         const payload = {};
         let ts, toUpdate;
 
@@ -61,7 +71,7 @@ export default class Calendar extends React.Component {
         } else {
             ts = new Date(month_timestamp);
         }
-        this.setState({
+        setDate({
             month: ts.getUTCMonth(),
             year: ts.getUTCFullYear(),
         });
@@ -75,135 +85,120 @@ export default class Calendar extends React.Component {
             toUpdate = true;
         }
 
-        if (toUpdate && this.props.updateAspects) {
-            this.props.updateAspects(payload);
+        if (toUpdate && updateAspects) {
+            updateAspects(payload);
         }
-    }
+    }, [month_timestamp, selected, use_selected]);
 
-    render() {
-        const {
-            class_name,
-            identity,
-            week_labels,
-            month_format,
-            selected,
-            use_selected,
-        } = this.props;
-        let css = class_name;
-        if (!class_name) {
-            css = 'dazzler-calendar-calendar';
-        }
-        const {month, year} = this.state;
-        const date = new Date(year, month);
-        return (
-            <div className={css} id={identity}>
-                <div className="calendar-header">
-                    <span
-                        onClick={() => {
-                            const [pm, py] = prevMonth(month, year);
-                            if (this.props.updateAspects) {
-                                this.props.updateAspects({
-                                    month_timestamp: new Date(py, pm).getTime(),
-                                });
-                            }
-                            this.setState({
-                                month: pm,
-                                year: py,
+    return (
+        <div className={css} id={identity}>
+            <div className="calendar-header">
+                <span
+                    onClick={() => {
+                        const [pm, py] = prevMonth(month, year);
+                        if (updateAspects) {
+                            updateAspects({
+                                month_timestamp: new Date(py, pm).getTime(),
                             });
-                        }}
-                    >
-                        &#9666;
-                    </span>
-                    <div className="month-label">
-                        {format(date, month_format)}
-                    </div>
-                    <span
-                        onClick={() => {
-                            const [pm, py] = nextMonth(month, year);
-                            if (this.props.updateAspects) {
-                                this.props.updateAspects({
-                                    month_timestamp: new Date(py, pm).getTime(),
-                                });
-                            }
-                            this.setState({
-                                month: pm,
-                                year: py,
+                        }
+                        setDate({
+                            month: pm,
+                            year: py,
+                        });
+                    }}
+                >
+                    &#9666;
+                </span>
+                <div className="month-label">
+                    {format(date, month_format)}
+                </div>
+                <span
+                    onClick={() => {
+                        const [pm, py] = nextMonth(month, year);
+                        if (updateAspects) {
+                            updateAspects({
+                                month_timestamp: new Date(py, pm).getTime(),
                             });
-                        }}
-                    >
-                        &#9656;
-                    </span>
-                </div>
-                <div className="week-labels">
-                    {week_labels.map(week => (
-                        <div
-                            className="week-label"
-                            key={`${identity}-wl-${week}`}
-                        >
-                            {week}
-                        </div>
-                    ))}
-                </div>
-                <div className="week-rows">
-                    {calendar(month, year).map((week, i) => (
-                        <div
-                            className="calendar-week"
-                            key={`${identity}-week-${i}`}
-                        >
-                            {week.map((day, j) =>
-                                day.empty ? (
-                                    <div
-                                        className="empty"
-                                        key={`${identity}-day-emtpy-${j}`}
-                                    />
-                                ) : (
-                                    <div
-                                        className={join(
-                                            ' ',
-                                            concat(
-                                                ['calendar-day'],
-                                                selected &&
-                                                    selected.day === day.day &&
-                                                    selected.year === year &&
-                                                    selected.month === month
-                                                    ? ['selected-day']
-                                                    : []
-                                            )
-                                        )}
-                                        key={`${identity}-day-${day.day}`}
-                                        onClick={e => {
-                                            e.preventDefault();
-                                            e.stopPropagation();
-                                            const payload = {
-                                                day: day.day,
-                                                month,
-                                                year,
-                                            };
-                                            if (this.props._on_click) {
-                                                this.props._on_click(payload);
-                                            }
-                                            if (
-                                                use_selected &&
-                                                this.props.updateAspects
-                                            ) {
-                                                // This component also used by DatePickers.
-                                                this.props.updateAspects({
-                                                    selected: payload,
-                                                });
-                                            }
-                                        }}
-                                    >
-                                        {day.day}
-                                    </div>
-                                )
-                            )}
-                        </div>
-                    ))}
-                </div>
+                        }
+                        setDate({
+                            month: pm,
+                            year: py,
+                        });
+                    }}
+                >
+                    &#9656;
+                </span>
             </div>
-        );
-    }
+            <div className="week-labels">
+                {week_labels.map(week => (
+                    <div
+                        className="week-label"
+                        key={`${identity}-wl-${week}`}
+                    >
+                        {week}
+                    </div>
+                ))}
+            </div>
+            <div className="week-rows">
+                {calendar(month, year).map((week, i) => (
+                    <div
+                        className="calendar-week"
+                        key={`${identity}-week-${i}`}
+                    >
+                        {week.map((day, j) =>
+                            day.empty ? (
+                                <div
+                                    className="empty"
+                                    key={`${identity}-day-emtpy-${j}`}
+                                />
+                            ) : (
+                                <div
+                                    className={join(
+                                        ' ',
+                                        concat(
+                                            ['calendar-day'],
+                                            selected &&
+                                                selected.day === day.day &&
+                                                selected.year === year &&
+                                                selected.month === month
+                                                ? ['selected-day']
+                                                : []
+                                        )
+                                    )}
+                                    key={`${identity}-day-${day.day}`}
+                                    onClick={e => {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                        const payload = {
+                                            day: day.day,
+                                            month,
+                                            year,
+                                        };
+                                        if (props._on_click) {
+                                            props._on_click(payload);
+                                        }
+                                        if (
+                                            use_selected &&
+                                            updateAspects
+                                        ) {
+                                            // This component also used by DatePickers.
+                                            updateAspects({
+                                                selected: payload,
+                                            });
+                                        }
+                                    }}
+                                >
+                                    {day.day}
+                                </div>
+                            )
+                        )}
+                    </div>
+                ))}
+            </div>
+        </div>
+    );
 }
+
 
 Calendar.defaultProps = {
     month_format: 'MMMM YYYY',
@@ -256,3 +251,5 @@ Calendar.propTypes = {
      */
     updateAspects: PropTypes.func,
 };
+
+export default Calendar;
