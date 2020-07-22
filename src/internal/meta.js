@@ -11,7 +11,11 @@ function walk(directory, components = {}) {
         if (fs.lstatSync(filepath).isDirectory()) {
             walk(f, components);
         } else {
-            components[filepath] = reactDocs.parse(fs.readFileSync(filepath));
+            try {
+                components[filepath] = reactDocs.parse(fs.readFileSync(filepath));
+            } catch (e) {
+                process.stderr.write(`ERROR: Invalid component file ${filepath}`);
+            }
         }
     });
     return components;
