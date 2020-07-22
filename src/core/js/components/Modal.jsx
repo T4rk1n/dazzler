@@ -27,7 +27,6 @@ export default class Modal extends React.Component {
             footer,
             close_button,
         } = this.props;
-        console.log(identity);
         return (
             <div className={class_name} style={style} id={identity}>
                 <div
