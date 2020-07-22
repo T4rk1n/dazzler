@@ -27,5 +27,6 @@ page = Page(
         calendar.Calendar(use_selected=False),
         calendar.DatePicker(identity='single-picker'),
         calendar.TimePicker(fallback_mode=True, identity='time-picker'),
+        calendar.Timestamp(past.timestamp() * 1000, format='DD MM YYYY'),
     ])
 )
