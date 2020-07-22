@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import {range, split} from 'ramda';
 
@@ -13,139 +13,126 @@ import {range, split} from 'ramda';
  *     - ``time-range``
  *     - ``time-value``
  */
-export default class TimePicker extends React.Component {
-    constructor(props) {
-        super(props);
-        let minutes = '00',
-            hour = '00',
-            am_pm = 'AM';
-        if (this.props.value) {
-            [hour, minutes] = split(':', this.props.value);
-            if (this.props.mode === 'AM/PM') {
-                [minutes, am_pm] = split(' ', minutes);
+const TimePicker = props => {
+    const {
+        fallback_mode,
+        value,
+        class_name,
+        identity,
+        mode,
+        updateAspects,
+    } = props;
+    const [opened, setOpened] = useState(false);
+    const [hour, setHour] = useState(() => {
+        if (value) {
+            const [h] = split(':', value);
+            return h;
+        }
+        return '00';
+    });
+    const [minutes, setMinute] = useState(() => {
+        if (value) {
+            const [_, m] = split(':', value);
+            return m;
+        }
+        return '00';
+    });
+    const [am_pm, setAMPM] = useState(() => {
+        if (value) {
+            if (mode === 'AM/PM') {
+                [_, am_pm] = split(' ');
+                return am_pm;
             }
         }
-        this.state = {
-            opened: false,
-            hour,
-            minutes,
-            am_pm,
-        };
-        this.setHour = this.setHour.bind(this);
-        this.setMinute = this.setMinute.bind(this);
-        this.updateTime = this.updateTime.bind(this);
-    }
+        return 'AM';
+    });
 
-    componentWillMount() {
-        const dummy = document.createElement('input');
-        dummy.type = 'time';
-        if (dummy.type === 'text') {
-            this.props.updateAspects({fallback_mode: true}, () => {
-                if (!this.props.value) {
-                    this.updateTime();
-                }
-            });
-        }
-    }
-
-    setHour(hour) {
-        this.setState({hour, opened: false}, this.updateTime);
-    }
-
-    setMinute(minutes) {
-        this.setState({minutes, opened: false}, this.updateTime);
-    }
-
-    setAMPM(am_pm) {
-        this.setState({am_pm, opened: false}, this.updateTime);
-    }
-
-    updateTime() {
-        const {updateAspects, mode} = this.props;
-        const {hour, minutes, am_pm} = this.state;
-
+    useEffect(() => {
         updateAspects({
             value:
                 mode === '24h'
                     ? `${hour}:${minutes}`
                     : `${hour}:${minutes} ${am_pm}`,
         });
-    }
+    }, [hour, minutes, am_pm, mode, updateAspects]);
 
-    render() {
-        const {fallback_mode, value, class_name, identity, mode} = this.props;
-        if (!fallback_mode) {
-            return (
-                <input
-                    value={value}
-                    type="time"
-                    className={class_name}
-                    id={identity}
-                />
-            );
+    useEffect(() => {
+        const dummy = document.createElement('input');
+        dummy.type = 'time';
+        if (dummy.type === 'text') {
+            updateAspects({fallback_mode: true});
         }
+    }, [updateAspects]);
+
+    if (!fallback_mode) {
         return (
-            <div className={`${class_name} fallback-mode`}>
-                <input
-                    type="text"
-                    readOnly="readonly"
-                    className="time-input"
-                    value={value}
-                    onClick={() => this.setState({opened: !this.state.opened})}
-                />
-                {this.state.opened && (
-                    <div className="fallback-timepicker">
-                        <div className="time-range">
-                            <div>HH</div>
-                            {range(
-                                mode === '24h' ? 0 : 1,
-                                mode === '24h' ? 24 : 13
-                            ).map(h => (
-                                <div
-                                    className="time-value"
-                                    key={`${identity}-hour-${h}`}
-                                    onClick={() =>
-                                        this.setHour(('0' + h).slice(-2))
-                                    }
-                                >
-                                    {('0' + h).slice(-2)}
-                                </div>
-                            ))}
-                        </div>
-                        <div className="time-range">
-                            <div>MM</div>
-                            {range(0, 60).map(m => (
-                                <div
-                                    className="time-value"
-                                    key={`${identity}-min-${m}`}
-                                    onClick={() =>
-                                        this.setMinute(('0' + m).slice(-2))
-                                    }
-                                >
-                                    {('0' + m).slice(-2)}
-                                </div>
-                            ))}
-                        </div>
-                        {mode === 'AM/PM' && (
-                            <div className="time-range">
-                                <div>AM/PM</div>
-                                {['AM', 'PM'].map(e => (
-                                    <div
-                                        className="time-value"
-                                        key={`${identity}-${e}`}
-                                        onClick={() => this.setAMPM(e)}
-                                    >
-                                        {e}
-                                    </div>
-                                ))}
-                            </div>
-                        )}
-                    </div>
-                )}
-            </div>
+            <input
+                value={value}
+                type="time"
+                className={class_name}
+                id={identity}
+            />
         );
     }
-}
+    return (
+        <div className={`${class_name} fallback-mode`}>
+            <input
+                type="text"
+                readOnly="readonly"
+                className="time-input"
+                value={value}
+                onClick={() => setOpened({opened: !opened})}
+            />
+            {opened && (
+                <div className="fallback-timepicker">
+                    <div className="time-range">
+                        <div>HH</div>
+                        {range(
+                            mode === '24h' ? 0 : 1,
+                            mode === '24h' ? 24 : 13
+                        ).map(h => (
+                            <div
+                                className="time-value"
+                                key={`${identity}-hour-${h}`}
+                                onClick={() => setHour(('0' + h).slice(-2))}
+                            >
+                                {('0' + h).slice(-2)}
+                            </div>
+                        ))}
+                    </div>
+                    <div className="time-range">
+                        <div>MM</div>
+                        {range(0, 60).map(m => (
+                            <div
+                                className="time-value"
+                                key={`${identity}-min-${m}`}
+                                onClick={() => setMinute(('0' + m).slice(-2))}
+                            >
+                                {('0' + m).slice(-2)}
+                            </div>
+                        ))}
+                    </div>
+                    {mode === 'AM/PM' && (
+                        <div className="time-range">
+                            <div>AM/PM</div>
+                            {['AM', 'PM'].map(e => (
+                                <div
+                                    className="time-value"
+                                    key={`${identity}-${e}`}
+                                    onClick={() => {
+                                        setAMPM(e);
+                                    }}
+                                >
+                                    {e}
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </div>
+            )}
+        </div>
+    );
+};
 
 TimePicker.defaultProps = {
     value: '00:00',
@@ -179,3 +166,5 @@ TimePicker.propTypes = {
      */
     updateAspects: PropTypes.func,
 };
+
+export default TimePicker
