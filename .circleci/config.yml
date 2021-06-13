@@ -45,16 +45,16 @@ jobs:
             npm run format:test
 
       - run:
-          name: Diff docs
-          command: |
-            . venv/bin/activate
-            docs/diff-docs.sh
-
-      - run:
           name: Test
           command: |
             . venv/bin/activate
             pytest -ra --junitxml=~/test-reports/dazzler/results.xml --pylint --flake8 --cov=dazzler
+
+      - run:
+          name: Diff docs
+          command: |
+            . venv/bin/activate
+            docs/diff-docs.sh
 
       - store_artifacts:
           path: ~/test-reports
