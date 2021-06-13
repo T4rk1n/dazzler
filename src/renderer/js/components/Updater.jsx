@@ -333,22 +333,40 @@ export default class Updater extends React.Component {
             throw new Error(`Layout is not a component: ${layout}`);
         }
 
+        const contexts = [];
+
+        const onContext = contextComponent => {
+            contexts.push(contextComponent);
+        };
+
+        const hydrated = hydrateComponent(
+            layout.name,
+            layout.package,
+            layout.identity,
+            hydrateProps(
+                layout.aspects,
+                this.updateAspects,
+                this.connect,
+                this.disconnect,
+                onContext
+            ),
+            this.updateAspects,
+            this.connect,
+            this.disconnect,
+            onContext
+        );
+
         return (
             <div className="dazzler-rendered">
-                {hydrateComponent(
-                    layout.name,
-                    layout.package,
-                    layout.identity,
-                    hydrateProps(
-                        layout.aspects,
-                        this.updateAspects,
-                        this.connect,
-                        this.disconnect
-                    ),
-                    this.updateAspects,
-                    this.connect,
-                    this.disconnect
-                )}
+                {contexts.length
+                    ? contexts.reduce((acc, Context, i) => {
+                          if (!acc) {
+                              return <Context>{hydrated}</Context>;
+                          } else {
+                              return <Context>{acc}</Context>;
+                          }
+                      }, null)
+                    : hydrated}
             </div>
         );
     }

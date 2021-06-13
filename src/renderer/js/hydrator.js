@@ -12,7 +12,13 @@ export function isComponent(c) {
     );
 }
 
-export function hydrateProps(props, updateAspects, connect, disconnect) {
+export function hydrateProps(
+    props,
+    updateAspects,
+    connect,
+    disconnect,
+    onContext
+) {
     const replace = {};
     Object.entries(props).forEach(([k, v]) => {
         if (type(v) === 'Array') {
@@ -22,7 +28,11 @@ export function hydrateProps(props, updateAspects, connect, disconnect) {
                     if (type(c) === 'Object') {
                         // Not a component but maybe it contains some ?
                         return hydrateProps(
-                            c, updateAspects, connect, disconnect
+                            c,
+                            updateAspects,
+                            connect,
+                            disconnect,
+                            onContext
                         );
                     }
                     return c;
@@ -31,7 +41,8 @@ export function hydrateProps(props, updateAspects, connect, disconnect) {
                     c.aspects,
                     updateAspects,
                     connect,
-                    disconnect
+                    disconnect,
+                    onContext
                 );
                 if (!newProps.key) {
                     newProps.key = c.identity;
@@ -43,7 +54,8 @@ export function hydrateProps(props, updateAspects, connect, disconnect) {
                     newProps,
                     updateAspects,
                     connect,
-                    disconnect
+                    disconnect,
+                    onContext
                 );
             });
         } else if (isComponent(v)) {
@@ -51,7 +63,8 @@ export function hydrateProps(props, updateAspects, connect, disconnect) {
                 v.aspects,
                 updateAspects,
                 connect,
-                disconnect
+                disconnect,
+                onContext
             );
             replace[k] = hydrateComponent(
                 v.name,
@@ -60,10 +73,17 @@ export function hydrateProps(props, updateAspects, connect, disconnect) {
                 newProps,
                 updateAspects,
                 connect,
-                disconnect
+                disconnect,
+                onContext
             );
         } else if (type(v) === 'Object') {
-            replace[k] = hydrateProps(v, updateAspects, connect, disconnect);
+            replace[k] = hydrateProps(
+                v,
+                updateAspects,
+                connect,
+                disconnect,
+                onContext
+            );
         }
     });
     return {...props, ...replace};
@@ -76,11 +96,20 @@ export function hydrateComponent(
     props,
     updateAspects,
     connect,
-    disconnect
+    disconnect,
+    onContext
 ) {
     const pack = window[package_name];
-    const element = React.createElement(pack[name], props);
-    return (
+    if (!pack) {
+        throw new Error(`Invalid package name: ${package_name}`);
+    }
+    const component = pack[name];
+    if (!component) {
+        throw new Error(`Invalid component name: ${package_name}.${name}`);
+    }
+    const element = React.createElement(component, props);
+
+    const wrapper = ({children}) => (
         <Wrapper
             identity={identity}
             updateAspects={updateAspects}
@@ -88,11 +117,18 @@ export function hydrateComponent(
             connect={connect}
             package_name={package_name}
             component_name={name}
-            aspects={props}
+            aspects={{children, ...props}}
             disconnect={disconnect}
             key={`wrapper-${identity}`}
         />
     );
+
+    if (component.isContext) {
+        onContext(wrapper);
+        return null;
+    } else {
+        return wrapper({});
+    }
 }
 
 export function prepareProp(prop) {
