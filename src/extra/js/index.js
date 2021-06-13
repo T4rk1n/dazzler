@@ -8,5 +8,16 @@ import Drawer from './components/Drawer';
 import PopUp from './components/PopUp';
 import TreeView from './components/TreeView';
 import Toast from './components/Toast';
+import PageMap from './components/PageMap';
 
-export {Notice, Pager, Spinner, Sticky, Drawer, PopUp, TreeView, Toast};
+export {
+    Notice,
+    Pager,
+    Spinner,
+    Sticky,
+    Drawer,
+    PopUp,
+    TreeView,
+    Toast,
+    PageMap,
+};

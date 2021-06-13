@@ -16,6 +16,5 @@ page = Page(
     __name__,
     core.Container([
         core.Link(children='internal', page_name='other', identity='internal')
-    ]),
-    url='/'
+    ])
 )
