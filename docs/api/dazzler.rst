@@ -5,6 +5,7 @@ Subpackages
 -----------
 
 .. toctree::
+   :maxdepth: 4
 
    dazzler.components
    dazzler.system
@@ -20,7 +21,6 @@ dazzler.errors module
    :members:
    :undoc-members:
    :show-inheritance:
-
 
 Module contents
 ---------------

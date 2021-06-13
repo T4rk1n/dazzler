@@ -20,7 +20,6 @@ dazzler.system.session module
    :undoc-members:
    :show-inheritance:
 
-
 Module contents
 ---------------
 
