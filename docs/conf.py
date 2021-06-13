@@ -44,7 +44,7 @@ extensions = [
     'sphinx.ext.ifconfig',
     'sphinx.ext.viewcode',
     'sphinx_autodoc_typehints',
-    'm2r',
+    'm2r2',
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -194,7 +194,7 @@ def skip(app, what, name, obj, skip, options):
 
 def setup(app):
     app.connect("autodoc-skip-member", skip)
-    app.add_stylesheet('styles.css')
+    app.add_css_file('styles.css')
 
     # Generate components for docstrings.
     from dazzler import Dazzler
