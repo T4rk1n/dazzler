@@ -167,4 +167,4 @@ TimePicker.propTypes = {
     updateAspects: PropTypes.func,
 };
 
-export default TimePicker
+export default TimePicker;

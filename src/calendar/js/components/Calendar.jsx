@@ -49,7 +49,7 @@ const Calendar = props => {
         selected,
         use_selected,
         updateAspects,
-        month_timestamp
+        month_timestamp,
     } = props;
     const [{month, year}, setDate] = useState({});
     const date = new Date(year, month);
@@ -57,7 +57,7 @@ const Calendar = props => {
     let css = class_name;
 
     if (!css) {
-        css = 'dazzler-calendar-calendar'
+        css = 'dazzler-calendar-calendar';
     }
 
     useEffect(() => {
@@ -109,9 +109,7 @@ const Calendar = props => {
                 >
                     &#9666;
                 </span>
-                <div className="month-label">
-                    {format(date, month_format)}
-                </div>
+                <div className="month-label">{format(date, month_format)}</div>
                 <span
                     onClick={() => {
                         const [pm, py] = nextMonth(month, year);
@@ -131,10 +129,7 @@ const Calendar = props => {
             </div>
             <div className="week-labels">
                 {week_labels.map(week => (
-                    <div
-                        className="week-label"
-                        key={`${identity}-wl-${week}`}
-                    >
+                    <div className="week-label" key={`${identity}-wl-${week}`}>
                         {week}
                     </div>
                 ))}
@@ -177,10 +172,7 @@ const Calendar = props => {
                                         if (props._on_click) {
                                             props._on_click(payload);
                                         }
-                                        if (
-                                            use_selected &&
-                                            updateAspects
-                                        ) {
+                                        if (use_selected && updateAspects) {
                                             // This component also used by DatePickers.
                                             updateAspects({
                                                 selected: payload,
@@ -197,8 +189,7 @@ const Calendar = props => {
             </div>
         </div>
     );
-}
-
+};
 
 Calendar.defaultProps = {
     month_format: 'MMMM YYYY',
