@@ -5,7 +5,7 @@ from tests.apps.pages import component_as_trigger, binding_return_trigger, \
 from tests.components.pages import checklist, store, html, interval, \
     input_output, radio, link, viewport, progress, select, button, slider, \
     modal, textarea, table, grid, form, markdown, calendar, pager, extras, \
-    login, list_box, treeview, dropdown
+    login, list_box, treeview, dropdown, page_map
 
 app = Dazzler(__name__)
 app.config.session.backend = 'Redis'
@@ -43,7 +43,8 @@ pages = [
     regex_bindings.page,
     list_box.page,
     treeview.page,
-    dropdown.page
+    dropdown.page,
+    page_map.page
 ]
 
 app.add_page(*pages)

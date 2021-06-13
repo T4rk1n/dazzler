@@ -29,7 +29,7 @@ page = Page(
             identity='stick',
             bottom='0',
         ),
-        core.ListBox(identity='toast-output')
+        core.ListBox(identity='toast-output'),
     ])
 )
 

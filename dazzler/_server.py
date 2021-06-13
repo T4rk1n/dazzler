@@ -66,6 +66,10 @@ class Server:
             web.get(
                 f'{prefix}/dazzler/link',
                 self._apply_middleware(self.route_get_page)
+            ),
+            web.get(
+                f'{prefix}/dazzler/page-map',
+                self._apply_middleware(self.route_get_pages)
             )
         ] + [
             x.method.get_method()(
@@ -265,6 +269,15 @@ class Server:
         if page in self.dazzler.pages:
             raise web.HTTPFound(location=request.app.router[page].url_for())
         raise web.HTTPNotFound()
+
+    async def route_get_pages(self, request: web.Request):
+        return web.json_response([
+            {
+                'url': str(request.app.router[page_name].url_for()),
+                'name': page_name,
+                'title': page.title,
+            } for page_name, page in self.dazzler.pages.items()
+        ])
 
     async def start(
             self, host: str, port: int,
