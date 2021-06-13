@@ -1,0 +1,45 @@
+@import "../../commons/scss/colors";
+
+.dazzler-extra-toast {
+  position: absolute;
+  display: none;
+  border: $primary-light 2px solid;
+  background: white;
+  padding: 0.5rem;
+  border-radius: 3px;
+
+  &.opened {
+    display: block;
+  }
+
+  .toast-inner {
+    position: relative;
+  }
+  &.top {
+    top: 1rem;
+    right: 50%;
+  }
+  &.top-left {
+    top: 1rem;
+    left: 1rem;
+  }
+  &.top-right {
+    top: 1rem;
+    right: 1rem;
+  }
+  &.bottom {
+    bottom: 1rem;
+    right: 50%;
+  }
+  &.bottom-left {
+    bottom: 1rem;
+    left: 1rem;
+  }
+  &.bottom-right {
+    bottom: 1rem;
+    right: 1rem;
+  }
+  &.right {
+    right: 1rem;
+  }
+}
