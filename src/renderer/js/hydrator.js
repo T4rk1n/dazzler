@@ -109,6 +109,7 @@ export function hydrateComponent(
     }
     const element = React.createElement(component, props);
 
+    /* eslint-disable react/prop-types */
     const wrapper = ({children}) => (
         <Wrapper
             identity={identity}
@@ -126,9 +127,8 @@ export function hydrateComponent(
     if (component.isContext) {
         onContext(wrapper);
         return null;
-    } else {
-        return wrapper({});
     }
+    return wrapper({});
 }
 
 export function prepareProp(prop) {

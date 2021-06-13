@@ -18,7 +18,7 @@ function walk(directory, components = {}) {
                             'isContext',
                             importer
                         );
-                        doc.set('isContext', isContext !== undefined);
+                        doc.set('isContext', Boolean(isContext));
                     },
                 ]);
 
