@@ -7,5 +7,6 @@ import Sticky from './components/Sticky';
 import Drawer from './components/Drawer';
 import PopUp from './components/PopUp';
 import TreeView from './components/TreeView';
+import Toast from './components/Toast';
 
-export {Notice, Pager, Spinner, Sticky, Drawer, PopUp, TreeView};
+export {Notice, Pager, Spinner, Sticky, Drawer, PopUp, TreeView, Toast};

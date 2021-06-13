@@ -11,6 +11,7 @@ page = Page(
     __name__,
     core.Container([
         core.Button('Notify', identity='notify-btn'),
+        core.Button('Toaster', identity='toaster-btn'),
         extra.Notice('Notice', identity='notice'),
         extra.Spinner(identity='spin'),
         extra.PopUp(
@@ -28,6 +29,7 @@ page = Page(
             identity='stick',
             bottom='0',
         ),
+        core.ListBox(identity='toast-output')
     ])
 )
 
@@ -39,3 +41,8 @@ async def on_notify(ctx: BindingContext):
         body=f'Clicked {ctx.trigger.value}',
         displayed=True,
     )
+
+
+@page.bind('clicks@toaster-btn')
+async def on_toast(ctx: BindingContext):
+    await ctx.set_aspect('toast-output', append=extra.Toast('Toast it up!'))
