@@ -41,6 +41,7 @@ module.exports = function(env, argv) {
         markdown: [path.join(__dirname, 'src/markdown/js/index.js')],
         calendar: [path.join(__dirname, 'src/calendar/js/index.js')],
         auth: [path.join(__dirname, 'src/auth/js/index.js')],
+        icons: [path.join(__dirname, 'src/icons/js/index.js')],
     };
 
     const externals = {
@@ -66,8 +67,8 @@ module.exports = function(env, argv) {
             filename: 'assets.json',
         }),
         new MiniCssExtractPlugin({
-            filename: 'dazzler_[name]_[hash].css',
-            chunkFilename: 'dazzler_[name]_[hash].css',
+            filename: 'dazzler_[name]_[contenthash].css',
+            chunkFilename: 'dazzler_[name]_[contenthash].css',
         }),
     ];
 
