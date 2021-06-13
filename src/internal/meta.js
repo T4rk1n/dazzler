@@ -12,9 +12,13 @@ function walk(directory, components = {}) {
             walk(f, components);
         } else {
             try {
-                components[filepath] = reactDocs.parse(fs.readFileSync(filepath));
+                components[filepath] = reactDocs.parse(
+                    fs.readFileSync(filepath)
+                );
             } catch (e) {
-                process.stderr.write(`ERROR: Invalid component file ${filepath}`);
+                process.stderr.write(
+                    `ERROR: Invalid component file ${filepath}`
+                );
             }
         }
     });
