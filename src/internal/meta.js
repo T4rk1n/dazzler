@@ -1,7 +1,6 @@
 const reactDocs = require('react-docgen');
 const fs = require('fs');
 const path = require('path');
-
 const args = process.argv.slice(2);
 const src = args[0];
 
@@ -12,12 +11,25 @@ function walk(directory, components = {}) {
             walk(f, components);
         } else {
             try {
+                const handlers = reactDocs.defaultHandlers.concat([
+                    function(doc, path, importer) {
+                        const isContext = reactDocs.utils.getMemberValuePath(
+                            path,
+                            'isContext',
+                            importer
+                        );
+                        doc.set('isContext', isContext !== undefined);
+                    },
+                ]);
+
                 components[filepath] = reactDocs.parse(
-                    fs.readFileSync(filepath)
+                    fs.readFileSync(filepath),
+                    null,
+                    handlers
                 );
-            } catch (e) {
+            } catch (err) {
                 process.stderr.write(
-                    `ERROR: Invalid component file ${filepath}`
+                    `ERROR: Invalid component file ${filepath}: ${err}`
                 );
             }
         }
