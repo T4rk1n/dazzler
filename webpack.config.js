@@ -11,11 +11,11 @@ module.exports = function(env, argv) {
     const devtool = mode === 'development' ? 'inline-source-map' :'source-map';
 
     const output = {
-        filename: 'dazzler_[name]_[hash].js',
-        sourceMapFilename: 'dazzler_[name]_[hash].js.map',
+        filename: 'dazzler_[name]_[contenthash].js',
+        sourceMapFilename: 'dazzler_[name]_[contenthash].[ext].map',
         library: 'dazzler_[name]',
         libraryTarget: 'umd',
-        devtoolModuleFilenameTemplate: 'webpack:///[resource-path]?[loaders]'
+        devtoolModuleFilenameTemplate: 'webpack:///[id]/[resource]?[loaders]'
     };
 
     if (devMode) {
@@ -98,13 +98,12 @@ module.exports = function(env, argv) {
         entry,
         output,
         externals,
+        target: 'web',
 
         optimization: {
             splitChunks: {
                 cacheGroups: {
                     commons: {
-                        name: 'commons',
-                        chunks: 'all',
                         minChunks: 2,
                     },
                 },
@@ -140,7 +139,7 @@ module.exports = function(env, argv) {
                 },
                 {
                     test: /\.jsx?$/,
-                    loader: ['babel-loader'],
+                    loader: 'babel-loader',
                     exclude: /node_modules/,
                     resolve: {
                         extensions: ['.js', '.jsx'],
