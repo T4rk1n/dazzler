@@ -264,6 +264,8 @@ async def test_link(start_visit, browser):
     app.add_page(page, other_page)
     await start_visit(app)
 
+    await browser.get('http://127.0.0.1:8150/link')
+
     link = await browser.wait_for_element_by_id('internal')
     await app.executor.execute(link.click)
 
