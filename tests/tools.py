@@ -132,13 +132,13 @@ def wait_for_text_to_equal(driver, selector, text, timeout=10):
 
     try:
         _wait_for(driver, condition, timeout=timeout)
-    except TimeoutException:
+    except TimeoutException as err:
         value = driver.find_element_by_css_selector(selector).text
         raise AssertionError(
             f'Element Text assertion failed: {selector}\n'
             f'Expected: {text}\n'
             f'Found: {value}'
-        )
+        ) from err
 
 
 def wait_for_style_to_equal(
@@ -166,14 +166,14 @@ def wait_for_style_to_equal(
 
     try:
         _wait_for(driver, condition, timeout=timeout)
-    except TimeoutException:
+    except TimeoutException as err:
         value = driver.find_element_by_css_selector(selector)\
             .value_of_css_property(style_attribute)
         raise AssertionError(
             f'Style assertion failed: {style_attribute} of {selector}\n'
             f'Expected: {style_assertion}\n'
             f'Found: {value}'
-        )
+        ) from err
 
 
 def wait_for_property_to_equal(
@@ -200,7 +200,7 @@ def wait_for_property_to_equal(
 
     try:
         _wait_for(driver, condition, timeout=timeout)
-    except TimeoutException:
+    except TimeoutException as err:
         value = driver.find_element_by_css_selector(selector)\
             .get_property(prop_name)
 
@@ -208,7 +208,7 @@ def wait_for_property_to_equal(
             f'Element property assertion failed: {prop_name} of {selector}\n'
             f'Expected: {prop_value}\n'
             f'Found: {value}'
-        )
+        ) from err
 
 
 def _async_wrap(func):
