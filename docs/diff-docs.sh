@@ -12,7 +12,8 @@ function diff-docs() {
 
     if test ${code} -ne 0
     then
-        echo Need to rebuild the docs
+        echo WARNING: Documentation is outdated.
+        echo Rebuild the api docs with npm run build:docs
     fi
 
     rm -rf ${tempdir}
