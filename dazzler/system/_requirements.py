@@ -27,7 +27,8 @@ class Requirement:
             package: str = None,
             dev: str = None,
             external: str = None,
-            page: str = None
+            page: str = None,
+            integrity: str = None
     ):
         """
         :param internal: Local path of the requirement to include on the page.
@@ -39,6 +40,7 @@ class Requirement:
         :param external: URL to serve instead when running with
             ``prefer_external`` mode enable in the configs.
         :param page: The page related to this requirement.
+        :param integrity: The integrity hash. (sri)
         """
         if internal is None and external is None:
             raise InvalidRequirementError(
@@ -52,6 +54,7 @@ class Requirement:
         self.external = external
         self.external_only = external and not internal
         self.internal_only = internal and not external
+        self.integrity = integrity
 
         paths = ['dist', self.name]
         url = ['/dazzler', 'requirements', 'static', 'dist', self.name]
@@ -102,6 +105,9 @@ class Requirement:
             uri = self.internal_url
 
         attributes[uri_key] = uri
+
+        if self.integrity and uri != self.dev_url:
+            attributes['integrity'] = self.integrity
 
         return {
             'kind': self.kind,
@@ -156,7 +162,8 @@ def assets_to_requirements(
             internal=os.path.join(path, internal['name']),
             dev=os.path.join(dev_path, dev['name']),
             package=package_name,
-            external=f'{external}/{internal["name"]}' if external else None
+            external=f'{external}/{internal["name"]}' if external else None,
+            integrity=internal.get('integrity')
         )
         for internal, dev in zip(data, dev_data)
     ]
