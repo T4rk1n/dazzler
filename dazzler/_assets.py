@@ -15,12 +15,12 @@ _asset_json_dev = os.path.join(assets_dev_path, 'assets.json')
 
 if os.path.exists(_asset_json):
     with open(_asset_json) as _file:
-        assets = json.load(_file)['chunks']
+        assets = json.load(_file)
 else:
     assets = {}
 
 if os.path.exists(_asset_json_dev):
     with open(_asset_json_dev) as _file:
-        assets_dev = json.load(_file)['chunks']
+        assets_dev = json.load(_file)
 else:
     assets_dev = {}

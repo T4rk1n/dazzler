@@ -1,9 +1,8 @@
 const path = require('path');
-const BundleTracker = require('webpack-bundle-tracker');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const exec = require('child_process').exec;
-
+const Tracker = require('./webpack-asset-tracker');
 
 module.exports = function(env, argv) {
     const mode = argv && argv.mode || 'production';
@@ -62,10 +61,7 @@ module.exports = function(env, argv) {
     };
 
     const plugins = [
-        new BundleTracker({
-            path: output.path,
-            filename: 'assets.json',
-        }),
+        Tracker({ path: output.path, filename: 'assets.json', integrity: !devMode }),
         new MiniCssExtractPlugin({
             filename: 'dazzler_[name]_[contenthash].css',
             chunkFilename: 'dazzler_[name]_[contenthash].css',
