@@ -39,11 +39,14 @@ jobs:
     - name: Lint with pylint
       run: pylint dazzler tests --disable=no-member
 
+    - name: Diff-docs
+      run: docs/diff-docs.sh
+
   lint-js:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
-      
+
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
