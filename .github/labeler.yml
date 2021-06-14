@@ -30,6 +30,7 @@ system:
 
 component-generator:
   - dazzler/system/_generator.py
+  - src/internal/meta.js
 
 server:
   - dazzler/_dazzler.py
@@ -37,3 +38,10 @@ server:
 
 session:
   - dazzler/system/session.py
+
+icons:
+  - src/icons/**/*
+
+ci:
+  - .circleci/config.yml
+
