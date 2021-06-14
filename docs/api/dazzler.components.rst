@@ -11,6 +11,7 @@ Subpackages
    dazzler.components.calendar
    dazzler.components.core
    dazzler.components.extra
+   dazzler.components.icons
    dazzler.components.markdown
 
 Module contents
