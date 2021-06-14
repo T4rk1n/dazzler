@@ -39,22 +39,10 @@ jobs:
             npm run build
 
       - run:
-          name: Lint/Format test
-          command: |
-            npm run lint
-            npm run format:test
-
-      - run:
           name: Test
           command: |
             . venv/bin/activate
-            pytest -ra --junitxml=~/test-reports/dazzler/results.xml --pylint --flake8 --cov=dazzler
-
-      - run:
-          name: Diff docs
-          command: |
-            . venv/bin/activate
-            docs/diff-docs.sh
+            pytest -ra --junitxml=~/test-reports/dazzler/results.xml --cov=dazzler
 
       - store_artifacts:
           path: ~/test-reports
