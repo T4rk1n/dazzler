@@ -12,13 +12,13 @@ import CodeBlock from './CodeBlock';
  */
 export default class Markdown extends React.Component {
     render() {
-        const {identity, class_name} = this.props;
+        const {identity, class_name, source} = this.props;
         return (
             <div id={identity} className={class_name}>
                 <ReactMarkdown
                     {...transformKeys(
                         omit(
-                            ['identity', 'updateAspects', 'class_name'],
+                            ['identity', 'updateAspects', 'class_name', 'source'],
                             this.props
                         ),
                         snakeToCamelCase
@@ -26,15 +26,13 @@ export default class Markdown extends React.Component {
                     renderers={{
                         code: props => <CodeBlock {...props} />,
                     }}
-                />
+                >{source}</ReactMarkdown>
             </div>
         );
     }
 }
 
-Markdown.defaultProps = {
-    escape_html: true,
-};
+Markdown.defaultProps = {};
 
 Markdown.propTypes = {
     /**
@@ -51,11 +49,6 @@ Markdown.propTypes = {
      * Style object to give to container.
      */
     style: PropTypes.object,
-
-    /**
-     * Escape html element in the source.
-     */
-    escape_html: PropTypes.bool,
 
     /**
      * Skip rendering of html elements.
