@@ -18,7 +18,12 @@ export default class Markdown extends React.Component {
                 <ReactMarkdown
                     {...transformKeys(
                         omit(
-                            ['identity', 'updateAspects', 'class_name', 'source'],
+                            [
+                                'identity',
+                                'updateAspects',
+                                'class_name',
+                                'source',
+                            ],
                             this.props
                         ),
                         snakeToCamelCase
@@ -26,7 +31,9 @@ export default class Markdown extends React.Component {
                     renderers={{
                         code: props => <CodeBlock {...props} />,
                     }}
-                >{source}</ReactMarkdown>
+                >
+                    {source}
+                </ReactMarkdown>
             </div>
         );
     }
