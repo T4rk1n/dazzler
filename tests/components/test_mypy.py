@@ -55,7 +55,7 @@ def assert_mypy_output(code,
         '',
         {
             'expected_status': 1,
-            'expected_outputs': ['Missing positional argument "required_string"']
+            'expected_outputs': ['Missing positional argument "required_string"']  # noqa: E501
         }
     ),
     (
