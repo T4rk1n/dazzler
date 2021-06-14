@@ -129,6 +129,7 @@ async def run_reloaded(app, start_event):
     ):
         args.add(arg)
 
+    # pylint: disable=consider-using-with
     proc = subprocess.Popen(
         list(args),
         stdout=subprocess.PIPE,
