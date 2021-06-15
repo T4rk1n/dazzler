@@ -21,15 +21,15 @@ _package_name = f'dazzler_{_name}'
 _vendors_requirements = [
     # React
     _Requirement(
-        internal=os.path.join(_vendors, 'react-16-12-0.production.min.js'),
-        dev=os.path.join(_vendors, 'react-16-12-0.development.js'),
-        external='https://unpkg.com/react@16.12.0/umd/react.production.min.js',
+        internal=os.path.join(_vendors, 'react-17-0-2.production.min.js'),
+        dev=os.path.join(_vendors, 'react-17-0-2.development.js'),
+        external='https://unpkg.com/react@17.0.2/umd/react.production.min.js',
     ),
     # React-dom
     _Requirement(
-        internal=os.path.join(_vendors, 'react-dom-16-12-0.production.min.js'),
-        dev=os.path.join(_vendors, 'react-dom-16-12-0.development.js'),
-        external='https://unpkg.com/react-dom@16.12.0/umd/react-dom.production.min.js',  # noqa: E501
+        internal=os.path.join(_vendors, 'react-dom-17-0-2.production.min.js'),
+        dev=os.path.join(_vendors, 'react-dom-17-0-2.development.js'),
+        external='https://unpkg.com/react-dom@17.0.2/umd/react-dom.production.min.js',  # noqa: E501
     ),
     # Normalize
     _Requirement(
