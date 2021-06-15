@@ -55,7 +55,6 @@ const SelectedItem = props => {
             <div
                 className="selected-remover"
                 onClick={e => {
-                    console.log('remove');
                     e.stopPropagation();
                     onRemove(option);
                 }}
@@ -146,7 +145,7 @@ const Dropdown = props => {
     const onItemClick = option => {
         const {value: itemValue} = option;
 
-        const payload = {};
+        const payload = {opened: false};
 
         if (multi) {
             if (includes(itemValue, value || [])) {
@@ -231,9 +230,9 @@ const Dropdown = props => {
             return <div className="no-results">{no_results_label}</div>;
         }
         return opts.map((option, i) => {
-            let selected, key;
+            let selected;
+            const key = `${identity}-${i}`;
             if (is(String, option)) {
-                key = `${identity}-${i}`;
                 selected = includes(value, option);
                 return (
                     <DropdownOption
@@ -257,22 +256,26 @@ const Dropdown = props => {
         });
     }, [options, filtered_options, value, selectedItems]);
 
-    const onToggle = useCallback(() => {
-        let open = !opened;
-        updateAspects({opened: open});
-        if (open) {
-            if (searchable) {
-                inputRef.current.focus();
+    const onToggle = useCallback(
+        event => {
+            let open = !opened;
+            updateAspects({opened: open});
+            event.stopPropagation();
+            if (open) {
+                if (searchable) {
+                    inputRef.current.focus();
+                }
+
+                const autoClose = () => {
+                    updateAspects({opened: false});
+                    document.removeEventListener('click', autoClose);
+                };
+
+                document.addEventListener('click', autoClose);
             }
-
-            const autoClose = () => {
-                updateAspects({opened: false});
-                document.removeEventListener('click', autoClose);
-            };
-
-            document.addEventListener('click', autoClose);
-        }
-    }, [opened, inputRef]);
+        },
+        [opened, inputRef]
+    );
 
     const searchWidth = useMemo(() => {
         if (!searchContentRef.current) {
