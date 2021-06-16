@@ -2,6 +2,16 @@
 
 Versions follow [Semantic Versioning](https://www.semver.org)
 
+## [0.5.0]
+### Added
+
+- :rice: Add Timestamp component. [#37](https://github.com/T4rk1n/dazzler/issues/37)
+- :rice: Add Toast component. [#60](https://github.com/T4rk1n/dazzler/issues/60)
+- :rice: Add PageMap component. 
+- :rice: Add icons component package. [#17](https://github.com/T4rk1n/dazzler/issues/17)
+- :sparkles: Add support for top level context provider in the js component api.
+- :sparkles: Add integrity hash for bundled assets.
+
 ## [0.4.0]
 ### Added
 
