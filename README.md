@@ -6,7 +6,7 @@
 [![License](https://img.shields.io/pypi/l/dazzler)](LICENSE)
 
 Dazzler is a Python (>=3.6) async web framework. 
-Create dazzling fast pages with a layout of python components and bindings to update from the backend.
+Create dazzling fast pages with a layout of Python components and bindings to update from the backend.
 
 ## Install
 

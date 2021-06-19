@@ -49,7 +49,7 @@ UNSUPPORTED_DEFAULT = (
 )
 
 
-# React PropTypes to python typing
+# React PropTypes to Python typing
 PROP_TYPING = {
     'array': lambda t: 'typing.List',
     'arrayOf': lambda t: 'typing.List[{}]'.format(
