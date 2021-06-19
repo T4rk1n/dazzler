@@ -18,7 +18,7 @@ def run_mypy(code):
     """
     Execute mypy in a subprocess, returns the output and status code.
 
-    :param code: The python code for mypy to evaluate.
+    :param code: The Python code for mypy to evaluate.
     :return: Output, Error, Status code.
     """
     cmd = shlex.split(

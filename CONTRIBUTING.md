@@ -119,5 +119,5 @@ Prefix your commit messages with an emoji according to this list:
 ### Release
 
 - Build: `$ npm run build`.
-- Build python package `$ python setup.py sdist`.
+- Build Python package `$ python setup.py sdist`.
 - Upload `$ twine upload dist/dazzler.*`.

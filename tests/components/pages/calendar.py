@@ -15,7 +15,7 @@ page = Page(
     __name__,
     core.Container([
         calendar.Calendar(identity='initial-calendar'),
-        # FIXME * 1000 javascript are in ms where python ts in seconds.
+        # FIXME * 1000 JavaScript are in ms where Python ts in seconds.
         calendar.Calendar(
             datetime.datetime.timestamp(past) * 1000,
             identity='past-calendar'

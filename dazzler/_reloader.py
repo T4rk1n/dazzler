@@ -201,7 +201,7 @@ async def start_reloader(app, reloaded=False, start_event=None):
 
     if not reloaded:
         while not app.stop_event.is_set():
-            # Run this forever reloading every time the watch detect python
+            # Run this forever reloading every time the watch detect Python
             # file change
             await run_reloaded(app, start_event)
             app.logger.info('Reloading...')
