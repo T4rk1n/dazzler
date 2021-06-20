@@ -292,7 +292,7 @@ class Binding:
             trigger = BoundValue(
                 data['trigger']['identity'],
                 data['trigger']['aspect'],
-                hydrate(data['trigger']['value'])
+                hydrate(data['trigger'].get('value'))
             )
             states = {}
             for state in data['states']:
