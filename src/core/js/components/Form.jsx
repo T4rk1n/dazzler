@@ -49,7 +49,7 @@ export default class Form extends React.Component {
                 {header && <div className="form-header">{header}</div>}
                 <div className="form-body">
                     {fields &&
-                        fields.map(({label, type, name, component}) => {
+                        fields.map(({label, type, name, component, value}) => {
                             const error = errors[name];
                             return (
                                 <div
@@ -66,6 +66,7 @@ export default class Form extends React.Component {
                                                 name={name}
                                                 type={type}
                                                 className={'form-input'}
+                                                value={value}
                                             />
                                         )}
                                     </label>
@@ -102,10 +103,11 @@ Form.propTypes = {
      */
     fields: PropTypes.arrayOf(
         PropTypes.shape({
-            label: PropTypes.string.isRequired,
+            label: PropTypes.string,
             name: PropTypes.string.isRequired,
             type: PropTypes.string,
             component: PropTypes.node,
+            value: PropTypes.any,
         })
     ),
 
