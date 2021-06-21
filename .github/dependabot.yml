@@ -12,7 +12,7 @@ updates:
     directory: "/"
     # Check the npm registry for updates every day (weekdays)
     schedule:
-      interval: "daily"      
+      interval: "daily"
   - package-ecosystem: "pip"
     directory: "/"
     schedule:
