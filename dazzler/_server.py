@@ -48,6 +48,7 @@ class Server:
         self.websockets = weakref.WeakSet()
         self.debug = False
         self.site = None
+        self.app['dazzler'] = dazzler
 
     def setup_routes(self, routes: List[Route] = None, debug: bool = False):
         """
