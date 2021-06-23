@@ -4,7 +4,7 @@ from typing import Optional, Callable, Awaitable
 from urllib.parse import quote
 from aiohttp import web
 
-from dazzler.system import UNDEFINED
+from ._undefined import UNDEFINED
 from ._middleware import Middleware
 from ._page import Page
 
@@ -111,6 +111,8 @@ class AuthBackend:
 
 
 class AuthSessionBackend(AuthBackend):
+    """Auth Backend integrated with the session system."""
+
     async def is_authenticated(self, request: web.Request) -> bool:
         username = await request['session'].get('username')
         return username is not UNDEFINED
@@ -181,9 +183,15 @@ class DazzlerAuth:
     """
     Handle the logic for page authentication.
 
-    Requires an authenticator to provide
+    Requires an authenticator to provide the end user authentication method.
 
     Default to session backend, make sure a session middleware is present.
+
+    Activates in the configs with:
+
+        [authentication]
+        enable = True
+        authenticator = "module.submodule:AuthenticatorClass"
     """
 
     def __init__(
