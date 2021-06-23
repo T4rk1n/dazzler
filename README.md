@@ -5,7 +5,7 @@
 [![Version](https://img.shields.io/pypi/v/dazzler)](https://pypi.org/project/dazzler/)
 [![License](https://img.shields.io/pypi/l/dazzler)](LICENSE)
 
-Dazzler is a Python (>=3.6) async web framework.
+Dazzler is a Python async web framework.
 Create dazzling fast pages with a layout of Python components and bindings to update from the backend.
 
 ## Install
@@ -30,23 +30,24 @@ children when clicked on.
 
 ```python
 from dazzler import Dazzler
-from dazzler.system import Page, Trigger, BindingContext
+from dazzler.system import Page, BindingContext
 from dazzler.components import core
 
 app = Dazzler(__name__)
 page = Page(
-    'my-page',
+    __name__,
     core.Container([
         core.Html('H2', 'My dazzler page'),
         core.Input(identity='input', placeholder='Enter name'),
         core.Button('Click me', identity='click-me'),
         core.Container(identity='output')
-    ])
+    ]),
+    title='My Page'
 )
 app.add_page(page)
 
 
-@page.bind(Trigger('click-me', 'clicks'))
+@page.bind('clicks@click-me')
 async def on_click(context: BindingContext):
     name = await context.get_aspect('input', 'value')
     await context.set_aspect(

@@ -1,0 +1,31 @@
+.app {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.msg {
+    padding: 1rem;
+    background-color: #0e84b5;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 5px;
+    margin: 1rem 0;
+    color: white;
+    width: 100%;
+}
+
+.msg:nth-child(2n) {
+    background-color: #40a070;
+}
+
+.msg-user {
+    font-weight: bold;
+}
+.msg-user::before {
+    content: '@'
+}
+.msg-user::after {
+    content: ' '
+}
