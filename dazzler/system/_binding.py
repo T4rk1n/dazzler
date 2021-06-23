@@ -171,6 +171,7 @@ class BindingContext:
             states: typing.Dict[str, BoundValue],
             websocket: web.WebSocketResponse,
             request_queue: asyncio.Queue,
+            create_task: typing.Callable
     ):
         self.identity = identity
         self.request = request
@@ -178,6 +179,7 @@ class BindingContext:
         self.states = states
         self.websocket = websocket
         self.session: Session = request.get('session')
+        self.create_task = create_task
         self._request_queue = request_queue
         self._response_queue = asyncio.Queue()
 
@@ -288,7 +290,7 @@ class Binding:
     def __call__(self, func):
 
         @functools.wraps(func)
-        async def bound(request, data, ws, request_queue):
+        async def bound(request, data, ws, request_queue, create_task):
             trigger = BoundValue(
                 data['trigger']['identity'],
                 data['trigger']['aspect'],
@@ -307,7 +309,8 @@ class Binding:
                 trigger,
                 states,
                 ws,
-                request_queue
+                request_queue,
+                create_task
             )
             return await func(context)
 
