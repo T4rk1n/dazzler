@@ -15,6 +15,10 @@ from ._package import Package
 from ..errors import TriggerLoopError, GetAspectError
 
 
+if typing.TYPE_CHECKING:
+    from .auth import DazzlerAuth, User
+
+
 __all__ = [
     'Trigger', 'State', 'BoundAspect', 'Binding', 'BindingContext',
 ]
@@ -180,6 +184,9 @@ class BindingContext:
         self.websocket = websocket
         self.session: Session = request.get('session')
         self.create_task = create_task
+        self.dazzler = request.app['dazzler']
+        self.auth: "DazzlerAuth" = self.dazzler.auth
+        self.user: "User" = request.get('user')
         self._request_queue = request_queue
         self._response_queue = asyncio.Queue()
 

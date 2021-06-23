@@ -65,7 +65,7 @@ class Dazzler(precept.Precept):  # pylint: disable=too-many-instance-attributes
         ),
     ]
     server: Server
-    auth: DazzlerAuth
+    auth: typing.Optional[DazzlerAuth]
 
     def __init__(self, module_name, app_name=None):
         module = importlib.import_module(module_name)
@@ -96,6 +96,7 @@ class Dazzler(precept.Precept):  # pylint: disable=too-many-instance-attributes
             appdirs.user_data_dir('dazzler'), self.app_name
         )
         self.requirements_dir = os.path.join(self.data_dir, 'requirements')
+        self.auth = None
 
     def add_page(self, *pages: Page):
         if self._started:
