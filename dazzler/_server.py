@@ -124,12 +124,20 @@ class Server:
                     storage_requests[req['request_id']] = req.pop('queue')
                 await ws.send_json(req)
 
-        def done_callback(done: asyncio.Task):
-            pendings.remove(done)
-            exception = done.exception()
-            if exception and not done.cancelled():
-                done.print_stack(file=sys.stderr)
-                self.logger.error(exception)
+        def done_callback(task: asyncio.Task):
+            pendings.remove(task)
+            if not task.cancelled():
+                exception = task.exception()
+
+                if exception:
+                    task.print_stack(file=sys.stderr)
+                    self.logger.error(exception)
+
+        def create_task(coroutine):
+            task = self.loop.create_task(coroutine)
+            pendings.append(task)
+            task.add_done_callback(done_callback)
+            return task
 
         async def handler():
             async for msg in ws:  # type: aiohttp.WSMessage
@@ -141,11 +149,11 @@ class Server:
                     if kind == 'binding':
                         binding = page.get_binding(data['key'])
 
-                        task = self.loop.create_task(
-                            binding(request, data, ws, request_queue)
+                        create_task(
+                            binding(
+                                request, data, ws, request_queue, create_task
+                            )
                         )
-                        pendings.append(task)
-                        task.add_done_callback(done_callback)
 
                     elif kind == 'get-aspect':
                         request_id = data['request_id']
@@ -313,7 +321,7 @@ class Server:
         self.logger.info(f'Started server http://{host}:{port}/')
 
     async def _on_shutdown(self, _):
-        # Close all websocket's and stop the main loop
+        # Close all websockets and stop the main loop
         self.dazzler.stop_event.set()
         for ws in set(self.websockets):
             await ws.close(code=WSCloseCode.GOING_AWAY,
