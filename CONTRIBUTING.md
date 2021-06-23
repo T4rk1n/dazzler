@@ -16,9 +16,9 @@ $ pip install -r requirements-dev.txt
 
 #### Linters
 
-- [pylint](https://www.pylint.org/): 
+- [pylint](https://www.pylint.org/):
 `$ pylint dazzler`
-- [flake8](http://flake8.pycqa.org/en/latest/): 
+- [flake8](http://flake8.pycqa.org/en/latest/):
 `$ flake8 dazzler`
 - eslint: `$ npm run lint`
 
