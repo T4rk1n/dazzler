@@ -143,14 +143,14 @@ class DazzlerConfig(Config):
         authenticator = ConfigProperty(
             config_type=str,
             comment='Path to an instance or subclass of '
-                    '`dazzler.system.auth.Authenticator',
+                    '`dazzler.system.auth.Authenticator`',
             default=''
         )
 
         backend = ConfigProperty(
             config_type=str,
             comment='Path to an instance or subclass of '
-                    '`dazzler.system.auth.AuthBackend',
+                    '`dazzler.system.auth.AuthBackend`',
             default='',
         )
 
