@@ -7,7 +7,7 @@ python-coveralls
 mypy==0.902
 selenium==3.141.0
 sphinx==4.0.2
-m2r2==0.2.7
+m2r2==0.2.8
 Flask-Sphinx-Themes==1.0.2
 sphinx-autodoc-typehints==1.12.0
 flake8==3.9.2
