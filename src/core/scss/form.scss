@@ -2,18 +2,33 @@
 
 .dazzler-core-form {
   .form-header {
-
+    background-color: $primary;
+    color: white;
+    padding: 0.25rem;
   }
   .form-body {
-
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
   }
   .form-field {
-    .form-label {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.25rem;
 
+    &:first-child {
+      margin-top: 0.25rem;
+    }
+
+    .form-label {
+      width: 50%;
     }
 
     .form-input {
-
+      width: 50%;
     }
   }
 
