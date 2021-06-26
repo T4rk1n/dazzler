@@ -73,7 +73,7 @@ class Dazzler(precept.Precept):  # pylint: disable=too-many-instance-attributes
         self.module_name = module_name
         self.root_path = os.path.dirname(module.__file__)
         self.app_name = app_name or \
-            os.path.basename(module.__file__).rstrip('.py')
+            os.path.basename(module.__file__).split('.py')[0]
 
         super().__init__(
             config_file=[
