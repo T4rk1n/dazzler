@@ -61,15 +61,16 @@ export default class Form extends React.Component {
                                 >
                                     <label className="form-label">
                                         {label}
-                                        {component || (
-                                            <input
-                                                name={name}
-                                                type={type}
-                                                className={'form-input'}
-                                                value={value}
-                                            />
-                                        )}
                                     </label>
+                                    {component || (
+                                        <input
+                                            name={name}
+                                            type={type}
+                                            className={'form-input'}
+                                            value={value}
+                                        />
+                                    )}
+
                                     {error && (
                                         <div className="form-error">
                                             {error}
