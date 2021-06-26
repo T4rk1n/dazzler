@@ -137,7 +137,10 @@ class Authenticator:
     """
     Base authenticator, a subclass of this must be presented to
     DazzlerAuth init in order to provide authentication for an app.
+
+    :type app: dazzler.Dazzler
     """
+    app = None
 
     async def authenticate(self, username: str, password: str) \
             -> Optional[User]:
@@ -209,6 +212,7 @@ class DazzlerAuth:
         self.app = app
         self.backend = backend or AuthSessionBackend()
         self.authenticator = authenticator
+        self.authenticator.app = app
         self.app.middlewares.append(AuthMiddleware(app, self))
         self.login_page = login_page or _default_page(default_redirect)
         app.server.route_page = self.require_page_login(app.server.route_page)
