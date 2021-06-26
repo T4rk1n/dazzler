@@ -12,6 +12,7 @@ import PropTypes from 'prop-types';
  *     - ``row``
  *     - ``column``
  *     - ``btn``
+ *     - ``center``
  */
 export default class Container extends React.Component {
     shouldComponentUpdate(nextProps, nextState, nextContext) {
