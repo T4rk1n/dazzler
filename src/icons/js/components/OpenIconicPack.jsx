@@ -4,6 +4,13 @@ import IconPack from './IconPack';
 
 /**
  * Icon pack from https://useiconic.com/
+ *
+ * :Pack: ``fi``
+ *
+ * @example
+ *
+ *     icons.OpenIconicPack(),
+ *     icons.Icon('oi-bug')
  */
 const OpenIconicPack = () => {
     return (
