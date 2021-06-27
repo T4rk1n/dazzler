@@ -5,12 +5,12 @@ import IconPack from './IconPack';
 /**
  * Free icon pack from https://zurb.com/playground/foundation-icon-fonts-3
  *
- * :Pack: ``typcn``
+ * :Pack: ``fi``
  *
  * @example
  *
- *     icons.FoundIconPack()
- *     icons.Icon('typcn-globe')
+ *     icons.FoundIconPack(),
+ *     icons.Icon('fi-home')
  */
 const FoundIconPack = () => {
     return (

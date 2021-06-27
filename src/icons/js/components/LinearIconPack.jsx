@@ -4,6 +4,13 @@ import IconPack from './IconPack';
 
 /**
  * Free Icon pack from "https://linearicons.com/free"
+ *
+ * :Pack: ``lnr``
+ *
+ * @example
+ *
+ *     icons.LinearIconPack(),
+ *     icons.Icon('lnr-home')
  */
 const LinearIconPack = () => {
     return (
