@@ -206,7 +206,8 @@ def setup(app):
             ('../src/extra/js/components', '../dazzler/components/extra'),
             ('../src/calendar/js/components', '../dazzler/components/calendar'),
             ('../src/markdown/js/components', '../dazzler/components/markdown'),
-            ('../src/auth/js/components', '../dazzler/components/auth')
+            ('../src/auth/js/components', '../dazzler/components/auth'),
+            ('../src/icons/js/components', '../dazzler/components/icons')
     ):
         dazz.start(['generate', source, output])
 
