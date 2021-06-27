@@ -242,9 +242,9 @@ class RedisSessionBackend(SessionBackEnd):
 
     def __init__(self, app):
         super().__init__(app)
-        asyncio.get_event_loop().create_task(self._setup())
+        app.events.subscribe('dazzler_setup', self._setup)
 
-    async def _setup(self):
+    async def _setup(self, _):
         import aioredis
         self.redis = await aioredis.create_redis_pool(
             os.getenv('REDIS_URL', 'redis://localhost:6379')
