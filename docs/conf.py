@@ -22,7 +22,7 @@ from dazzler._version import __version__ as version
 # -- Project information -----------------------------------------------------
 
 project = ''
-copyright = '2019, Philippe Duval'
+copyright = '2021, Philippe Duval'
 author = 'Philippe Duval'
 
 # The short X.Y version
