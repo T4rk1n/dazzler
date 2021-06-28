@@ -7,7 +7,7 @@ import {debounce} from 'commons';
  *
  * :CSS:
  *
- *     ``dazzler-core-slider``
+ *     - ``dazzler-core-slider``
  *     - ``slider-area``: The outer div of the slider.
  *     - ``slider-handle``: The drag handle
  *     - ``slider-spacer``: The space that is before the handle.

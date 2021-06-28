@@ -29,7 +29,7 @@ function calendar(month, year) {
  *
  * :CSS:
  *
- *     ``dazzler-calendar-calendar``
+ *     - ``dazzler-calendar-calendar``
  *     - ``calendar-header``
  *     - ``month-label``
  *     - ``week-labels``

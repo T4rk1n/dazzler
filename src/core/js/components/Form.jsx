@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
  *
  * :CSS:
  *
- *     ``dazzler-core-form``
+ *     - ``dazzler-core-form``
  *     - ``form-header``
  *     - ``form-body``
  *     - ``form-field``

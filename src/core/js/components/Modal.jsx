@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
  *
  * :CSS:
  *
- *     ``dazzler-core-modal``
+ *     - ``dazzler-core-modal``
  *     - ``modal-overlay``
  *     - ``modal-active``
  *     - ``modal-content``

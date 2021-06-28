@@ -6,7 +6,22 @@ import {collectTruePropKeys} from 'commons';
 /**
  * A button to click on!
  *
- * :CSS: ``dazzler-core-button``
+ * :CSS:
+ *
+ *     - ``dazzler-core-button``
+ *     - ``bordered``
+ *     - ``rounded``
+ *     - ``circle``
+ *     - ``primary``
+ *     - ``danger``
+ *     - ``warning``
+ *     - ``success``
+ *     - ``tiny``
+ *     - ``small``
+ *     - ``medium``
+ *     - ``large``
+ *     - ``x-large``
+ *     - ``xx-large``
  *
  * @example
  *

@@ -17,6 +17,16 @@ const Caret = ({side, opened}) => {
 
 /**
  * Draw content from the sides of the screen.
+ *
+ * :CSS:
+ *
+ *     - ``dazzler-extra-drawer``
+ *     - ``drawer-content``
+ *     - ``drawer-control``
+ *     - ``vertical``
+ *     - ``horizontal``
+ *     - ``right``
+ *     - ``bottom``
  */
 export default class Drawer extends React.Component {
     render() {

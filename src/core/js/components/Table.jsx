@@ -5,7 +5,8 @@ import PropTypes from 'prop-types';
  * Display data in a tabular manner (Non interactive).
  *
  * :CSS:
- *     ``dazzler-core-table``
+ *
+ *     - ``dazzler-core-table``
  *     - ``table-head``
  *     - ``table-heading``
  *     - ``table-body``

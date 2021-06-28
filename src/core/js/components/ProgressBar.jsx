@@ -7,7 +7,7 @@ import {join} from 'ramda';
  *
  * :CSS:
  *
- *     ``dazzler-core-progress-bar``
+ *     - ``dazzler-core-progress-bar``
  *     - ``progress``
  *     - ``high``
  *     - ``low``
