@@ -94,6 +94,8 @@ export default class ProgressBar extends React.Component {
 
 ProgressBar.defaultProps = {
     value: 0,
+    minimum: 0,
+    maximum: 100,
 };
 
 ProgressBar.propTypes = {
