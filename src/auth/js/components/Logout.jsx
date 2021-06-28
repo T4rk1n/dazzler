@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
  *
  * :CSS:
  *
- *     ``dazzler-auth-logout``
+ *     - ``dazzler-auth-logout``
  *     - ``logout-button``
  */
 export default class Logout extends React.Component {

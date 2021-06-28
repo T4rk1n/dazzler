@@ -8,7 +8,7 @@ import {concat, join} from 'ramda';
  *
  * :CSS:
  *
- *     ``dazzler-auth-login``
+ *     - ``dazzler-auth-login``
  *     - ``login-field``
  *     - ``login-label``
  *     - ``login-input``
