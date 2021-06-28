@@ -35,6 +35,11 @@ const Page = ({style, class_name, on_change, text, page}) => (
 
 /**
  * Paging for dazzler apps.
+ *
+ * :CSS:
+ *
+ *     - ``dazzler-extra-pager``
+ *     - ``page``
  */
 export default class Pager extends React.Component {
     constructor(props) {

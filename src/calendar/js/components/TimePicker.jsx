@@ -7,7 +7,7 @@ import {range, split} from 'ramda';
  *
  * :CSS:
  *
- *     ``dazzler-calendar-time-picker``
+ *     - ``dazzler-calendar-time-picker``
  *     - ``time-input``
  *     - ``fallback-timepicker``
  *     - ``time-range``

@@ -9,7 +9,7 @@ import {toPairs, keys} from 'ramda';
  *
  * :CSS:
  *
- *     ``dazzler-core-view-port``
+ *     - ``dazzler-core-view-port``
  *     - ``view-content``
  *     - ``dazzler-tab``
  *     - ``dazzler-tabs``

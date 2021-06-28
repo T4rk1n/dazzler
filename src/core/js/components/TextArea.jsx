@@ -4,6 +4,11 @@ import {join} from 'ramda';
 
 /**
  * Html Textarea wrapper.
+ *
+ * :CSS:
+ *
+ *     - ``dazzler-core-text-area``
+ *     - ``autosize``
  */
 export default class TextArea extends React.Component {
     resize() {

@@ -7,7 +7,7 @@ import {chunk} from 'commons';
  *
  * :CSS:
  *
- *     ``dazzler-core-grid``
+ *     - ``dazzler-core-grid``
  *     - ``grid-row``
  *     - ``grid-cell``
  *

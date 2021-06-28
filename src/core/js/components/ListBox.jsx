@@ -16,7 +16,10 @@ import {
  *
  * :CSS:
  *
- *      ``dazzler-core-list-box``
+ *     - ``dazzler-core-list-box``
+ *     - ``vertical``
+ *     - ``horizontal``
+ *     - ``scrollable``
  *
  * :example:
  *

@@ -4,6 +4,19 @@ import {join} from 'ramda';
 
 /**
  * Display a message over the ui that will disappears after a delay.
+ *
+ * :CSS:
+ *
+ *     - ``dazzler-extra-toast``
+ *     - ``opened``
+ *     - ``toast-inner``
+ *     - ``top``
+ *     - ``top-left``
+ *     - ``top-right``
+ *     - ``bottom``
+ *     - ``bottom-left``
+ *     - ``bottom-right``
+ *     - ``right``
  */
 const Toast = props => {
     const {

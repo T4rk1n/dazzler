@@ -6,7 +6,13 @@ import {collectTruePropKeys} from 'commons';
 /**
  * An image.
  *
- * :CSS: ``dazzler-core-image``
+ * :CSS:
+ *
+ *     - ``dazzler-core-image``
+ *     - ``bordered``
+ *     - ``padded``
+ *     - ``rounded``
+ *     - ``centered``
  */
 export default class Image extends React.Component {
     shouldComponentUpdate(nextProps, nextState, nextContext) {

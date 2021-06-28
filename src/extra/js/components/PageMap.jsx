@@ -1,6 +1,13 @@
 import React, {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 
+/**
+ * List of links to other page in the app.
+ *
+ * :CSS:
+ *
+ *     - ``dazzler-extra-page-map``
+ */
 const PageMap = props => {
     const {class_name, style, identity} = props;
     const [pageMap, setPageMap] = useState(null);

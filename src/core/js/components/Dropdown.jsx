@@ -68,6 +68,23 @@ const SelectedItem = props => {
 /**
  * A dropdown to select options from a list.
  *
+ * :CSS:
+ *
+ *     - ``dazzler-core-dropdown``
+ *     - ``drop-toggle``
+ *     - ``drop-symbol``
+ *     - ``drop-container``
+ *     - ``drop-item``
+ *     - ``drop-selected-item``
+ *     - ``selected``
+ *     - ``selected-items``
+ *     - ``selected-label``
+ *     - ``selected-remover``
+ *     - ``no-results``
+ *     - ``search-content``
+ *     - ``dropdown-search-input``
+ *     - ``drop-controls``
+ *
  * @example
  *
  *      from dazzler.components.core import Dropdown

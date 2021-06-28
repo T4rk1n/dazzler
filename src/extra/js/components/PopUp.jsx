@@ -12,6 +12,12 @@ function getMouseX(e, popup) {
 /**
  * Wraps a component/text to render a popup when hovering
  * over the children or clicking on it.
+ *
+ * :CSS:
+ *
+ *     - ``dazzler-extra-pop-up``
+ *     - ``popup-content``
+ *     - ``visible``
  */
 export default class PopUp extends React.Component {
     constructor(props) {

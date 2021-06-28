@@ -9,7 +9,7 @@ import {toTimestamp} from 'commons';
  *
  * :CSS:
  *
- *     ``dazzler-calendar-date-picker``
+ *     - ``dazzler-calendar-date-picker``
  *     - ``picker``
  */
 const DatePicker = props => {

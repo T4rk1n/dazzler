@@ -101,7 +101,7 @@ TreeViewItem.propTypes = TvItemProps;
  *
  * :CSS:
  *
- *     ``dazzler-extra-tree-view``
+ *     - ``dazzler-extra-tree-view``
  *     - ``tree-item``
  *     - ``tree-item-label``
  *     - ``tree-sub-items``
