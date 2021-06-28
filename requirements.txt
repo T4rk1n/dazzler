@@ -1,5 +1,5 @@
 aiohttp==3.7.4.post0
-precept==0.6.3
+precept==0.6.4
 appdirs==1.4.4
 stringcase==1.2.0
 itsdangerous==2.0.1
