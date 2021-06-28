@@ -6,13 +6,14 @@ import PropTypes from 'prop-types';
  *
  * :CSS:
  *
- *     ``dazzler-core-container``.
+ *     - ``dazzler-core-container``.
  *     - ``scroll``
  *     - ``flex``
  *     - ``row``
  *     - ``column``
  *     - ``btn``
  *     - ``center``
+ *     - ``hidden``
  */
 export default class Container extends React.Component {
     shouldComponentUpdate(nextProps, nextState, nextContext) {
