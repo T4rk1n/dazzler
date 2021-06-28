@@ -9,5 +9,6 @@ Examples
 
     click_output
     shared_bindings
+    progress_update
     auth_usage
     chatroom
