@@ -1,6 +1,11 @@
 dazzler.system package
 ======================
 
+.. automodule:: dazzler.system
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Submodules
 ----------
 
@@ -16,14 +21,6 @@ dazzler.system.session module
 -----------------------------
 
 .. automodule:: dazzler.system.session
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-Module contents
----------------
-
-.. automodule:: dazzler.system
    :members:
    :undoc-members:
    :show-inheritance:

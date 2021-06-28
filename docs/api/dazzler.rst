@@ -1,11 +1,16 @@
 dazzler package
 ===============
 
+.. automodule:: dazzler
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Subpackages
 -----------
 
 .. toctree::
-   :maxdepth: 4
+   :maxdepth: 6
 
    dazzler.components
    dazzler.system
@@ -18,14 +23,6 @@ dazzler.errors module
 ---------------------
 
 .. automodule:: dazzler.errors
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-Module contents
----------------
-
-.. automodule:: dazzler
    :members:
    :undoc-members:
    :show-inheritance:

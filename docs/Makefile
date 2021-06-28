@@ -14,7 +14,7 @@ help:
 .PHONY: help Makefile
 
 rst:
-	sphinx-apidoc -f -o ./api ../dazzler
+	sphinx-apidoc -f -M -d 6 -o ./api ../dazzler
 
 # Catch-all target: route all unknown targets to Sphinx using the new
 # "make mode" option.  $(O) is meant as a shortcut for $(SPHINXOPTS).
