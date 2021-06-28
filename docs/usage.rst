@@ -190,3 +190,53 @@ Generate an empty configuration file at the root of the project:
 .. literalinclude:: ./dazzler.toml
     :caption: dazzler.toml
     :name: default-config
+
+Session
+=======
+
+The session system is activated by default with a default backend using json
+files stored locally on the server. It is a key/value system associated
+with each client connected.
+
+Another backend option is `Redis`, you need to install the dependency with:
+
+.. code-block:: sh
+
+    pip install dazzler[redis]
+
+Session Methods
+---------------
+
+Three operation can be done on key value pairs:
+
+- get
+- set
+- delete
+
+.. seealso::
+
+    :py:class:`~.dazzler.system.session.Session`
+
+Usage via binding
+-----------------
+
+A session object is available via the
+:py:class:`~.dazzler.system.BindingContext``
+
+.. code-block:: python
+
+    @page.bind('clicks@btn')
+    async def on_click(ctx: BindingContext):
+        my_value = await ctx.session.get('my_value')
+
+
+Usage via route
+---------------
+
+Also available via the request object for regular routes.
+
+.. code-block:: python
+
+    @page.route('/my-route')
+    async def my_route(request):
+        my_value = await request['session'].get('my_value')
