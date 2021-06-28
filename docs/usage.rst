@@ -2,6 +2,8 @@
 Usage
 *****
 
+.. contents::
+
 Install
 =======
 
@@ -81,6 +83,17 @@ You can now start the application (``$ python application.py``) and
 navigate to ``http://localhost:8150/my-page``
 
 .. seealso:: :py:class:`~.dazzler.system.Page`
+
+Requirements
+^^^^^^^^^^^^
+
+Every CSS/JS files contained in a directory named ``requirements`` at the same
+level of the page file will be included on the page. Styles are loaded
+after components styles to ensure priority of user CSS.
+
+.. note::
+    The directory can be changed via page parameter ``requirements_dir``.
+    The path is relative to the page file.
 
 Components
 ----------
