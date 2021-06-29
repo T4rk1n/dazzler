@@ -14,6 +14,7 @@
 #
 import os
 import sys
+import json
 sys.path.insert(0, os.path.abspath('..'))
 
 # noinspection PyProtectedMember
@@ -107,7 +108,6 @@ html_sidebars = {
         "searchbox.html",
     ]
 }
-
 
 # -- Options for HTMLHelp output ---------------------------------------------
 
@@ -212,3 +212,24 @@ def setup(app):
         dazz.start(['generate', source, output])
 
     dazz.start(['dump-configs', 'dazzler.toml'])
+
+    results = '.. component_list:\n\nComponents\n==========\n\n'
+
+    # Generate a component list
+    for package in [
+        'core', 'extra', 'calendar', 'markdown', 'auth', 'icons'
+    ]:
+        results += f'- :py:mod:`~.dazzler.components.{package}`\n\n'
+
+        with open(
+            os.path.join('../dazzler/components/', package, 'components.json')
+        ) as f:
+            components = json.load(f)
+            results += '\n'.join(
+                f'    - :py:class:`~.dazzler.components.{package}.{c}`'
+                for c in components
+            )
+        results += '\n\n'
+
+    with open('component_list.rst', 'w') as f:
+        f.write(results)

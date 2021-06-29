@@ -345,4 +345,7 @@ async def generate_components(metadata, output_path, executor):
 
     futures.append(executor.execute(generate_imports, output_path, names))
 
+    with open(os.path.join(output_path, 'components.json'), 'w') as f:
+        json.dump(names, f)
+
     await asyncio.gather(*futures)
