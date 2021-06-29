@@ -48,6 +48,12 @@ class DazzlerConfig(Config):
         config_type=str,
     )
 
+    pages_directory = ConfigProperty(
+        default='pages',
+        comment='Directory where pages will be automatically added to the app',
+        config_type=str,
+    )
+
     class Session(Nestable):
         enable = ConfigProperty(
             config_type=bool,
@@ -123,7 +129,7 @@ class DazzlerConfig(Config):
             config_type=bool,
             comment='Enable to send a ping every interval to keep the '
                     'websocket connected if it didn\'t send data after '
-                    'a delay. Some hosts providers will automatically closes'
+                    'a delay. Some hosts providers will automatically closes '
                     'idling connection after a while.'
         )
         ping_interval = ConfigProperty(
