@@ -42,9 +42,11 @@ def start_visit(browser):  # pylint: disable=redefined-outer-name
             url='http://localhost:8150/',
             debug=False,
             start_event=None,
+            pages_directory='null',
             **kwargs
     ):
         namespace['app'] = app
+        app.config.pages_directory = pages_directory
         await app.main(
             blocking=False,
             debug=debug,
@@ -67,6 +69,7 @@ def start_visit(browser):  # pylint: disable=redefined-outer-name
 @pytest.fixture()
 def start_page(start_visit):  # pylint: disable=redefined-outer-name
     app = Dazzler(__name__)
+    app.config.pages_directory = 'none'
 
     async def _start_page(page, debug=False):
         page.url = '/'

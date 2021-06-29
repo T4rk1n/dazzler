@@ -453,3 +453,19 @@ async def test_str_trigger(start_page, browser):
         await browser.wait_for_text_to_equal(
             '#output-state', str(i)
         )
+
+
+@pytest.mark.async_test
+async def test_pages_dir(start_visit, browser):
+    from tests.apps.pages_directory import app
+
+    await start_visit(
+        app,
+        url='http://localhost:8150/page1',
+        pages_directory='tests/apps/page_dir'
+    )
+
+    await browser.wait_for_text_to_equal('#page_id', 'Page 1')
+
+    await browser.get('http://localhost:8150/page2')
+    await browser.wait_for_text_to_equal('#page_id', 'Page 2')
