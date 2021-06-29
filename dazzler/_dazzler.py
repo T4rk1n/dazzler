@@ -360,6 +360,7 @@ class Dazzler(precept.Precept):  # pylint: disable=too-many-instance-attributes
         refresh = False  # Refresh the page because the root bundles changed.
         files = set()
         deleted_files = set()
+        self.logger.debug(f'Files changed {filenames}')
         for filename in filenames:
             if filename.endswith('.py'):
                 hot = True
@@ -439,6 +440,31 @@ class Dazzler(precept.Precept):  # pylint: disable=too-many-instance-attributes
         self.auth = DazzlerAuth(self, authenticator, backend=backend)
 
     async def _handle_configs(self):
+        # Gather pages in the pages directory
+        if os.path.exists(self.config.pages_directory):
+            for page_path in os.listdir(self.config.pages_directory):
+                if page_path.endswith('.py'):
+                    name = page_path.split('.py')[0]
+
+                    module_name = '.'.join(
+                        itertools.chain(
+                            self.config.pages_directory.split(os.path.sep),
+                            [name]
+                        )
+                    )
+
+                    page_mod = importlib.import_module(module_name)
+
+                    for instance in vars(page_mod).values():
+                        if isinstance(instance, Page):
+                            self.logger.debug(
+                                f'Adding page: {instance.name} from ' +
+                                os.path.join(
+                                    self.config.pages_directory, page_path
+                                )
+                            )
+                            self.add_page(instance)
+
         # Gather global requirements from configs.
         for external in itertools.chain(
                 self.config.requirements.external_scripts,
