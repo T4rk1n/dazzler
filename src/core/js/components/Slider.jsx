@@ -11,6 +11,11 @@ import {debounce} from 'commons';
  *     - ``slider-area``: The outer div of the slider.
  *     - ``slider-handle``: The drag handle
  *     - ``slider-spacer``: The space that is before the handle.
+ *
+ * :Example:
+ *
+ * .. literalinclude:: ../../tests/components/pages/slider.py
+ *     :lines: 5-43
  */
 export default class Slider extends React.Component {
     constructor(props) {

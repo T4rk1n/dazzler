@@ -11,16 +11,24 @@ page = Page(
         core.Container(style={'marginTop': '20px'}),
         core.Container(
             [
-                core.Container('start', identity='start'),
+                core.Container(
+                    'start',
+                    identity='start',
+                    style={'padding': '0.5rem'}
+                ),
                 core.Slider(
                     -100, 100,
                     identity='slider',
                     value=-20,
                     style={'width': '80%'}
                 ),
-                core.Container('stop', identity='stop')],
-            style={'padding': '3rem'},
-            class_name='row'
+                core.Container(
+                    'stop',
+                    identity='stop',
+                    style={'padding': '0.5rem'},
+                )
+            ],
+            class_name='row center'
         ),
 
         core.Container(identity='output')
