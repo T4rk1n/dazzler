@@ -8,6 +8,7 @@ Full dazzler documentation
 
    usage
    commands
+   component_list
    examples/index
    api/modules
 

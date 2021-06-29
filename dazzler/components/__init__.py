@@ -7,4 +7,7 @@ Component packages of dazzler.
 :extra: More components that may not be needed by all pages.
 :icons: Icons to use with the app, free packs with hundred of icons.
 :markdown: Markdown and CodeBlock.
+
+.. include:: ../component_list.rst
+
 """
