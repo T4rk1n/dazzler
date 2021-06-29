@@ -242,6 +242,7 @@ class RedisSessionBackend(SessionBackEnd):
 
     def __init__(self, app):
         super().__init__(app)
+        self.redis = None
         app.events.subscribe('dazzler_setup', self._setup)
 
     async def _setup(self, _):
