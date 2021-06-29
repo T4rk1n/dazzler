@@ -15,10 +15,6 @@ from ._package import Package
 from ..errors import TriggerLoopError, GetAspectError
 
 
-if typing.TYPE_CHECKING:
-    from .auth import DazzlerAuth, User
-
-
 __all__ = [
     'Trigger', 'State', 'BoundAspect', 'Binding', 'BindingContext',
 ]
@@ -166,7 +162,12 @@ class BoundAspect:
 
 
 class BindingContext:
-    """The context in which the bound function execute."""
+    """
+    The context in which the bound function execute.
+
+    :type auth: dazzler.system.auth.DazzlerAuth
+    :type user: dazzler.system.auth.User
+    """
     def __init__(
             self,
             identity: str,
@@ -185,8 +186,8 @@ class BindingContext:
         self.session: Session = request.get('session')
         self.create_task = create_task
         self.dazzler = request.app['dazzler']
-        self.auth: "DazzlerAuth" = self.dazzler.auth
-        self.user: "User" = request.get('user')
+        self.auth = self.dazzler.auth
+        self.user = request.get('user')
         self._request_queue = request_queue
         self._response_queue = asyncio.Queue()
 
