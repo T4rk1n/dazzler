@@ -6,7 +6,7 @@ function diff-docs() {
     tempdir=./_temp/
     mkdir ${tempdir}
 
-    sphinx-apidoc -f -o ${tempdir} ../dazzler
+    sphinx-apidoc -f -M -d 6 -o ${tempdir} ../dazzler
     diff -r -q ${tempdir} ./api/
     code=$?
 
