@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import {join} from 'ramda';
 
 /**
  * Display data in a tabular manner (Non interactive).
@@ -13,6 +14,11 @@ import PropTypes from 'prop-types';
  *     - ``table-row``
  *     - ``table-cell``
  *     - ``table-footer``
+ *
+ * :Example:
+ *
+ * .. literalinclude:: ../../tests/components/pages/table.py
+ *     :lines: 5-22
  */
 export default class Table extends React.Component {
     render() {
@@ -26,9 +32,30 @@ export default class Table extends React.Component {
             caption,
             include_row_number,
             row_number_start,
+            default_table,
+            collapsed,
+            centered,
+            bordered,
+            size,
         } = this.props;
+        const c = [class_name];
+        if (default_table) {
+            c.push('default-table');
+        }
+        if (collapsed) {
+            c.push('collapsed');
+        }
+        if (centered) {
+            c.push('centered');
+        }
+        if (bordered) {
+            c.push('bordered');
+        }
+        if (size) {
+            c.push(size);
+        }
         return (
-            <table className={class_name} id={identity} style={style}>
+            <table className={join(' ', c)} id={identity} style={style}>
                 {caption && (
                     <caption className={'table-title'}>{caption}</caption>
                 )}
@@ -60,7 +87,7 @@ export default class Table extends React.Component {
                                 className={'table-row'}
                             >
                                 {include_row_number && (
-                                    <td className={'table-cell'}>
+                                    <td className={'table-cell row-num'}>
                                         {row_number_start + i}
                                     </td>
                                 )}
@@ -82,7 +109,10 @@ export default class Table extends React.Component {
     }
 }
 
-Table.defaultProps = {};
+Table.defaultProps = {
+    default_table: true,
+    collapsed: true,
+};
 
 Table.propTypes = {
     /**
@@ -121,6 +151,36 @@ Table.propTypes = {
      * The start of the row number, useful if paged.
      */
     row_number_start: PropTypes.number,
+
+    /**
+     * Apply default style.
+     */
+    default_table: PropTypes.bool,
+    /**
+     * Collapse the borders of the table.
+     */
+    collapsed: PropTypes.bool,
+    /**
+     * Center the cell
+     */
+    centered: PropTypes.bool,
+    /**
+     * Put a border around elements
+     */
+    bordered: PropTypes.bool,
+
+    /**
+     * The size of the table.
+     */
+    size: PropTypes.oneOf([
+        'tiny',
+        'small',
+        'medium',
+        'large',
+        'larger',
+        'x-large',
+        'xx-large',
+    ]),
 
     /**
      *  Unique id for this component

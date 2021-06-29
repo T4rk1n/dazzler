@@ -1,25 +1,132 @@
 @import '../../commons/scss/colors';
 
 .dazzler-core-table {
-  .table-head {
-
+  &.collapsed {
+    border-collapse: collapse;
   }
-  .table-title {
+  &.default-table {
+    .table-head {
+      color: white;
+      padding: 0.25rem;
+      background-color: $primary-light;
+    }
+    .table-title {
+      padding: 0.25rem;
+      background-color: $primary-dark;
+      font-weight: 900;
+      font-size: 1.2rem;
+      color: white;
+    }
+    .table-heading {
+      padding: 0.25rem;
+      &.row-num {
+        background-color: $primary;
+      }
+    }
+    .table-body {
 
+    }
+    .row-num { color: white; user-select: none; }
+    .table-row {
+      background-color: $neutral-light;
+      .row-num {
+        background-color: $primary-light;
+        border-color: $primary-light;
+      }
+      &:nth-child(even) {
+        background-color: $neutral;
+        .row-num {
+          background-color: $primary;
+          border-color: $primary !important;
+        }
+      }
+    }
+    .table-cell {
+      padding: 0.25rem;
+
+    }
+    .table-footer {
+      background-color: $neutral;
+    }
+    &.bordered {
+      .table-row:nth-child(even) .table-cell {
+        border: $neutral-light 1px solid;
+      }
+      .table-heading {
+        border: $primary 1px solid;
+      }
+    }
   }
-  .table-heading {
-
+  &.centered {
+    .table-cell {
+      text-align: center;
+    }
   }
-  .table-body {
 
+  &.bordered {
+    .table-cell {
+      border: $neutral 1px solid;
+    }
   }
-  .table-row {
 
+  &.tiny {
+    .table-cell, .table-heading, .table-title {
+      padding: 0;
+    }
+    font-size: smaller;
+    .table-title {
+      font-size: small;
+    }
   }
-  .table-cell {
-
+  &.small {
+    .table-cell, .table-heading, .table-title {
+      padding: 0.125rem;
+    }
+    font-size: small;
+    .table-title {
+      font-size: medium;
+    }
   }
-  .table-footer {
-
+  &.medium {
+    font-size: medium;
+    .table-title {
+      font-size: large;
+    }
+  }
+  &.large {
+    .table-cell, .table-heading, .table-title {
+      padding: 0.5rem;
+    }
+    font-size: large;
+    .table-title {
+      font-size: larger;
+    }
+  }
+  &.larger {
+    .table-cell, .table-heading, .table-title {
+      padding: 0.75rem;
+      border-width: 2px !important;
+    }
+    font-size: larger;
+    .table-title {
+      font-size: x-large;
+    }
+  }
+  &.x-large {
+    .table-cell, .table-heading, .table-title, .table-head {
+      padding: 1rem;
+      border-width: 3px !important;
+    }
+    font-size: x-large;
+    .table-title {
+      font-size: xx-large;
+    }
+  }
+  &.xx-large {
+    .table-cell, .table-heading, .table-title {
+      padding: 1.25rem;
+      border-width: 4px !important;
+    }
+    font-size: xx-large;
   }
 }
