@@ -469,3 +469,24 @@ async def test_pages_dir(start_visit, browser):
 
     await browser.get('http://localhost:8150/page2')
     await browser.wait_for_text_to_equal('#page_id', 'Page 2')
+
+
+@pytest.mark.async_test
+async def test_ties(start_page, browser):
+    from tests.apps.pages.ties import page
+
+    await start_page(page)
+    text = 'Hello Ties'
+
+    element = await browser.wait_for_element_by_id('input')
+    element.send_keys(text)
+
+    await browser.wait_for_text_to_equal('#output', text)
+    await browser.wait_for_text_to_equal('#chain', text)
+    await browser.wait_for_text_to_equal('#binding-output', text)
+
+    element = await browser.wait_for_element_by_id('multi')
+    element.send_keys(text)
+
+    await browser.wait_for_text_to_equal('#output-1', text)
+    await browser.wait_for_text_to_equal('#output-2', text)
