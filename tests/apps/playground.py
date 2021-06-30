@@ -1,7 +1,7 @@
 from dazzler import Dazzler
 
 from tests.apps.pages import component_as_trigger, binding_return_trigger, \
-    same_identity, component_as_aspect, storage, regex_bindings
+    same_identity, component_as_aspect, storage, regex_bindings, ties
 from tests.components.pages import checklist, store, html, interval, \
     input_output, radio, link, viewport, progress, select, button, slider, \
     modal, textarea, table, grid, form, markdown, calendar, pager, extras, \
@@ -45,6 +45,7 @@ pages = [
     list_box.page,
     treeview.page,
     dropdown.page,
+    ties.page,
     page_map.page,
     icons.page,
     progress_update.page,
