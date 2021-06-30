@@ -3,7 +3,7 @@ import typing
 from aiohttp import web
 
 from ..tools import get_package_path
-from ._binding import Binding, BoundAspect, Trigger, State
+from ._binding import Binding, BoundAspect, Trigger, State, Target
 from ._component import Component
 from ._package import Package
 from ._requirements import Requirement, collect_requirements
@@ -103,6 +103,7 @@ class Page:
         self.lang = lang
         self._bindings = {str(x.trigger): x for x in self.bindings}
         self.require_login = require_login
+        self._ties = {}
 
     async def prepare(
             self,
@@ -142,7 +143,13 @@ class Page:
                 x.prepare(dev=debug, external=external)
                 for x in self.requirements
             ],
-            'packages': packages
+            'packages': packages,
+            'ties': {
+                k: {
+                    'trigger': t.prepare(),
+                    'targets': [e.prepare() for e in g]
+                } for k, (t, g) in self._ties.items()
+            }
         }
 
     def bind(
@@ -206,6 +213,39 @@ class Page:
             return func
 
         return _page_route
+
+    def tie(
+        self,
+        trigger: typing.Union[Trigger, str],
+        *target: typing.Union[Target, str]
+    ):
+        """
+        Update target(s) aspect on trigger from the frontend.
+
+        **Example**
+
+        .. code-block:: python
+
+            from dazzler.system import Page
+            from dazzler.components import core
+
+            page = Page(
+                __name__,
+                core.Container([
+                    core.Input(identity='input'),
+                    core.Container(identity='output')
+                ])
+            )
+
+            page.tie('value@input', 'children@output')
+
+        :param trigger: Aspect to set the target when the value change.
+        :param target: Aspect to update from the trigger value.
+        :return:
+        """
+        trig = _coerce_binding(trigger, Trigger)
+        targ = _coerce_binding(list(target), Target)
+        self._ties[str(trig)] = (trig, targ)
 
     def __str__(self):
         return f'{self.name}@{self.url}'

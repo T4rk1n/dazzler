@@ -52,7 +52,8 @@ export default class Wrapper extends React.Component {
             this.props.identity,
             this.setAspects,
             this.getAspect,
-            this.matchAspects
+            this.matchAspects,
+            this.updateAspects
         );
         if (!this.state.initial) {
             this.updateAspects(this.state.aspects).then(() =>

@@ -23,6 +23,7 @@ export default class Updater extends React.Component {
             requirements: [],
             reloading: false,
             needRefresh: false,
+            ties: {},
         };
         // The api url for the page is the same but a post.
         // Fetch bindings, packages & requirements
@@ -67,6 +68,21 @@ export default class Updater extends React.Component {
                 }
             });
 
+            aspectKeys
+                .map(key => ({
+                    ...this.state.ties[`${key}@${identity}`],
+                    value: aspects[key],
+                }))
+                .filter(e => e.trigger)
+                .forEach(tie => {
+                    tie.targets.forEach(t => {
+                        const component = this.boundComponents[t.identity];
+                        if (component) {
+                            component.updateAspects({[t.aspect]: tie.value});
+                        }
+                    });
+                });
+
             if (!bindings) {
                 return resolve(0);
             }
@@ -78,11 +94,12 @@ export default class Updater extends React.Component {
         });
     }
 
-    connect(identity, setAspects, getAspect, matchAspects) {
+    connect(identity, setAspects, getAspect, matchAspects, updateAspects) {
         this.boundComponents[identity] = {
             setAspects,
             getAspect,
             matchAspects,
+            updateAspects,
         };
     }
 
@@ -295,6 +312,7 @@ export default class Updater extends React.Component {
                     }, keys(pickBy(b => b.regex, response.bindings))),
                     packages: response.packages,
                     requirements: response.requirements,
+                    ties: response.ties,
                 },
                 () =>
                     loadRequirements(
