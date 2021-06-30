@@ -23,4 +23,3 @@ page.tie('children@output', 'children@chain')
 @page.bind('children@output')
 async def on_output(ctx: BindingContext):
     await ctx.set_aspect('binding-output', children=ctx.trigger.value)
-

@@ -151,7 +151,8 @@ To update components after the initial layout, you can use page bindings. The
 ``get`` other component aspects from the backend and holds the trigger/states
 value. It can also be used to access the ``WebStorage`` of the browser.
 
-:Examples:
+Examples
+^^^^^^^^
 
 Update a container on click of a button.
 
@@ -179,6 +180,47 @@ Regex bindings can be used as trigger/states for identity and aspect.
 
 .. literalinclude:: ../tests/apps/pages/regex_bindings.py
     :lines: 5-42
+
+Ties
+----
+
+You can use :py:meth:`~.dazzler.system.Page.tie` method of
+:py:class:`~.dazzler.system.Page` to link aspects together without
+the need to define a binding if no data transformation is necessary.
+This update operates entirely on the frontend.
+
+Example
+^^^^^^^
+
+Update a :py:class:`~.dazzler.components.core.ViewPort` active view
+from a :py:class:`~.dazzler.components.core.Dropdown` value.
+
+.. code-block:: python
+
+    from dazzler.system import Page
+    from dazzler.components import core
+
+    page = Page(
+        __name__,
+        core.Container([
+            core.Dropdown(
+                options=['one', 'two', 'three'],
+                value='one',
+                identity='dropdown'
+            ),
+            core.ViewPort(
+                active='one',
+                views={
+                    'one': core.Container('one'),
+                    'two': core.Container('two'),
+                    'three': core.Container('three')
+                },
+                identity='viewport'
+            )
+        ])
+    )
+
+    page.tie('value@dropdown', 'active@viewport')
 
 Configuration File
 ==================
