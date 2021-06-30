@@ -16,7 +16,7 @@ from ..errors import TriggerLoopError, GetAspectError
 
 
 __all__ = [
-    'Trigger', 'State', 'BoundAspect', 'Binding', 'BindingContext',
+    'Trigger', 'State', 'Target', 'BoundAspect', 'Binding', 'BindingContext',
 ]
 
 
@@ -97,6 +97,14 @@ TriggerList = typing.List[Trigger]
 # pylint: disable=too-few-public-methods
 class State(_Bind):
     """Usable aspect value in bound aspect without trigger on change."""
+
+
+# pylint: disable=too-few-public-methods
+class Target(_Bind):
+    """
+    A connection target that will be updated when
+    the trigger is updated on the frontend.
+    """
 
 
 StateList = typing.List[State]
