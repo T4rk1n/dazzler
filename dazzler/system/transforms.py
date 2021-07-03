@@ -72,7 +72,7 @@ class _Transformable(Transform):
 
 
 class _Comparable(Transform):
-    def __init__(self, comparison:  Transform):
+    def __init__(self, comparison: Transform):
         super().__init__()
         self.args['comparison'] = comparison
 
