@@ -628,3 +628,29 @@ async def test_search_backend(start_page, browser):
     assert len(await get_options()) == 2
     search_input.send_keys('o')
     assert len(await get_options()) == 1
+
+
+@pytest.mark.async_test
+async def test_dropdown_initial_value(start_page, browser):
+    from tests.components.pages.dropdown import page
+
+    await start_page(page)
+
+    await browser.wait_for_text_to_equal(
+        '#initial-value-dropdown .selected-items',
+        'one'
+    )
+    await browser.wait_for_text_to_equal(
+        '#initial-value-object-dropdown .selected-items',
+        'Option 1'
+    )
+    await browser.wait_for_text_to_equal(
+        '#initial-value-multi-dropdown '
+        '.drop-selected-item:nth-child(1) > div:nth-child(1)',
+        'Option 1'
+    )
+    await browser.wait_for_text_to_equal(
+        '#initial-value-multi-dropdown '
+        '.drop-selected-item:nth-child(2) > div:nth-child(1)',
+        'Option 2'
+    )
