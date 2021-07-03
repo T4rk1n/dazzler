@@ -125,7 +125,20 @@ const Dropdown = props => {
     const selectedRef = useRef(null);
 
     // Keep them items with labels
-    const [selectedItems, setSelectedItems] = useState([]);
+    const [selectedItems, setSelectedItems] = useState(() => {
+        if (value) {
+            if (is(String, value)) {
+                return [{value, label: value}];
+            }
+            if (is(Array, value)) {
+                return value;
+            }
+            if (is(Object, value)) {
+                return [value];
+            }
+        }
+        return [];
+    });
 
     const containerStyle = useMemo(() => {
         const s = {};
