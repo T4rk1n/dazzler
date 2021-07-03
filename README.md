@@ -22,15 +22,17 @@ Install with pip: `$ pip install dazzler`
 - Multi page based.
 - Hot reload.
 - Tons of components.
+- Tie & Transform API to perform updates on the client side.
 
 ## Basic example
 
-Create a page with a layout and assign a binding to set the output component
-children when clicked on.
+Create a page with a layout and assign bindings to save & load a visitor name 
+with the session system. The button to save the visitor name is disabled if
+no input value via tie & transform.
 
 ```python
 from dazzler import Dazzler
-from dazzler.system import Page, BindingContext
+from dazzler.system import Page, BindingContext, transforms as t
 from dazzler.components import core
 
 app = Dazzler(__name__)
@@ -38,22 +40,43 @@ page = Page(
     __name__,
     core.Container([
         core.Html('H2', 'My dazzler page'),
-        core.Input(identity='input', placeholder='Enter name'),
-        core.Button('Click me', identity='click-me'),
-        core.Container(identity='output')
-    ]),
-    title='My Page'
+        core.Container('Please enter a name', identity='visitor-name'),
+        core.Input(value='', identity='input'),
+        core.Button('Save name', identity='save-btn', disabled=True),
+    ], identity='layout', id='layout'),
+    title='My Page',
+    url='/'
 )
-app.add_page(page)
+
+# UI updates via tie & transforms
+page.tie('value@input', 'disabled@save-btn').transform(
+    t.Length().t(t.Lesser(1))
+)
 
 
-@page.bind('clicks@click-me')
+# Bindings executes on the server via websockets.
+@page.bind('clicks@save-btn')
 async def on_click(context: BindingContext):
+    # Save the visitor name via session system
     name = await context.get_aspect('input', 'value')
+    await context.session.set('visitor', name)
     await context.set_aspect(
-        'output', children=f'Hello {name}'
+        'visitor-name', children=f'Saved {name}'
     )
 
+
+# Aspects defined on the layout trigger on initial render and
+# allows to insert initial data.
+@page.bind('id@layout')
+async def on_layout(context: BindingContext):
+    visitor = await context.session.get('visitor')
+    if visitor:
+        await context.set_aspect(
+            'visitor-name', children=f'Welcome back {visitor}!'
+        )
+
+
+app.add_page(page)
 
 if __name__ == '__main__':
     app.start()
