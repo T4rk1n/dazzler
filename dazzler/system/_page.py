@@ -2,32 +2,15 @@ import os
 import typing
 from aiohttp import web
 
+from .transforms import TiedTransform
 from ..tools import get_package_path
-from ._binding import Binding, BoundAspect, Trigger, State, Target
+from ._binding import (
+    Binding, BoundAspect, Trigger, State, Target, coerce_binding
+)
 from ._component import Component
 from ._package import Package
 from ._requirements import Requirement, collect_requirements
 from ._route import Route, RouteMethod
-from ..errors import BindingError
-
-
-def _coerce_binding(value, binding_type: typing.Type = Trigger):
-
-    if isinstance(value, list):
-        return [_coerce_binding(x, binding_type) for x in value]
-
-    if isinstance(value, binding_type):
-        return value
-
-    if isinstance(value, str):
-
-        splat = value.split('@')
-        if not len(splat) == 2:
-            raise BindingError(f'Invalid {binding_type.__name__}: {value}')
-
-        return binding_type(splat[1], splat[0])
-
-    raise BindingError(f'Invalid {binding_type.__name__}: {value}')
 
 
 # pylint: disable=too-many-instance-attributes
@@ -103,7 +86,7 @@ class Page:
         self.lang = lang
         self._bindings = {str(x.trigger): x for x in self.bindings}
         self.require_login = require_login
-        self._ties = {}
+        self._ties = []
 
     async def prepare(
             self,
@@ -144,12 +127,9 @@ class Page:
                 for x in self.requirements
             ],
             'packages': packages,
-            'ties': {
-                k: {
-                    'trigger': t.prepare(),
-                    'targets': [e.prepare() for e in g]
-                } for k, (t, g) in self._ties.items()
-            }
+            'ties': [
+                t.prepare() for t in self._ties
+            ]
         }
 
     def bind(
@@ -164,8 +144,8 @@ class Page:
         :param states:
         :return:
         """
-        trg = _coerce_binding(trigger)
-        sts = _coerce_binding(list(states), State)
+        trg = coerce_binding(trigger)
+        sts = coerce_binding(list(states), State)
 
         def _wrapper(func):
             binding = Binding(trg, sts)(func)
@@ -243,9 +223,12 @@ class Page:
         :param target: Aspect to update from the trigger value.
         :return:
         """
-        trig = _coerce_binding(trigger, Trigger)
-        targ = _coerce_binding(list(target), Target)
-        self._ties[str(trig)] = (trig, targ)
+        trig = coerce_binding(trigger, Trigger)
+        targ = coerce_binding(list(target), Target)
+
+        tied = TiedTransform(trig, targ)
+        self._ties.append(tied)
+        return tied
 
     def __str__(self):
         return f'{self.name}@{self.url}'
