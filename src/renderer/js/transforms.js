@@ -1,3 +1,4 @@
+/* eslint-disable no-use-before-define */
 import {
     is,
     split,
@@ -47,7 +48,7 @@ const transforms = {
             return replace('${value}', value, template);
         } else if (is(Object, value)) {
             return reduce(
-                (acc, [k, v]) => replace(`\$\{${k}\}`, v, acc),
+                (acc, [k, v]) => replace(`$\{${k}}`, v, acc),
                 template,
                 toPairs(value)
             );
@@ -58,7 +59,7 @@ const transforms = {
         const {separator} = args;
         return split(separator, value);
     },
-    Trim: (value, args) => {
+    Trim: value => {
         return trim(value);
     },
     /* Number Transform */
