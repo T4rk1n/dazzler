@@ -81,7 +81,23 @@ page = Page(
             search_backend=True
         ),
         core.Container(identity='simple-output'),
-        core.Container(identity='multi-output')
+        core.Container(identity='multi-output'),
+        core.Dropdown(
+            options=['one', 'two'],
+            value='one',
+            identity='initial-value-dropdown'
+        ),
+        core.Dropdown(
+            options=basic_options,
+            value=basic_options[0],
+            identity='initial-value-object-dropdown'
+        ),
+        core.Dropdown(
+            options=basic_options,
+            multi=True,
+            value=[basic_options[0], basic_options[1]],
+            identity='initial-value-multi-dropdown'
+        )
     ], style={'width': '300px', 'padding': '1rem'})
 )
 
