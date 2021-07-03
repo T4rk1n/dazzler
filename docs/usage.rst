@@ -109,7 +109,7 @@ by the server.
 Components are divided in packages which holds all their requirements and
 metadata.
 
-.. code-block:: python3
+.. code-block:: python
     :caption: my_package.pages.page_two.py
 
     from dazzler.system import Page
@@ -156,7 +156,7 @@ Examples
 
 Update a container on click of a button.
 
-.. code-block:: python3
+.. code-block:: python
     :caption: my_package.pages.bound_page.py
 
     from dazzler.system import Page, Trigger
@@ -181,16 +181,28 @@ Regex bindings can be used as trigger/states for identity and aspect.
 .. literalinclude:: ../tests/apps/pages/regex_bindings.py
     :lines: 5-42
 
-Ties
-----
+Ties & Transforms
+-----------------
 
 You can use :py:meth:`~.dazzler.system.Page.tie` method of
 :py:class:`~.dazzler.system.Page` to link aspects together without
-the need to define a binding if no data transformation is necessary.
+the need to define a binding for UI updates.
 This update operates entirely on the frontend.
 
-Example
-^^^^^^^
+:py:class:`~.dazzler.system.transforms.Transform`'s are operations of a tie to
+apply on the trigger value before updating the target aspect.
+They can be chained to provide interactions with components aspects
+on the frontend.
+:py:class:`~.dazzler.system.transforms.AspectValue` starts a chain with the
+aspect value resolved. For value transforms,
+a :py:class:`~.dazzler.system.Target` can be used instead of a raw value
+to get that aspect value.
+
+Examples
+^^^^^^^^
+
+1 to 1 tie
+""""""""""
 
 Update a :py:class:`~.dazzler.components.core.ViewPort` active view
 from a :py:class:`~.dazzler.components.core.Dropdown` value.
@@ -221,6 +233,16 @@ from a :py:class:`~.dazzler.components.core.Dropdown` value.
     )
 
     page.tie('value@dropdown', 'active@viewport')
+
+
+Using transforms to apply styles conditionally
+""""""""""""""""""""""""""""""""""""""""""""""
+
+.. literalinclude:: ../tests/apps/pages/theme_transform.py
+
+.. seealso::
+    - :py:mod:`dazzler.system.transforms` - API reference.
+    - :ref:`transforms_example` - Example of most transforms usage.
 
 Configuration File
 ==================
