@@ -484,9 +484,13 @@ async def test_ties(start_page, browser):
     await browser.wait_for_text_to_equal('#output', text)
     await browser.wait_for_text_to_equal('#chain', text)
     await browser.wait_for_text_to_equal('#binding-output', text)
+    await browser.wait_for_text_to_equal('#regex-output', text)
+
+    text = 'foo bar'
 
     element = await browser.wait_for_element_by_id('multi')
     element.send_keys(text)
 
     await browser.wait_for_text_to_equal('#output-1', text)
     await browser.wait_for_text_to_equal('#output-2', text)
+    await browser.wait_for_text_to_equal('#regex-output', text)
