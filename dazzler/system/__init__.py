@@ -30,6 +30,7 @@ __all__ = [  # noqa: F405
     'Binding',
     'Trigger',
     'State',
+    'Target',
     'BoundAspect',
     'Package',
     'Requirement',

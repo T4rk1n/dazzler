@@ -12,11 +12,11 @@ from ._component import prepare_aspects
 from ._package import Package
 
 
-from ..errors import TriggerLoopError, GetAspectError
-
+from ..errors import TriggerLoopError, GetAspectError, BindingError
 
 __all__ = [
     'Trigger', 'State', 'Target', 'BoundAspect', 'Binding', 'BindingContext',
+    'coerce_binding'
 ]
 
 
@@ -104,7 +104,22 @@ class Target(_Bind):
     """
     A connection target that will be updated when
     the trigger is updated on the frontend.
+
+    Target has shorthand syntax ``aspect@identity`` to use with
+    transforms.
     """
+    def __init__(self,
+                 shorthand: str = None,
+                 identity: str = None,
+                 aspect: str = None):
+        if shorthand and '@' in shorthand:
+            aspect, identity = shorthand.split('@')
+        elif not identity or not aspect:
+            raise BindingError(
+                f'Invalid Target arguments provided:'
+                f' short={shorthand} identity={identity} aspect={aspect}'
+            )
+        super().__init__(identity, aspect)
 
 
 StateList = typing.List[State]
@@ -331,3 +346,22 @@ class Binding:
             return await func(context)
 
         return BoundAspect(bound, self.trigger, self.states)
+
+
+def coerce_binding(value, binding_type: typing.Type = Trigger):
+
+    if isinstance(value, list):
+        return [coerce_binding(x, binding_type) for x in value]
+
+    if isinstance(value, binding_type):
+        return value
+
+    if isinstance(value, str):
+
+        splat = value.split('@')
+        if not len(splat) == 2:
+            raise BindingError(f'Invalid {binding_type.__name__}: {value}')
+
+        return binding_type(identity=splat[1], aspect=splat[0])
+
+    raise BindingError(f'Invalid {binding_type.__name__}: {value}')

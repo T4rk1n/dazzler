@@ -10,6 +10,7 @@ import {
 import {loadRequirement, loadRequirements} from '../requirements';
 import {disableCss} from 'commons';
 import {pickBy, keys, map, evolve, concat, flatten} from 'ramda';
+import Transforms, {executeTransform} from '../transforms';
 
 export default class Updater extends React.Component {
     constructor(props) {
@@ -64,24 +65,52 @@ export default class Updater extends React.Component {
                                 },
                             }))
                     );
-                    bindings.push();
                 }
             });
 
-            aspectKeys
-                .map(key => ({
-                    ...this.state.ties[`${key}@${identity}`],
-                    value: aspects[key],
-                }))
-                .filter(e => e.trigger)
-                .forEach(tie => {
-                    tie.targets.forEach(t => {
-                        const component = this.boundComponents[t.identity];
-                        if (component) {
-                            component.updateAspects({[t.aspect]: tie.value});
+            flatten(
+                aspectKeys.map(key => {
+                    const ties = [];
+                    for (let i = 0; i < this.state.ties.length; i++) {
+                        const tie = this.state.ties[i];
+                        const {trigger} = tie;
+                        if (
+                            (trigger.regex &&
+                                trigger.identity.test(identity) &&
+                                trigger.aspect.test(key)) ||
+                            (trigger.identity === identity &&
+                                trigger.aspect === key)
+                        ) {
+                            ties.push({
+                                ...tie,
+                                value: aspects[key],
+                            });
                         }
-                    });
+                    }
+                    return ties;
+                })
+            ).forEach(tie => {
+                const {transforms} = tie;
+                let value = tie.value;
+                if (transforms) {
+                    value = transforms.reduce((acc, e) => {
+                        return executeTransform(
+                            e.transform,
+                            acc,
+                            e.args,
+                            e.next,
+                            this.getAspect.bind(this)
+                        );
+                    }, value);
+                }
+
+                tie.targets.forEach(t => {
+                    const component = this.boundComponents[t.identity];
+                    if (component) {
+                        component.updateAspects({[t.aspect]: value});
+                    }
                 });
+            });
 
             if (!bindings) {
                 return resolve(0);
@@ -92,6 +121,11 @@ export default class Updater extends React.Component {
             );
             resolve(bindings.length);
         });
+    }
+
+    getAspect(identity, aspect) {
+        const c = this.boundComponents[identity];
+        if (c) return c.getAspect(aspect);
     }
 
     connect(identity, setAspects, getAspect, matchAspects, updateAspects) {
@@ -312,7 +346,15 @@ export default class Updater extends React.Component {
                     }, keys(pickBy(b => b.regex, response.bindings))),
                     packages: response.packages,
                     requirements: response.requirements,
-                    ties: response.ties,
+                    ties: map(tie => {
+                        if (tie.trigger.regex) {
+                            return evolve(
+                                {trigger: {identity: toRegex, aspect: toRegex}},
+                                tie
+                            );
+                        }
+                        return tie;
+                    }, response.ties),
                 },
                 () =>
                     loadRequirements(
