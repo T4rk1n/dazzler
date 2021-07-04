@@ -335,6 +335,7 @@ class SessionMiddleware(Middleware):
                 self.signer.sign(f'{session_id}#{created}').decode(),
                 httponly=True,
                 max_age=self.app.config.session.duration,
+                samesite=True
             )
         return session_id, set_cookie
 
