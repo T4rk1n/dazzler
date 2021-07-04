@@ -230,6 +230,10 @@ class Dazzler(precept.Precept):  # pylint: disable=too-many-instance-attributes
 
     async def application(self):
         """Call for wsgi application"""
+
+        # Since start is not the entrypoint, we need to call _on_parse
+        await self._on_parse(self.cli.parser.parse_args([]))
+
         if not self._prepared:
             await self.setup_server()
         return self.server.app
