@@ -2,6 +2,25 @@
 
 Versions follow [Semantic Versioning](https://www.semver.org)
 
+## [0.6.0]
+### Added
+
+- :sparkles: Add create_task to binding context for long-running tasks.
+- :sparkles: Automatically add pages defined in the `pages_directory` config. [#64](https://github.com/T4rk1n/dazzler/issues/64)
+- :construction: Various api shortcuts improvements.
+- :rice: core.Form styling improvements & hidden value support. [#79](https://github.com/T4rk1n/dazzler/issues/79)
+- :rice: New core.Container css classes: `center`, `hidden`.
+- :rice: Add maximum, minimum defaults to ProgressBar
+- :rice: Add default style to core.Table
+- :sparkles: Add tie & transform API.
+
+### Fixed
+
+- :bug: Fix binding key error when a state aspect has been set to undefined. [#57](https://github.com/T4rk1n/dazzler/issues/57)
+- :bug: Fix app_name from module filename.
+- :bug: Fix nested configs not updated when the values was not updated from default via precept 0.6.4.
+- :bug: Fix core.Dropdown initial value not rendered.
+
 ## [0.5.0]
 ### Added
 
