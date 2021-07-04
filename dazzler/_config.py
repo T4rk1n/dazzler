@@ -114,6 +114,18 @@ class DazzlerConfig(Config):
             config_type=list,
             comment='List of files to include as script requirement.',
         )
+        static_directory = ConfigProperty(
+            default='',
+            config_type=str,
+            comment='Where requirements files will be copied '
+                    'to serve as static. If left empty, a user directory '
+                    'will be used. '
+        )
+        static_url = ConfigProperty(
+            default='/dazzler/requirements/static',
+            config_type=str,
+            comment='Url to use for the requirements static.'
+        )
 
     requirements: Requirements
 
