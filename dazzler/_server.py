@@ -91,7 +91,8 @@ class Server:
 
         # Main internal static directory where requirements are copied.
         self.app.router.add_static(
-            f'{prefix}/dazzler/requirements/static',
+            f'{prefix}{self.dazzler.config.requirements.static_url}',
+            self.dazzler.config.requirements.static_directory or
             self.dazzler.requirements_dir,
         )
 

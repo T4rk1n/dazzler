@@ -298,11 +298,14 @@ class Dazzler(precept.Precept):  # pylint: disable=too-many-instance-attributes
     async def copy_requirements(self, packages=tuple()):
         self.logger.debug('Copying requirements.')
 
-        if not os.path.exists(self.data_dir):
-            os.makedirs(self.data_dir)
+        req_dir = self.config.requirements.static_directory \
+            or self.requirements_dir
 
-        shutil.rmtree(self.requirements_dir, ignore_errors=True)
-        os.makedirs(self.requirements_dir, exist_ok=True)
+        if not os.path.exists(req_dir):
+            os.makedirs(req_dir)
+
+        shutil.rmtree(req_dir, ignore_errors=True)
+        os.makedirs(req_dir, exist_ok=True)
 
         for package in packages:
             self.logger.debug(f'Importing package: {package}')
@@ -314,7 +317,7 @@ class Dazzler(precept.Precept):  # pylint: disable=too-many-instance-attributes
             if not requirement.internal:
                 continue
             destination = os.path.join(
-                self.requirements_dir, requirement.internal_static
+                req_dir, requirement.internal_static
             )
             self.logger.debug(
                 f'Copying {requirement.internal} '
@@ -328,7 +331,7 @@ class Dazzler(precept.Precept):  # pylint: disable=too-many-instance-attributes
             ))
             if requirement.dev:
                 destination = os.path.join(
-                    self.requirements_dir, requirement.dev_static
+                    req_dir, requirement.dev_static
                 )
                 self.logger.debug(
                     f'Copying {requirement.dev} '
@@ -348,7 +351,7 @@ class Dazzler(precept.Precept):  # pylint: disable=too-many-instance-attributes
             self.executor.execute(
                 shutil.copy,
                 os.path.join(assets_path, 'index.js'),
-                self.requirements_dir
+                req_dir
             )
         )
         await asyncio.gather(*futures)
