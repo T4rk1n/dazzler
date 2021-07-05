@@ -1,7 +1,7 @@
 .. _toc:
 
 Full dazzler documentation
-==============================
+==========================
 
 .. toctree::
    :maxdepth: 6
@@ -9,6 +9,7 @@ Full dazzler documentation
    usage
    commands
    component_list
+   deployment
    examples/index
    api/modules
 
