@@ -87,3 +87,5 @@ if __name__ == '__main__':
 Full documentation hosted on [readthedocs](https://dazzler.readthedocs.io/en/latest/).
 
 Get help for the command line tools: `$ dazzler --help`
+
+[Built with aiohttp](https://github.com/aio-libs/aiohttp)
