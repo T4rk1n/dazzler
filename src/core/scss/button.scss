@@ -27,6 +27,17 @@
     }
   }
 
+  &.disabled:disabled {
+    &.bordered {
+      border-color: lighten($neutral-dark, 10%);
+    }
+    background-color: lighten($neutral, 10%);
+    color: lighten(#606060, 50%);
+    &:hover, &:focus {
+      background-color: lighten($neutral, 10%);
+    }
+  }
+
   &.rounded {
     border-radius: 5px;
   }
@@ -36,12 +47,11 @@
 
   &.primary {
     color: white;
-
     &.bordered {
       border-color: $primary-dark;
     }
 
-    &:hover, &:focus  {
+    &:hover, &:focus {
       background-color: $primary-light;
     }
   }
@@ -50,7 +60,7 @@
       border-color: $danger-dark;
     }
 
-    &:hover, &:focus  {
+    &:hover, &:focus {
       background-color: $danger-light;
     }
   }
@@ -59,7 +69,7 @@
       border-color: $warning-dark;
     }
 
-    &:hover, &:focus  {
+    &:hover, &:focus {
       background-color: $warning-light;
     }
   }
@@ -68,7 +78,7 @@
       border-color: $success-dark;
     }
 
-    &:hover, &:focus  {
+    &:hover, &:focus {
       background-color: $success-light;
     }
   }
