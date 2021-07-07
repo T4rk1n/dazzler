@@ -60,6 +60,7 @@ export default class Button extends React.Component {
             'rounded',
             'circle',
             'bordered',
+            'disabled',
         ]);
 
         if (preset) {
