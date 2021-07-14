@@ -2,6 +2,17 @@
 
 Versions follow [Semantic Versioning](https://www.semver.org)
 
+## [0.6.1]
+### Fixed
+
+- :bug: Fix wsgi application setup parse configs.
+- :bug: Fix button disabled style.
+
+### Changed
+
+- :wrench: Add requirements `static_directory` & `static_url` config to serve static requirements via nginx.
+- :construction: Set session id cookie same site to true. 
+
 ## [0.6.0]
 ### Added
 
