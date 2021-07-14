@@ -5,7 +5,7 @@
 [![Version](https://img.shields.io/pypi/v/dazzler)](https://pypi.org/project/dazzler/)
 [![License](https://img.shields.io/pypi/l/dazzler)](LICENSE)
 
-Dazzler is a Python async web framework.
+Dazzler is a Python async web framework built with [aiohttp](https://github.com/aio-libs/aiohttp).
 Create dazzling fast pages with a layout of Python components and bindings to update from the backend.
 
 ## Install
@@ -87,5 +87,3 @@ if __name__ == '__main__':
 Full documentation hosted on [readthedocs](https://dazzler.readthedocs.io/en/latest/).
 
 Get help for the command line tools: `$ dazzler --help`
-
-[Built with aiohttp](https://github.com/aio-libs/aiohttp)
