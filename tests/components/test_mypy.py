@@ -8,9 +8,9 @@ import pytest
 
 
 template = dedent('''
-import tests.components.spec_components as tc
+import tests.components.{0} as {1}
 
-t = tc.TestComponent({})
+t = {1}.{2}({3})
 ''').strip()
 
 
@@ -309,4 +309,146 @@ def test_mypy_validations(arguments, assertions):
     :param assertions: Assertions after running mypy on the component.
     :return:
     """
-    assert_mypy_output(template.format(arguments), **assertions)
+    assert_mypy_output(
+        template.format('spec_components', 'tc', 'TestComponent',  arguments),
+        **assertions
+    )
+
+
+@pytest.mark.parametrize('arguments, assertions', [
+    (
+        '',
+        {
+            'expected_status': 1,
+            'expected_outputs': ['Missing positional argument "required_str"']  # noqa: E501
+        }
+    ),
+    (
+        "'', num=1",
+        {
+            'expected_status': 0,
+        }
+    ),
+    (
+        "'', num='wrong'",
+        {
+            'expected_status': 1,
+        }
+    ),
+    (
+        "'', text=2",
+        {
+            'expected_status': 1,
+        }
+    ),
+    (
+        "'', text='good'",
+        {
+            'expected_status': 0,
+        }
+    ),
+    (
+        "'', boo=2",
+        {
+            'expected_status': 1,
+        }
+    ),
+    (
+        "'', boo=True",
+        {
+            'expected_status': 0,
+        }
+    ),
+    (
+        "'', arr=[1,2]",
+        {
+            'expected_status': 0,
+        }
+    ),
+    (
+        "'', arr=1",
+        {
+            'expected_status': 1,
+        }
+    ),
+    (
+        "'', arr_num=[1,2]",
+        {
+            'expected_status': 0,
+        }
+    ),
+    (
+        "'', arr_num=['h']",
+        {
+            'expected_status': 1,
+        }
+    ),
+    (
+        "'', arr_str=['foo', 'bar']",
+        {
+            'expected_status': 0,
+        }
+    ),
+    (
+        "'', arr_str=[1, 2]",
+        {
+            'expected_status': 1,
+        }
+    ),
+    (
+        "'', obj={'foo': 'bar'}",
+        {
+            'expected_status': 0
+        }
+    ),
+    (
+        "'', obj='foobar'",
+        {
+            'expected_status': 1
+        }
+    ),
+    (
+        "'', union=1",
+        {
+            'expected_status': 0
+        }
+    ),
+    (
+        "'', union='foobar'",
+        {
+            'expected_status': 0
+        }
+    ),
+    (
+        "'', union=1",
+        {
+            'expected_status': 0
+        }
+    ),
+    (
+        "'', union=[1,2]",
+        {
+            'expected_status': 1
+        }
+    ),
+    (
+        "'', children=tsc.TypedComponent('hello')",
+        {
+            'expected_status': 0,
+        }
+    ),
+    (
+        "'', children=tsc",
+        {
+            'expected_status': 1,
+            'expected_outputs': [
+                'Argument "children" to "TypedComponent" has incompatible type Module; expected "Union[str, int, float, Component, List[Union[str, int, float, Component]], None]"'  # noqa: E501
+            ]
+        }
+    )
+])
+def test_tsc_mypy_validations(arguments, assertions):
+    assert_mypy_output(
+        template.format('ts_components', 'tsc', 'TypedComponent', arguments),
+        **assertions
+    )
