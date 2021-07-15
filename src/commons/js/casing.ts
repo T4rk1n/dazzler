@@ -1,6 +1,6 @@
 import {last, slice, toPairs} from 'ramda';
 
-export function camelToSnakeCase(s) {
+export function camelToSnakeCase(s: string): string {
     return s
         .split('')
         .map((c, i) =>
@@ -13,7 +13,7 @@ export function camelToSnakeCase(s) {
         .reduce((p, n) => p + n);
 }
 
-export function snakeToCamelCase(s) {
+export function snakeToCamelCase(s: string): string {
     return s
         .split('')
         .reduce(
@@ -25,7 +25,7 @@ export function snakeToCamelCase(s) {
         );
 }
 
-export function camelToSpinal(s) {
+export function camelToSpinal(s: string): string {
     return s
         .split('')
         .map((c, i) =>
@@ -38,7 +38,8 @@ export function camelToSpinal(s) {
         .reduce((p, n) => p + n);
 }
 
-export function transformKeys(obj, transform) {
+export function transformKeys(obj: object, transform: Function): object {
+    // @ts-ignore
     return toPairs(obj).reduce((a, [k, v]) => {
         a[transform(k)] = v;
         return a;
