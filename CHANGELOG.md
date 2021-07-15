@@ -2,6 +2,11 @@
 
 Versions follow [Semantic Versioning](https://www.semver.org)
 
+## [UNRELEASED]
+### Added
+
+- :sparkles: Typescript component generation support for functional components.
+
 ## [0.6.1]
 ### Fixed
 
