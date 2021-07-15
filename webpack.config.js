@@ -26,7 +26,7 @@ module.exports = function(env, argv) {
     const entry = {
         commons: [
             '@babel/polyfill',
-            path.join(__dirname, 'src/commons/js/index.js'),
+            path.join(__dirname, 'src/commons/js/index.ts'),
         ],
         renderer: [path.join(__dirname, 'src/renderer/js/index.js')],
         test: [
@@ -118,7 +118,8 @@ module.exports = function(env, argv) {
         resolve: {
             alias: {
                 commons: path.resolve(__dirname, 'src/commons/js/')
-            }
+            },
+            extensions: ['.js', '.jsx', '.ts', '.tsx'],
         },
         module: {
             rules: [
@@ -126,9 +127,6 @@ module.exports = function(env, argv) {
                     test: /\.tsx?$/,
                     use: 'ts-loader',
                     exclude: /node_modules/,
-                    resolve:{
-                        extensions: ['.ts', '.tsx'],
-                    }
                 },
                 {
                     test: /\.s?css$/,
@@ -147,9 +145,6 @@ module.exports = function(env, argv) {
                     test: /\.jsx?$/,
                     loader: 'babel-loader',
                     exclude: /node_modules/,
-                    resolve: {
-                        extensions: ['.js', '.jsx'],
-                    },
                 },
             ],
         },
