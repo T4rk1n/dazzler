@@ -35,6 +35,7 @@ module.exports = function(env, argv) {
                 'src/internal/test_components/index.js'
             ),
         ],
+        ts: [path.join(__dirname, 'src/internal/ts_components/index.ts')],
         core: [path.join(__dirname, 'src/core/js/index.js')],
         extra: [path.join(__dirname, 'src/extra/js/index.js')],
         markdown: [path.join(__dirname, 'src/markdown/js/index.js')],
@@ -122,8 +123,16 @@ module.exports = function(env, argv) {
         module: {
             rules: [
                 {
-				test: /\.s?css$/,
-				use: [
+                    test: /\.tsx?$/,
+                    use: 'ts-loader',
+                    exclude: /node_modules/,
+                    resolve:{
+                        extensions: ['.ts', '.tsx'],
+                    }
+                },
+                {
+                    test: /\.s?css$/,
+                    use: [
                         'style-loader',
                         MiniCssExtractPlugin.loader,
                         {
@@ -132,7 +141,7 @@ module.exports = function(env, argv) {
                         {
                             loader: "sass-loader"
                         }
-                ]
+                    ]
                 },
                 {
                     test: /\.jsx?$/,
