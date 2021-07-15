@@ -1,17 +1,17 @@
 import {includes, toPairs, pluck} from 'ramda';
 
-export function toTimestamp(date) {
+export function toTimestamp(date: Date): number {
     return parseInt((date.getTime() / 1000).toFixed(0));
 }
 
-export const timestampProp = (prop_name, value) => {
+export const timestampProp = (prop_name: string, value: any) => {
     const payload = {};
     payload[prop_name] = value;
     payload[`${prop_name}_timestamp`] = toTimestamp(new Date());
     return payload;
 };
 
-export function loadScript(uri, timeout = 3000) {
+export function loadScript(uri: string, timeout: number = 3000) {
     return new Promise((resolve, reject) => {
         /* eslint-disable prefer-const */
         let timeoutId;
@@ -39,7 +39,7 @@ export function loadScript(uri, timeout = 3000) {
     });
 }
 
-export function disableCss(uri) {
+export function disableCss(uri: string) {
     const element = document.getElementById(`css-${uri}`);
     if (element) {
         element.setAttribute('disabled', 'disabled');
@@ -47,7 +47,7 @@ export function disableCss(uri) {
     }
 }
 
-export function loadCss(uri, timeout = 3000) {
+export function loadCss(uri: string, timeout: number = 3000) {
     return new Promise((resolve, reject) => {
         /* eslint-disable prefer-const */
         let timeoutId;
@@ -78,7 +78,7 @@ export function loadCss(uri, timeout = 3000) {
     });
 }
 
-export function debounce(func, wait) {
+export function debounce(func: Function, wait: number) {
     let timeout, lastCall;
     return function() {
         const now = new Date();
@@ -88,10 +88,12 @@ export function debounce(func, wait) {
         const later = () => {
             timeout = null;
             /* eslint-disable no-invalid-this */
+            // @ts-ignore
             func.apply(this, arguments);
             lastCall = new Date();
         };
         clearTimeout(timeout);
+        // @ts-ignore
         const diff = now - lastCall;
         if (diff >= wait) {
             /* eslint-disable no-invalid-this */
@@ -103,15 +105,17 @@ export function debounce(func, wait) {
     };
 }
 
-export function collectTruePropKeys(obj, filterKeys) {
+export function collectTruePropKeys(obj: object, filterKeys: []) {
     let pairs = toPairs(obj);
     if (filterKeys) {
+        // @ts-ignore
         pairs = pairs.filter(([k, _]) => includes(k, filterKeys));
     }
+    // @ts-ignore
     return pluck(0, pairs.filter(([_, v]) => v));
 }
 
-export function chunk(arr, n) {
+export function chunk(arr: [], n: number): Array<Array<any>> {
     return arr
         .map((item, index) =>
             index % n === 0 ? arr.slice(index, index + n) : null
