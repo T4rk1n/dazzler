@@ -10,7 +10,7 @@ import shlex
 import stringcase
 
 from ..tools import OrderedSet, replace_all
-from .._assets import meta_path
+from .._assets import meta_path, meta_ts_path
 
 
 def _default_prop_type(_):
@@ -135,8 +135,6 @@ class %(name)(Component):
     """
 %(docstring)
     """
-    _aspect_keys = []
-    _children = []
 %(aspects)
     def __init__(
             self,
@@ -308,9 +306,9 @@ def generate_imports(output_path, components):
         f.write(imports_string)
 
 
-async def generate_meta(source_dir: str) -> dict:
+async def generate_meta(source_dir: str, ts: bool) -> dict:
     cmd = shlex.split(
-        f'node {meta_path} {source_dir}',
+        f'node {meta_ts_path if ts else meta_path} {source_dir}',
         posix=sys.platform != 'win32'
     )
     proc = await asyncio.create_subprocess_shell(

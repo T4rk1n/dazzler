@@ -284,11 +284,16 @@ class Dazzler(precept.Precept):  # pylint: disable=too-many-instance-attributes
             'output_dir',
             help='Output the components in this folder.'
         ),
+        precept.Argument(
+            '--ts',
+            help='Typescript support',
+            action='store_true'
+        ),
         description='Generate dazzler components from react-docgen output'
     )
-    async def generate(self, source_directory, output_dir):
+    async def generate(self, source_directory, output_dir, ts):
         os.makedirs(output_dir, exist_ok=True)
-        metadata = await generate_meta(source_directory)
+        metadata = await generate_meta(source_directory, ts)
         await generate_components(metadata, output_dir, self.executor)
 
     @precept.Command(
