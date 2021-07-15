@@ -102,25 +102,6 @@ class Component:
             'aspects': prepare_aspects(self._aspects),
         }
 
-    def _paths(self, parent=''):
-        path = f'{parent + "." if parent else ""}{self.identity}'
-        yield path, self
-        for key in self._children:
-            value = getattr(self, key, UNDEFINED)
-            if value is not UNDEFINED:
-                if isinstance(value, Component):
-                    for p, nested in value._paths(path):
-                        yield p, nested
-                elif isinstance(value, list):
-                    for component in (
-                            x for x in value if isinstance(x, Component)
-                    ):
-                        # noinspection PyProtectedMember
-                        for p, nested in component._paths(path):
-                            yield p, nested
-                else:
-                    yield f'{path}.{key}', value
-
     def __repr__(self):
         return f'<[{self._package_name}.{self.__class__.__name__}]' \
             f' ({self.identity})>'
