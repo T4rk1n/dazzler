@@ -37,4 +37,4 @@ function walk(directory, components = {}) {
     return components;
 }
 
-process.stdout.write(JSON.stringify(walk(src)));
+process.stdout.write(JSON.stringify(walk(src), null, 2));
