@@ -3,7 +3,7 @@
     "jsx": "react",
     "baseUrl": "src",
     "paths": {
-      "commons": ["commons"]
+      "commons": ["commons/js"]
     },
     "inlineSources": true,
     "sourceMap": true,
