@@ -38,6 +38,8 @@ def test_tsc_default_props_docstring(prop_name, prop_default):
 def test_tsc_enum_docstring():
     assert ":param enumeration: (Possible values: 'foo', 'bar')" \
            in tsc.TypedComponent.__init__.__doc__
+    assert ":param defined_enum: (Possible values: 'foo', 'bar')" \
+           in tsc.TypedComponent.__init__.__doc__
 
 
 @pytest.mark.async_test

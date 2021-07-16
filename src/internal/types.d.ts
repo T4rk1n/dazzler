@@ -5,6 +5,9 @@ type FooBarProps = {
     bar: number,
 }
 
+type DefinedUnion = string | number | string[] | number[];
+type DefinedEnum = "foo" | "bar"
+
 export interface TypedComponentProps extends DazzlerProps {
     foobar?: FooBarProps;
     foobars?: FooBarProps[];
@@ -34,5 +37,8 @@ export interface TypedComponentProps extends DazzlerProps {
     /** Docstring */
     str_with_comment?: string;
 
-    union?: number | string
+    union?: number | string;
+
+    defined_union?: DefinedUnion;
+    defined_enum?: DefinedEnum;
 }
