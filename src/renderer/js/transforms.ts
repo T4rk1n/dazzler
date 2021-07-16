@@ -27,14 +27,15 @@ import {
     fromPairs,
     equals,
 } from 'ramda';
+import {TransformFunc, TransformGetAspectFunc} from './types';
 
-const isAspect = obj =>
+const isAspect = (obj: any): boolean =>
     is(Object, obj) && has('identity', obj) && has('aspect', obj);
 
-const coerceAspect = (obj, getAspect) =>
+const coerceAspect = (obj: any, getAspect: TransformGetAspectFunc): any =>
     isAspect(obj) ? getAspect(obj.identity, obj.aspect) : obj;
 
-const transforms = {
+const transforms: {[key: string]: TransformFunc} = {
     /* String transforms */
     ToUpper: value => {
         return value.toUpperCase();
@@ -330,7 +331,13 @@ const transforms = {
     },
 };
 
-export const executeTransform = (transform, value, args, next, getAspect) => {
+export const executeTransform = (
+    transform: string,
+    value: any,
+    args: any,
+    next: Array<any>,
+    getAspect: TransformGetAspectFunc
+) => {
     const t = transforms[transform];
     const newValue = t(value, args, getAspect);
     if (next.length) {

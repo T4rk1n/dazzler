@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import {apiRequest} from '../requests';
 import {
     hydrateComponent,
@@ -10,17 +9,33 @@ import {
 import {loadRequirement, loadRequirements} from '../requirements';
 import {disableCss} from 'commons';
 import {pickBy, keys, map, evolve, concat, flatten} from 'ramda';
-import Transforms, {executeTransform} from '../transforms';
+import {executeTransform} from '../transforms';
+import {
+    Binding,
+    BoundComponents,
+    EvolvedBinding,
+    UpdaterProps,
+    UpdaterState,
+} from '../types';
 
-export default class Updater extends React.Component {
+export default class Updater extends React.Component<
+    UpdaterProps,
+    UpdaterState
+> {
+    private pageApi: Function;
+    private readonly boundComponents: BoundComponents;
+    private ws: WebSocket;
+
     constructor(props) {
         super(props);
         this.state = {
-            layout: false,
+            layout: null,
             ready: false,
             page: null,
             bindings: {},
             packages: [],
+            reload: false,
+            rebindings: [],
             requirements: [],
             reloading: false,
             needRefresh: false,
@@ -42,8 +57,8 @@ export default class Updater extends React.Component {
     updateAspects(identity, aspects) {
         return new Promise(resolve => {
             const aspectKeys = keys(aspects);
-            let bindings = aspectKeys
-                .map(key => ({
+            let bindings: Binding[] | EvolvedBinding[] = aspectKeys
+                .map((key: string) => ({
                     ...this.state.bindings[`${key}@${identity}`],
                     value: aspects[key],
                 }))
@@ -51,10 +66,13 @@ export default class Updater extends React.Component {
 
             this.state.rebindings.forEach(binding => {
                 if (binding.trigger.identity.test(identity)) {
+                    // @ts-ignore
                     bindings = concat(
                         bindings,
                         aspectKeys
-                            .filter(k => binding.trigger.aspect.test(k))
+                            .filter((k: string) =>
+                                binding.trigger.aspect.test(k)
+                            )
                             .map(k => ({
                                 ...binding,
                                 value: aspects[k],
@@ -166,7 +184,7 @@ export default class Updater extends React.Component {
                 if (data.regex) {
                     const pattern = new RegExp(data.identity);
                     keys(this.boundComponents)
-                        .filter(k => pattern.test(k))
+                        .filter((k: string) => pattern.test(k))
                         .map(k => this.boundComponents[k])
                         .forEach(setAspects);
                 } else {
@@ -245,7 +263,7 @@ export default class Updater extends React.Component {
                 return concat(
                     acc,
                     flatten(
-                        keys(this.boundComponents).map(k => {
+                        keys(this.boundComponents).map((k: string) => {
                             let values = [];
                             if (identityPattern.test(k)) {
                                 values = this.boundComponents[k]
@@ -431,13 +449,3 @@ export default class Updater extends React.Component {
         );
     }
 }
-
-Updater.defaultProps = {};
-
-Updater.propTypes = {
-    baseUrl: PropTypes.string.isRequired,
-    ping: PropTypes.bool,
-    ping_interval: PropTypes.number,
-    retries: PropTypes.number,
-    hotReload: PropTypes.func,
-};

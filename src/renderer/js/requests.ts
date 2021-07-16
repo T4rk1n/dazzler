@@ -1,18 +1,10 @@
 /* eslint-disable no-magic-numbers */
 
+import {XhrRequestOptions} from './types';
+
 const jsonPattern = /json/i;
 
-/**
- * @typedef {Object} XhrOptions
- * @property {string} [method='GET']
- * @property {Object} [headers={}]
- * @property {string|Blob|ArrayBuffer|object|Array} [payload='']
- */
-
-/**
- * @type {XhrOptions}
- */
-const defaultXhrOptions = {
+const defaultXhrOptions: XhrRequestOptions = {
     method: 'GET',
     headers: {},
     payload: '',
@@ -23,19 +15,8 @@ export const JSONHEADERS = {
     'Content-Type': 'application/json',
 };
 
-/**
- * Xhr promise wrap.
- *
- * Fetch can't do put request, so xhr still useful.
- *
- * Auto parse json responses.
- * Cancellation: xhr.abort
- * @param {string} url
- * @param {XhrOptions} [options]
- * @return {Promise}
- */
-export function xhrRequest(url, options = defaultXhrOptions) {
-    return new Promise((resolve, reject) => {
+export function xhrRequest(url: string, options: XhrRequestOptions = defaultXhrOptions) {
+    return new Promise<any>((resolve, reject) => {
         const {method, headers, payload, json} = {
             ...defaultXhrOptions,
             ...options,
@@ -67,18 +48,12 @@ export function xhrRequest(url, options = defaultXhrOptions) {
             }
         };
         xhr.onerror = err => reject(err);
+        // @ts-ignore
         xhr.send(json ? JSON.stringify(payload) : payload);
     });
 }
 
-/**
- * Auto get headers and refresh/retry.
- *
- * @param {function} getHeaders
- * @param {function} refresh
- * @param {string} baseUrl
- */
-export function apiRequest(baseUrl = '') {
+export function apiRequest(baseUrl: string) {
     return function() {
         const url = baseUrl + arguments[0];
         const options = arguments[1] || {};

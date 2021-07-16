@@ -1,12 +1,12 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import {concat, join, keys} from 'ramda';
 import {camelToSpinal} from 'commons';
+import {WrapperProps, WrapperState} from '../types';
 
 /**
  * Wraps components for aspects updating.
  */
-export default class Wrapper extends React.Component {
+export default class Wrapper extends React.Component<WrapperProps, WrapperState> {
     constructor(props) {
         super(props);
         this.state = {
@@ -27,7 +27,7 @@ export default class Wrapper extends React.Component {
     }
 
     setAspects(aspects) {
-        return new Promise(resolve => {
+        return new Promise<void>(resolve => {
             this.setState(
                 {aspects: {...this.state.aspects, ...aspects}},
                 resolve
@@ -89,13 +89,3 @@ export default class Wrapper extends React.Component {
         });
     }
 }
-
-Wrapper.propTypes = {
-    identity: PropTypes.string.isRequired,
-    updateAspects: PropTypes.func.isRequired,
-    component: PropTypes.node.isRequired,
-    connect: PropTypes.func.isRequired,
-    component_name: PropTypes.string.isRequired,
-    package_name: PropTypes.string.isRequired,
-    disconnect: PropTypes.func.isRequired,
-};

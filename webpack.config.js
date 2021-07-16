@@ -28,7 +28,7 @@ module.exports = function(env, argv) {
             '@babel/polyfill',
             path.join(__dirname, 'src/commons/js/index.ts'),
         ],
-        renderer: [path.join(__dirname, 'src/renderer/js/index.js')],
+        renderer: [path.join(__dirname, 'src/renderer/js/index.tsx')],
         test: [
             path.join(
                 __dirname,

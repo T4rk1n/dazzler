@@ -1,8 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import Renderer from './components/Renderer';
+import {RenderOptions} from './types';
 
-function render({baseUrl, ping, ping_interval, retries}, element) {
+function render(
+    {baseUrl, ping, ping_interval, retries}: RenderOptions,
+    element: string
+) {
     ReactDOM.render(
         <Renderer
             baseUrl={baseUrl}
@@ -14,4 +18,5 @@ function render({baseUrl, ping, ping_interval, retries}, element) {
     );
 }
 
+// @ts-ignore
 export {Renderer, render};
