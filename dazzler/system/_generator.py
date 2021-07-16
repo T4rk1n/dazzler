@@ -71,7 +71,7 @@ PROP_TYPING = {
     'node': lambda t: 'typing.Union[str, int, float, Component,'
                       ' typing.List[typing.Union'
                       '[str, int, float, Component]]]',
-    'func': lambda t: 'None',
+    'func': _default_prop_type,
     'element': lambda t: 'Component',
     # oneOfType get serialized to union...
     'union': lambda t: 'typing.Union[{}]'.format(

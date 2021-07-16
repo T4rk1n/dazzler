@@ -8,7 +8,7 @@ const src = args[0];
 
 const isOptional = prop => (prop.getFlags() & ts.SymbolFlags.Optional) !== 0;
 
-const PRIMAL_TYPES = [
+const PRIMITIVES = [
     'string',
     'number',
     'bool',
@@ -17,6 +17,22 @@ const PRIMAL_TYPES = [
     'object',
     'node',
 ];
+
+const unionSupport = R.concat(PRIMITIVES, ['boolean', 'Element']);
+
+const reArray = new RegExp(`(${R.join('|', unionSupport)})\\[\\]`);
+
+const isArray = rawType => reArray.test(rawType);
+
+const isUnionlitteral = typeObj =>
+    typeObj.types.every(
+        t =>
+            t.getFlags() &
+            (ts.TypeFlags.StringLiteral |
+                ts.TypeFlags.NumberLiteral |
+                ts.EnumLiteral |
+                ts.TypeFlags.Undefined)
+    );
 
 let tsconfig = {};
 
@@ -82,6 +98,36 @@ function walk(directory, components = {}) {
         return exp;
     };
 
+    const getEnum = typeObj => ({
+        name: 'enum',
+        value: typeObj.types.map(t => ({
+            value: coerceValue(t),
+            computed: false,
+        })),
+    });
+
+    const getUnion = (typeObj, propObj) => {
+        let name = 'union',
+            value;
+        // Union only do base types
+        value = typeObj.types
+            .filter(t => {
+                const s = checker.typeToString(t);
+                return R.includes(s, unionSupport) || isArray(s);
+            })
+            .map(t => getAspectType(t, propObj));
+        // empty union make the generator go wonky and create invalid
+        // components types
+        if (!value.length) {
+            name = 'any';
+            value = undefined;
+        }
+        return {
+            name,
+            value,
+        };
+    };
+
     // Format the type output as required by the dazzler generator.
     const getAspectType = (propType, propObj) => {
         let name = checker.typeToString(propType);
@@ -89,29 +135,14 @@ function walk(directory, components = {}) {
         const raw = name;
 
         if (propType.isUnion()) {
-            if (
-                propType.types.every(
-                    t =>
-                        t.getFlags() &
-                        (ts.TypeFlags.StringLiteral |
-                            ts.TypeFlags.NumberLiteral |
-                            ts.EnumLiteral |
-                            ts.TypeFlags.Undefined)
-                )
-            ) {
-                value = propType.types.map(t => ({
-                    value: coerceValue(t),
-                    computed: false,
-                }));
-                name = 'enum';
+            if (isUnionlitteral(propType)) {
+                return {...getEnum(propType), raw};
             } else if (R.includes('|', raw)) {
-                // support union type. -> oneOfType -> union
-                name = 'union';
-                value = propType.types.map(t => getAspectType(t, propObj));
+                return {...getUnion(propType, propObj), raw};
             }
         }
 
-        if (R.includes('=>', name)) {
+        if (R.includes('=>', name) || name === 'Function') {
             name = 'func';
         } else if (name === 'boolean') {
             name = 'bool';
@@ -123,12 +154,16 @@ function walk(directory, components = {}) {
 
         // Shapes & array support.
         if (
-            !R.includes(name, R.concat(PRIMAL_TYPES, ['enum', 'func', 'union']))
+            !R.includes(name, R.concat(PRIMITIVES, ['enum', 'func', 'union']))
         ) {
-            if (R.includes('[]', name)) {
+            if (
+                R.includes('[]', name) ||
+                R.includes('Array', name) ||
+                name === 'tuple'
+            ) {
                 name = 'arrayOf';
                 const replaced = R.replace('[]', '', raw);
-                if (R.includes(replaced, PRIMAL_TYPES)) {
+                if (R.includes(replaced, PRIMITIVES)) {
                     // Simple types are easier.
                     value = {
                         name: replaced,
@@ -151,6 +186,14 @@ function walk(directory, components = {}) {
                 }
             } else {
                 name = 'shape';
+                // If the type is declared as union it will have a types attribute.
+                if (propType.types && propType.types.length) {
+                    if (isUnionlitteral(propType)) {
+                        return {...getEnum(propType), raw};
+                    }
+                    return {...getUnion(propType, propObj), raw};
+                }
+
                 value = getProps(
                     checker.getPropertiesOfType(propType),
                     propObj,
