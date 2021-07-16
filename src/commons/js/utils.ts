@@ -105,7 +105,7 @@ export function debounce(func: Function, wait: number) {
     };
 }
 
-export function collectTruePropKeys(obj: object, filterKeys: []) {
+export function collectTruePropKeys(obj: object, filterKeys: string[]) {
     let pairs = toPairs(obj);
     if (filterKeys) {
         // @ts-ignore
@@ -115,7 +115,7 @@ export function collectTruePropKeys(obj: object, filterKeys: []) {
     return pluck(0, pairs.filter(([_, v]) => v));
 }
 
-export function chunk(arr: [], n: number): Array<Array<any>> {
+export function chunk(arr: any[], n: number): Array<Array<any>> {
     return arr
         .map((item, index) =>
             index % n === 0 ? arr.slice(index, index + n) : null
