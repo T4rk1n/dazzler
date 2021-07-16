@@ -1,7 +1,8 @@
 import {loadCss, loadScript} from 'commons';
+import {Package, Requirement} from './types';
 
-export function loadRequirement(requirement) {
-    return new Promise((resolve, reject) => {
+export function loadRequirement(requirement: Requirement) {
+    return new Promise<void>((resolve, reject) => {
         const {url, kind, meta} = requirement;
         let method;
         if (kind === 'js') {
@@ -19,8 +20,11 @@ export function loadRequirement(requirement) {
     });
 }
 
-export function loadRequirements(requirements, packages) {
-    return new Promise((resolve, reject) => {
+export function loadRequirements(
+    requirements: Requirement[],
+    packages: Package
+) {
+    return new Promise<void>((resolve, reject) => {
         let loadings = [];
         // Load packages first.
         Object.keys(packages).forEach(pack_name => {

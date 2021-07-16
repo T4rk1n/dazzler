@@ -1,8 +1,15 @@
 import {map, omit, type} from 'ramda';
 import React from 'react';
 import Wrapper from './components/Wrapper';
+import {AnyDict} from 'commons/js/types';
+import {
+    ConnectFunc,
+    DisconnectFunc,
+    WrapperProps,
+    WrapperUpdateAspectFunc,
+} from './types';
 
-export function isComponent(c) {
+export function isComponent(c: any): boolean {
     return (
         type(c) === 'Object' &&
         (c.hasOwnProperty('package') &&
@@ -13,11 +20,11 @@ export function isComponent(c) {
 }
 
 export function hydrateProps(
-    props,
-    updateAspects,
-    connect,
-    disconnect,
-    onContext
+    props: AnyDict,
+    updateAspects: WrapperUpdateAspectFunc,
+    connect: ConnectFunc,
+    disconnect: DisconnectFunc,
+    onContext?: Function
 ) {
     const replace = {};
     Object.entries(props).forEach(([k, v]) => {
@@ -37,7 +44,7 @@ export function hydrateProps(
                     }
                     return c;
                 }
-                const newProps = hydrateProps(
+                const newProps: {[key: string]: any} = hydrateProps(
                     c.aspects,
                     updateAspects,
                     connect,
@@ -90,14 +97,14 @@ export function hydrateProps(
 }
 
 export function hydrateComponent(
-    name,
-    package_name,
-    identity,
-    props,
-    updateAspects,
-    connect,
-    disconnect,
-    onContext
+    name: string,
+    package_name: string,
+    identity: string,
+    props: AnyDict,
+    updateAspects: WrapperUpdateAspectFunc,
+    connect: ConnectFunc,
+    disconnect: DisconnectFunc,
+    onContext: Function
 ) {
     const pack = window[package_name];
     if (!pack) {
@@ -107,10 +114,11 @@ export function hydrateComponent(
     if (!component) {
         throw new Error(`Invalid component name: ${package_name}.${name}`);
     }
+    // @ts-ignore
     const element = React.createElement(component, props);
 
     /* eslint-disable react/prop-types */
-    const wrapper = ({children}) => (
+    const wrapper = ({children}: {children?: any}) => (
         <Wrapper
             identity={identity}
             updateAspects={updateAspects}
@@ -131,10 +139,13 @@ export function hydrateComponent(
     return wrapper({});
 }
 
-export function prepareProp(prop) {
+export function prepareProp(prop: any) {
     if (React.isValidElement(prop)) {
+        // @ts-ignore
+        const props: WrapperProps = prop.props;
         return {
-            identity: prop.props.identity,
+            identity: props.identity,
+            // @ts-ignore
             aspects: map(
                 prepareProp,
                 omit(
@@ -146,11 +157,11 @@ export function prepareProp(prop) {
                         'aspects',
                         'key',
                     ],
-                    prop.props.aspects
+                    props.aspects
                 )
             ),
-            name: prop.props.component_name,
-            package: prop.props.package_name,
+            name: props.component_name,
+            package: props.package_name,
         };
     }
     if (type(prop) === 'Array') {

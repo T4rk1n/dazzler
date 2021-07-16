@@ -1,3 +1,6 @@
+type AnyDict = {[key: string]: any};
+type UpdateAspectFunc = (aspects: AnyDict) => void
+
 export interface DazzlerProps {
     /**
      * Class name automatically added by dazzler api with a prefix for the
@@ -20,5 +23,5 @@ export interface DazzlerProps {
      * Added to dazzler components props, allow changes of aspects and
      * trigger ties & bindings.
      */
-    updateAspects?: (aspects: object) => void;
+    updateAspects?: UpdateAspectFunc;
 }
