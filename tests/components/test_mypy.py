@@ -432,6 +432,38 @@ def test_mypy_validations(arguments, assertions):
         }
     ),
     (
+        "'', defined_union=1",
+        {
+            'expected_status': 0
+        }
+    ),
+    (
+        "'', defined_union='foobar'",
+        {
+            'expected_status': 0
+        }
+    ),
+    (
+        "'', defined_union=['foobar']",
+        {
+            'expected_status': 0
+        }
+    ),
+    (
+        # Strange but mypy detect [1] as List[int] and give an
+        # error for List[Union[int, float]]
+        "'', defined_union=[4.3]",
+        {
+            'expected_status': 0
+        }
+    ),
+    (
+        "'', defined_union=tsc.TypedComponent('')",
+        {
+            'expected_status': 1
+        }
+    ),
+    (
         "'', children=tsc.TypedComponent('hello')",
         {
             'expected_status': 0,
