@@ -1,8 +1,8 @@
 import React, {useEffect} from 'react';
-import PropTypes from 'prop-types';
 import Calendar from './Calendar';
 import {format} from 'date-fns';
 import {toTimestamp} from 'commons';
+import {DatePickerProps} from '../types';
 
 /**
  * Pick a date from a calendar.
@@ -12,7 +12,7 @@ import {toTimestamp} from 'commons';
  *     - ``dazzler-calendar-date-picker``
  *     - ``picker``
  */
-const DatePicker = props => {
+const DatePicker = (props: DatePickerProps) => {
     const {
         class_name,
         identity,
@@ -65,19 +65,5 @@ DatePicker.defaultProps = {
     date_format: 'DD MMM YYYY',
 };
 
-DatePicker.propTypes = {
-    value: PropTypes.number,
-    opened: PropTypes.bool,
-
-    date_format: PropTypes.string,
-    /**
-     *  Unique id for this component
-     */
-    identity: PropTypes.string,
-    /**
-     * Update aspects on the backend.
-     */
-    updateAspects: PropTypes.func,
-};
 
 export default DatePicker;

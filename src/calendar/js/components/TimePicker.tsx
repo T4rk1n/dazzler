@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
-import PropTypes from 'prop-types';
 import {range, split} from 'ramda';
+import {TimePickerProps} from '../types';
 
 /**
  * Time input with fallback for ie and safari.
@@ -13,7 +13,7 @@ import {range, split} from 'ramda';
  *     - ``time-range``
  *     - ``time-value``
  */
-const TimePicker = props => {
+const TimePicker = (props: TimePickerProps) => {
     const {
         fallback_mode,
         value,
@@ -37,10 +37,11 @@ const TimePicker = props => {
         }
         return '00';
     });
-    const [am_pm, setAMPM] = useState(() => {
+    let [am_pm, setAMPM] = useState(() => {
         if (value) {
             if (mode === 'AM/PM') {
-                [_, am_pm] = split(' ');
+                // @ts-ignore
+                [_, am_pm] = split(' ', value);
                 return am_pm;
             }
         }
@@ -78,10 +79,10 @@ const TimePicker = props => {
         <div className={`${class_name} fallback-mode`}>
             <input
                 type="text"
-                readOnly="readonly"
+                readOnly={true}
                 className="time-input"
                 value={value}
-                onClick={() => setOpened({opened: !opened})}
+                onClick={() => setOpened(!opened)}
             />
             {opened && (
                 <div className="fallback-timepicker">
@@ -137,34 +138,6 @@ const TimePicker = props => {
 TimePicker.defaultProps = {
     value: '00:00',
     mode: '24h',
-};
-
-TimePicker.propTypes = {
-    /**
-     * Time value formatted as HH:MM
-     */
-    value: PropTypes.string,
-
-    /**
-     * Use a custom picker instead of browser dependant.
-     * Automatically set when no time input support detected.
-     */
-    fallback_mode: PropTypes.bool,
-
-    /**
-     * What to display when in fallback mode.
-     */
-    mode: PropTypes.oneOf(['24h', 'AM/PM']),
-
-    /**
-     *  Unique id for this component
-     */
-    identity: PropTypes.string,
-
-    /**
-     * Update aspects on the backend.
-     */
-    updateAspects: PropTypes.func,
 };
 
 export default TimePicker;
