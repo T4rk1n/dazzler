@@ -39,7 +39,7 @@ module.exports = function(env, argv) {
         core: [path.join(__dirname, 'src/core/js/index.js')],
         extra: [path.join(__dirname, 'src/extra/js/index.js')],
         markdown: [path.join(__dirname, 'src/markdown/js/index.js')],
-        calendar: [path.join(__dirname, 'src/calendar/js/index.js')],
+        calendar: [path.join(__dirname, 'src/calendar/js/index.ts')],
         auth: [path.join(__dirname, 'src/auth/js/index.ts')],
         icons: [path.join(__dirname, 'src/icons/js/index.js')],
     };

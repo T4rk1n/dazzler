@@ -1,16 +1,16 @@
 import React, {useEffect, useState} from 'react';
-import PropTypes from 'prop-types';
 import {format} from 'date-fns';
 import {firstDayOfTheMonth, monthLength, prevMonth, nextMonth} from '../utils';
 import {range, concat, join} from 'ramda';
 import {chunk} from 'commons';
+import {CalendarDate, CalendarProps} from '../types';
 
 function calendar(month, year) {
     const days = monthLength(month, year);
-    const [previous] = prevMonth(month);
+    const [previous] = prevMonth(month, year);
     const shift = range(
-        monthLength(previous) - firstDayOfTheMonth(month, year) + 1,
-        monthLength(previous) + 1
+        monthLength(previous, year) - firstDayOfTheMonth(month, year) + 1,
+        monthLength(previous, year) + 1
     );
     const cal = concat(
         shift.map(() => ({empty: true})),
@@ -40,7 +40,7 @@ function calendar(month, year) {
  *     - ``calendar-week``
  *     - ``empty``
  */
-const Calendar = props => {
+const Calendar = (props: CalendarProps) => {
     const {
         class_name,
         identity,
@@ -51,7 +51,7 @@ const Calendar = props => {
         updateAspects,
         month_timestamp,
     } = props;
-    const [{month, year}, setDate] = useState({});
+    const [{month, year}, setDate] = useState<CalendarDate>({});
     const date = new Date(year, month);
 
     let css = class_name;
@@ -61,7 +61,7 @@ const Calendar = props => {
     }
 
     useEffect(() => {
-        const payload = {};
+        const payload: {month_timestamp?: number; selected?: CalendarDate} = {};
         let ts, toUpdate;
 
         if (month_timestamp === undefined) {
@@ -195,52 +195,6 @@ Calendar.defaultProps = {
     month_format: 'MMMM YYYY',
     week_labels: ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'],
     use_selected: true,
-};
-
-Calendar.propTypes = {
-    /**
-     * Timestamp of the month to show. If not supplied is today.
-     */
-    month_timestamp: PropTypes.number,
-
-    /**
-     * The currently selected day as an object
-     */
-    selected: PropTypes.shape({
-        day: PropTypes.number,
-        month: PropTypes.number,
-        year: PropTypes.number,
-    }),
-
-    /**
-     * Formatting of the month label
-     */
-    month_format: PropTypes.string,
-    /**
-     * Labels for the week, starting from sunday.
-     */
-    week_labels: PropTypes.arrayOf(PropTypes.string),
-
-    /**
-     *  Unique id for this component
-     */
-    identity: PropTypes.string,
-
-    _on_click: PropTypes.func,
-
-    class_name: PropTypes.string,
-    style: PropTypes.object,
-
-    /**
-     * Whether to set selected aspect on click/start up.
-     * This will disable highlight of day in the calendar.
-     */
-    use_selected: PropTypes.bool,
-
-    /**
-     * Update aspects on the backend.
-     */
-    updateAspects: PropTypes.func,
 };
 
 export default Calendar;
