@@ -473,14 +473,12 @@ def test_mypy_validations(arguments, assertions):
         "'', children=tsc",
         {
             'expected_status': 1,
-            'expected_outputs': [
-                'Argument "children" to "TypedComponent" has incompatible type Module; expected "Union[str, int, float, Component, List[Union[str, int, float, Component]], None]"'  # noqa: E501
-            ]
         }
     )
 ])
 def test_tsc_mypy_validations(arguments, assertions):
-    assert_mypy_output(
-        template.format('ts_components', 'tsc', 'TypedComponent', arguments),
-        **assertions
-    )
+    for component in ('TypedComponent', 'TypedClassComponent'):
+        assert_mypy_output(
+            template.format('ts_components', 'tsc', component, arguments),
+            **assertions
+        )

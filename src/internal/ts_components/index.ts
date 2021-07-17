@@ -1,3 +1,4 @@
 import TypedComponent from './components/TypedComponent';
+import TypedClassComponent from './components/TypedClassComponent';
 
-export {TypedComponent};
+export {TypedComponent, TypedClassComponent};

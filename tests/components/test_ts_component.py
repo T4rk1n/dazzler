@@ -9,30 +9,48 @@ import pytest
 from . import ts_components as tsc
 
 
-def test_tsc_required():
+@pytest.mark.parametrize(
+    'component',
+    [tsc.TypedComponent, tsc.TypedClassComponent]
+)
+def test_tsc_required(component):
     with pytest.raises(TypeError) as context:
-        tsc.TypedComponent()
+        component()
 
     assert context.value.args[0] == "__init__() missing 1 required positional argument: 'required_str'"  # noqa: E501
 
 
-def test_tsc_docstring():
-    assert tsc.TypedComponent.__doc__.strip() == 'Typed Component Docstring'
+@pytest.mark.parametrize(
+    'component, doc',
+    [
+        (tsc.TypedComponent, 'Typed Component Docstring'),
+        (tsc.TypedClassComponent, 'Typed class component')
+    ]
+)
+def test_tsc_docstring(component, doc):
+    assert component.__doc__.strip() == doc
 
 
-def test_tsc_aspect_docstring():
+@pytest.mark.parametrize(
+    'component',
+    [tsc.TypedComponent, tsc.TypedClassComponent]
+)
+def test_tsc_aspect_docstring(component):
     assert ':param str_with_comment: Docstring'\
-           in tsc.TypedComponent.__init__.__doc__
+           in component.__init__.__doc__
 
 
-@pytest.mark.parametrize('prop_name, prop_default', [
-    ('default_str', "'default'"),
-    ('default_required_str', "'default required'"),
-    ('default_num', 3)
+@pytest.mark.parametrize('prop_name, prop_default, component', [
+    ('default_str', "'default'", tsc.TypedComponent),
+    ('default_required_str', "'default required'", tsc.TypedComponent),
+    ('default_num', 3, tsc.TypedComponent),
+    ('default_str', "'default'", tsc.TypedClassComponent),
+    ('default_required_str', "'default required'", tsc.TypedClassComponent),
+    ('default_num', 3, tsc.TypedClassComponent),
 ])
-def test_tsc_default_props_docstring(prop_name, prop_default):
+def test_tsc_default_props_docstring(prop_name, prop_default, component):
     pattern = r':param {}:.*\(default={}\)'.format(prop_name, prop_default)
-    assert re.search(pattern, str(tsc.TypedComponent.__init__.__doc__))
+    assert re.search(pattern, str(component.__init__.__doc__))
 
 
 def test_tsc_enum_docstring():
@@ -72,3 +90,7 @@ async def test_tsc_render(start_page, browser):
     assert data['default_str'] == 'default'
     assert data['required_str'] == 'override'
     assert data['obj'] == {'anything': 'possible'}
+
+    await browser.wait_for_text_to_equal(
+        '.dazzler-ts-typed-class-component .children', 'clazz'
+    )
