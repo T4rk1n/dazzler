@@ -237,53 +237,7 @@ function walk(directory, components = {}) {
                 if (right) {
                     const {properties} = right;
                     if (properties) {
-                        propMap = properties.reduce((acc, p) => {
-                            if (!p.name || !p.initializer) {
-                                return acc;
-                            }
-                            let propName, value;
-
-                            switch (p.name.kind) {
-                                case ts.SyntaxKind.NumericLiteral:
-                                case ts.SyntaxKind.StringLiteral:
-                                case ts.SyntaxKind.Identifier:
-                                    propName = p.name.text;
-                                    break;
-                                case ts.SyntaxKind.ComputedPropertyName:
-                                    propName = p.name.getText();
-                                    break;
-                            }
-
-                            const {initializer} = p;
-
-                            switch (initializer.kind) {
-                                case ts.SyntaxKind.StringLiteral:
-                                    value = `'${initializer.text}'`;
-                                    break;
-                                case ts.SyntaxKind.NumericLiteral:
-                                    value = Number(initializer.text);
-                                    break;
-                                case ts.SyntaxKind.NullKeyword:
-                                    value = null;
-                                    break;
-                                case ts.SyntaxKind.FalseKeyword:
-                                    value = false;
-                                    break;
-                                case ts.SyntaxKind.TrueKeyword:
-                                    value = true;
-                                    break;
-                                default:
-                                    try {
-                                        value = initializer.getText();
-                                    } catch (e) {
-                                        value = undefined;
-                                    }
-                            }
-
-                            acc[propName] = {value, computed: false};
-
-                            return acc;
-                        }, {});
+                        propMap = getDefaultPropsValues(properties);
                     }
                 }
             });
@@ -320,6 +274,115 @@ function walk(directory, components = {}) {
             if (p.name === 'props' || params.length === 1) return p;
         }
         return null;
+    };
+
+    const getPropsForClassComponent = (typeSymbol, source, defaultProps) => {
+        const childs = source.getChildAt(0);
+        let stop;
+
+        for (let i = 0, n = childs.getChildCount(); i < n && !stop; i++) {
+            const c = childs.getChildAt(i);
+            if (!ts.isClassDeclaration(c)) continue;
+
+            if (!c.heritageClauses) continue;
+
+            for (const clause of c.heritageClauses) {
+                if (clause.token !== ts.SyntaxKind.ExtendsKeyword) continue;
+                const t = clause.types[0];
+                const propType = t.typeArguments[0];
+
+                const type = checker.getTypeFromTypeNode(propType);
+
+                return getProps(
+                    type.getProperties(),
+                    typeSymbol,
+                    [],
+                    defaultProps
+                );
+            }
+        }
+    };
+
+    const getDefaultPropsValues = properties =>
+        properties.reduce((acc, p) => {
+            if (!p.name || !p.initializer) {
+                return acc;
+            }
+            let propName, value;
+
+            switch (p.name.kind) {
+                case ts.SyntaxKind.NumericLiteral:
+                case ts.SyntaxKind.StringLiteral:
+                case ts.SyntaxKind.Identifier:
+                    propName = p.name.text;
+                    break;
+                case ts.SyntaxKind.ComputedPropertyName:
+                    propName = p.name.getText();
+                    break;
+            }
+
+            const {initializer} = p;
+
+            switch (initializer.kind) {
+                case ts.SyntaxKind.StringLiteral:
+                    value = `'${initializer.text}'`;
+                    break;
+                case ts.SyntaxKind.NumericLiteral:
+                    value = Number(initializer.text);
+                    break;
+                case ts.SyntaxKind.NullKeyword:
+                    value = null;
+                    break;
+                case ts.SyntaxKind.FalseKeyword:
+                    value = false;
+                    break;
+                case ts.SyntaxKind.TrueKeyword:
+                    value = true;
+                    break;
+                default:
+                    try {
+                        value = initializer.getText();
+                    } catch (e) {
+                        value = undefined;
+                    }
+            }
+
+            acc[propName] = {value, computed: false};
+
+            return acc;
+        }, {});
+
+    const getDefaultPropsForClassComponent = (type, source) => {
+        // For class component, the type has it's own property, then get the
+        // first declaration and one of them will be either
+        // an ObjectLiteralExpression or an Identifier which get in the
+        // newChild with the proper props.
+        const defaultProps = type.getProperty('defaultProps');
+        const decl = defaultProps.getDeclarations()[0];
+        let propValues = {};
+
+        decl.getChildren().forEach(child => {
+            let newChild = child;
+
+            if (ts.isIdentifier(child)) {
+                // There should be two identifier, the first is ignored.
+                const value = source.locals.get(child.escapedText);
+                if (
+                    value &&
+                    value.valueDeclaration &&
+                    ts.isVariableDeclaration(value.valueDeclaration) &&
+                    value.valueDeclaration.initializer
+                ) {
+                    newChild = value.valueDeclaration.initializer;
+                }
+            }
+
+            const {properties} = newChild;
+            if (properties) {
+                propValues = getDefaultPropsValues(properties);
+            }
+        });
+        return propValues;
     };
 
     const getProps = (
@@ -453,16 +516,22 @@ function walk(directory, components = {}) {
                     ts.isPropertyDeclaration(declaration))
             ) {
                 commentSource = type.symbol;
+            } else {
             }
 
-            const defaultProps = getDefaultProps(typeSymbol, source);
-            // TODO support class component
-            const propsType = getPropsForFunctionalComponent(type);
-
-            let props = {};
+            let defaultProps = getDefaultProps(typeSymbol, source);
+            let propsType = getPropsForFunctionalComponent(type);
+            let props;
 
             if (propsType) {
                 props = getPropInfo(propsType, defaultProps);
+            } else {
+                defaultProps = getDefaultPropsForClassComponent(type, source);
+                props = getPropsForClassComponent(
+                    typeSymbol,
+                    source,
+                    defaultProps
+                );
             }
 
             components[name] = {
