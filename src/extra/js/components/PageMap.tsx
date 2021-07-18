@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import PropTypes from 'prop-types';
+import {DazzlerProps} from '../../../commons/js/types';
 
 /**
  * List of links to other page in the app.
@@ -8,11 +8,12 @@ import PropTypes from 'prop-types';
  *
  *     - ``dazzler-extra-page-map``
  */
-const PageMap = props => {
+const PageMap = (props: DazzlerProps) => {
     const {class_name, style, identity} = props;
     const [pageMap, setPageMap] = useState(null);
 
     useEffect(() => {
+        // @ts-ignore
         fetch(`${window.dazzler_base_url}/dazzler/page-map`).then(rep =>
             rep.json().then(setPageMap)
         );
@@ -31,12 +32,5 @@ const PageMap = props => {
 };
 
 PageMap.defaultProps = {};
-
-PageMap.propTypes = {
-    class_name: PropTypes.string,
-    style: PropTypes.object,
-    identity: PropTypes.string,
-    updateAspects: PropTypes.func,
-};
 
 export default PageMap;
