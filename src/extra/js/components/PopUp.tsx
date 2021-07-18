@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import {PopUpProps} from '../types';
 
 function getMouseX(e, popup) {
     return (
@@ -8,6 +9,10 @@ function getMouseX(e, popup) {
         popup.getBoundingClientRect().width / 2
     );
 }
+
+type PopUpState = {
+    pos?: number;
+};
 
 /**
  * Wraps a component/text to render a popup when hovering
@@ -19,7 +24,9 @@ function getMouseX(e, popup) {
  *     - ``popup-content``
  *     - ``visible``
  */
-export default class PopUp extends React.Component {
+export default class PopUp extends React.Component<PopUpProps, PopUpState> {
+    popupRef?: any;
+
     constructor(props) {
         super(props);
         this.state = {
@@ -80,47 +87,9 @@ export default class PopUp extends React.Component {
             </div>
         );
     }
+
+    static defaultProps = {
+        mode: 'hover',
+        active: false,
+    };
 }
-
-PopUp.defaultProps = {
-    mode: 'hover',
-    active: false,
-};
-
-PopUp.propTypes = {
-    /**
-     * Component/text to wrap with a popup on hover/click.
-     */
-    children: PropTypes.node,
-    /**
-     * Content of the popup info.
-     */
-    content: PropTypes.node,
-    /**
-     * Is the popup currently active.
-     */
-    active: PropTypes.bool,
-    /**
-     * Show popup on hover or click.
-     */
-    mode: PropTypes.oneOf(['hover', 'click']),
-    /**
-     * CSS for the wrapper.
-     */
-    class_name: PropTypes.string,
-    /**
-     * Style of the wrapper.
-     */
-    style: PropTypes.object,
-    /**
-     * Style for the popup.
-     */
-    content_style: PropTypes.object,
-    /**
-     * Style for the wrapped children.
-     */
-    children_style: PropTypes.object,
-
-    identity: PropTypes.string,
-    updateAspects: PropTypes.func,
-};
