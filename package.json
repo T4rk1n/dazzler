@@ -9,6 +9,7 @@
     "build:webpack": "webpack --config webpack.config.js",
     "build:dev": "npm run build:webpack -- --mode=development",
     "build:meta": "webpack --config webpack.meta.config.js",
+    "build:electron": "webpack --config webpack.electron-main.config.js",
     "build:dazzler::core": "dazzler generate src/core/js/components dazzler/components/core",
     "build:dazzler::test": "dazzler generate src/internal/test_components/components tests/components/spec_components",
     "build:dazzler::ts": "dazzler generate src/internal/ts_components/components tests/components/ts_components --ts",
@@ -24,7 +25,8 @@
     "lint": "eslint src --ext js --ext jsx --ext ts --ext tsx",
     "format": "prettier --write ./src/**/*.js src/**/*.jsx src/**/*.ts src/**/*.tsx",
     "format:test": "prettier ./src/**/*.js src/**/*.jsx src/**/*.ts src/**/*.tsx --list-different",
-    "mypy": "mypy dazzler tests"
+    "mypy": "mypy dazzler tests",
+    "electron": "electron ./dazzler/assets/electron-dazzler.js"
   },
   "author": "Philippe Duval",
   "license": "MIT",
