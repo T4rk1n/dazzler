@@ -44,6 +44,8 @@
     "babel-loader": "^8.2.2",
     "clean-webpack-plugin": "^1.0.1",
     "css-loader": "^6.2.0",
+    "electron": "^13.1.7",
+    "electron-devtools-installer": "^3.2.0",
     "eslint": "^7.32.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-import": "^2.23.4",
@@ -64,6 +66,7 @@
   },
   "dependencies": {
     "date-fns": "^1.30.1",
+    "dotenv": "^10.0.0",
     "prism-react-renderer": "^0.1.7",
     "ramda": "^0.27.1",
     "react": "^17.0.2",
