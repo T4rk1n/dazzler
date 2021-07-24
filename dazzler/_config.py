@@ -21,6 +21,11 @@ class DazzlerConfig(Config):
         auto_global=True,
     )
 
+    version = ConfigProperty(
+        default='0.1.0',
+        comment='App version'
+    )
+
     debug = ConfigProperty(
         default=False,
         config_type=bool,
@@ -50,7 +55,9 @@ class DazzlerConfig(Config):
 
     pages_directory = ConfigProperty(
         default='pages',
-        comment='Directory where pages will be automatically added to the app',
+        comment='Directory where pages will be automatically added to the app,'
+                ' path is relative to the app file. '
+                'Unsupported with electron',
         config_type=str,
     )
 
@@ -204,6 +211,125 @@ class DazzlerConfig(Config):
         )
 
     development: Development
+
+    class Electron(Nestable):
+        windows = ConfigProperty(
+            default=[],
+            config_type=list,
+            comment='List of page names to create a window from.'
+        )
+
+        build_config_file = ConfigProperty(
+            config_type=str,
+            comment='Path to a file to use as electron-builder configuration.'
+        )
+
+        save_window_size = ConfigProperty(
+            default=True,
+            global_name='save_size',
+            comment='Save the window size in the app local directory as json.'
+        )
+
+        icon = ConfigProperty(
+            default='',
+            config_type=str,
+            comment='Path to the icon to use for the application. '
+                    'For windows .ico works best when created '
+                    'with multiple resolutions. Otherwise a PNG 512x512.'
+        )
+
+        asar = ConfigProperty(
+            default=True,
+            config_type=bool,
+            comment='Package the application using asar, not recommended to'
+                    'set to false by electron-builder but if you have '
+                    'trouble with packaging extra files '
+                    'you can disable this.'
+        )
+
+        class WindowSize(Nestable):
+            """Default window size to use when first creating the window."""
+            width = ConfigProperty(
+                default=800,
+                config_type=int,
+                comment='Default width of the window.'
+            )
+            height = ConfigProperty(
+                default=600,
+                config_type=int,
+                comment='Default height of the window.'
+            )
+            fullscreen = ConfigProperty(
+                default=False,
+                config_type=bool,
+            )
+
+        window_size: WindowSize
+
+        class Metadata(Nestable):
+            """Target package.json attributes and should be defined."""
+
+            app_name = ConfigProperty(
+                default="",
+                config_type=str,
+                comment='App name to use when packaging. No spaces.'
+            )
+            description = ConfigProperty(
+                default='',
+                comment='Description of the application to use when packaging.'
+            )
+            homepage = ConfigProperty(
+                default='',
+                comment='Url for the project.'
+                        ' (Required for NuGet or Linux Package URL)'
+            )
+            license = ConfigProperty(
+                default='',
+                comment='Name of the license. (Linux only)'
+            )
+
+            class Author(Nestable):
+                name = ConfigProperty(default='')
+                email = ConfigProperty(default='')
+
+            author: Author
+
+        metadata: Metadata
+
+        class Builder(Nestable):
+            app_id = ConfigProperty(
+                default='com.electron.${name}',
+                comment='The appId to use for the build,'
+                        'it is recommended to change.'
+            )
+            productName = ConfigProperty(
+                comment='Executable name that can contains spaces.'
+                        ' Defaults to electron.metadata.name'
+            )
+            copyright = ConfigProperty(
+                default='Copyright © year ${author}',
+                comment='Copyright line to use in the installer.'
+            )
+
+        builder: Builder
+
+        class LinuxTarget(Nestable):
+            maintainer = ConfigProperty(
+                config_type=str, comment='Defaults to author'
+            )
+            vendor = ConfigProperty(
+                config_type=str, comment='Defaults to author'
+            )
+            synopsis = ConfigProperty(
+                config_type=str, comment='Short description'
+            )
+            category = ConfigProperty(
+                config_type=str, comment='Category to use.'
+            )
+
+        linux_target: LinuxTarget
+
+    electron: Electron
 
     def __init__(self):
         super().__init__(root_name='dazzler', config_format=ConfigFormat.TOML)

@@ -1,6 +1,5 @@
 import asyncio
 import os
-import pkgutil
 import sys
 from ssl import SSLContext
 from typing import Optional, List
@@ -14,6 +13,7 @@ from .system import Page, UNDEFINED, Route
 
 from .tools import replace_all, format_tag
 from ._renderer import package as renderer
+from ._assets import index_html_path
 
 
 class Server:
@@ -41,9 +41,8 @@ class Server:
         self.dazzler = dazzler
         self.loop = loop or asyncio.get_event_loop()
         self.app = app or web.Application()
-        self.index = pkgutil.get_data(
-            'dazzler', os.path.join('assets', 'index.html')
-        ).decode()
+        with open(index_html_path) as f:
+            self.index = f.read()
         self.logger = self.dazzler.logger
         self.websockets = weakref.WeakSet()
         self.debug = False
@@ -71,6 +70,10 @@ class Server:
             web.get(
                 f'{prefix}/dazzler/page-map',
                 self._apply_middleware(self.route_get_pages)
+            ),
+            web.get(
+                f'{prefix}/dazzler/electron-config',
+                self._apply_middleware(self.route_get_electron_config)
             )
         ] + [
             x.method.get_method()(
@@ -288,6 +291,26 @@ class Server:
                 'title': page.title,
             } for page_name, page in self.dazzler.pages.items()
         ])
+
+    async def route_get_electron_config(self, request: web.Request):
+        config = self.dazzler.config
+        return web.json_response({
+            'window_size': {
+                'width': config.electron.window_size.width,
+                'height': config.electron.window_size.height,
+                'fullscreen': config.electron.window_size.fullscreen,
+            },
+            'save_window_size': config.electron.save_window_size,
+            'windows': [
+                {
+                    'name': page.name,
+                    'url': str(request.app.router[page.name].url_for()),
+                    'title': page.title
+                }
+                for page in self.dazzler.pages.values()
+                if page.name in config.electron.windows
+            ]
+        })
 
     async def start(
             self, host: str, port: int,
