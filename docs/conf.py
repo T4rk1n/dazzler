@@ -15,6 +15,7 @@
 import os
 import sys
 import json
+import subprocess
 sys.path.insert(0, os.path.abspath('..'))
 
 # noinspection PyProtectedMember
@@ -200,6 +201,10 @@ def setup(app):
     from dazzler import Dazzler
 
     dazz = Dazzler('dazzler')
+
+    if os.getenv('READTHEDOCS'):
+        proc = subprocess.Popen(['npm', 'ci'])
+        proc.communicate()
 
     for args in (
             ('../src/core/js/components', '../dazzler/components/core'),
