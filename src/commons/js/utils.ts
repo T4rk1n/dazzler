@@ -78,27 +78,30 @@ export function loadCss(uri: string, timeout = 3000) {
     });
 }
 
-export function debounce(func: Function, wait: number) {
+export function debounce(func: Function, wait: number, immediate?: boolean) {
     let timeout, lastCall;
     return function() {
         const now = new Date();
         if (!lastCall) {
             lastCall = now;
+            if (immediate) {
+                return func.apply(this, arguments)
+            }
         }
         const later = () => {
             timeout = null;
             /* eslint-disable no-invalid-this */
-            // @ts-ignore
-            func.apply(this, arguments);
             lastCall = new Date();
+            // @ts-ignore
+            return func.apply(this, arguments);
         };
         clearTimeout(timeout);
         // @ts-ignore
         const diff = now - lastCall;
         if (diff >= wait) {
             /* eslint-disable no-invalid-this */
-            func.apply(this, arguments);
             lastCall = now;
+            return func.apply(this, arguments);
         } else {
             timeout = setTimeout(later, diff);
         }
