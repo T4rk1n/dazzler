@@ -13,6 +13,7 @@ Subpackages
    :maxdepth: 6
 
    dazzler.components
+   dazzler.electron
    dazzler.system
    dazzler.tools
 
