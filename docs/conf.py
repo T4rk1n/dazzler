@@ -201,15 +201,15 @@ def setup(app):
 
     dazz = Dazzler('dazzler')
 
-    for source, output in (
+    for args in (
             ('../src/core/js/components', '../dazzler/components/core'),
-            ('../src/extra/js/components', '../dazzler/components/extra'),
-            ('../src/calendar/js/components', '../dazzler/components/calendar'),
+            ('../src/extra/js/components', '../dazzler/components/extra', '--ts'),
+            ('../src/calendar/js/components', '../dazzler/components/calendar', '--ts'),
             ('../src/markdown/js/components', '../dazzler/components/markdown'),
-            ('../src/auth/js/components', '../dazzler/components/auth'),
+            ('../src/auth/js/components', '../dazzler/components/auth', '--ts'),
             ('../src/icons/js/components', '../dazzler/components/icons')
     ):
-        dazz.start(['generate', source, output])
+        dazz.start(('generate',) + args)
 
     dazz.start(['dump-configs', 'dazzler.toml'])
 
