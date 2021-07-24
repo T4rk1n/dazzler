@@ -12,6 +12,9 @@ from concurrent.futures import ThreadPoolExecutor
 import appdirs
 import precept
 
+from .electron import (
+    ElectronBuilder, run_electron, is_compiled, ELECTRON_TARGETS
+)
 from .system.auth import Authenticator, DazzlerAuth, AuthBackend
 from .tools import get_member
 from .system.session import (
@@ -75,11 +78,18 @@ class Dazzler(precept.Precept):  # pylint: disable=too-many-instance-attributes
         self.app_name = app_name or \
             os.path.basename(module.__file__).split('.py')[0]
 
+        config_file = [
+            'dazzler.toml',
+            os.path.join(self.root_path, 'dazzler.toml')
+        ]
+
+        if is_compiled():
+            # Compiled version (electron) will get the configs from
+            # the assets folder.
+            config_file = [os.path.join(assets_path, 'dazzler.toml')]
+
         super().__init__(
-            config_file=[
-                'dazzler.toml',
-                os.path.join(self.root_path, 'dazzler.toml')
-            ],
+            config_file=config_file,
             add_dump_config_command=True,
             executor=ThreadPoolExecutor(),
             print_version=False,
@@ -361,6 +371,42 @@ class Dazzler(precept.Precept):  # pylint: disable=too-many-instance-attributes
         )
         await asyncio.gather(*futures)
 
+    @precept.Command(
+        precept.Argument('app'),
+        description='Run the electron app locally in development.'
+                    'Make sure electron is installed on your path!'
+    )
+    async def electron(self, app):
+        await run_electron(self, app)
+
+    @precept.Command(
+        precept.Argument('app'),
+        precept.Argument(
+            '--target',
+            choices=ELECTRON_TARGETS,
+            default='dir'
+        ),
+        precept.Argument('-o', '--output', default='electron'),
+        precept.Argument('-p', '--publish', action='store_true'),
+        precept.Argument('-c', '--clean', action='store_true'),
+        precept.Argument('-r', '--remove-output', action='store_true'),
+        description='Build the application for electron.'
+    )
+    async def electron_build(
+        self, app, target, output, publish, clean, remove_output
+    ):
+        builder = ElectronBuilder(self, app, target, output, publish)
+
+        try:
+            if clean:
+                builder.cleanup()
+            await builder.build()
+        except Exception as error:  # pylint: disable=broad-except
+            self.logger.exception(error)
+        finally:
+            if remove_output:
+                builder.cleanup()
+
     # Handlers
 
     async def on_file_change(
@@ -453,7 +499,11 @@ class Dazzler(precept.Precept):  # pylint: disable=too-many-instance-attributes
 
     async def _handle_configs(self):
         # Gather pages in the pages directory
-        if os.path.exists(self.config.pages_directory):
+        # FIXME pages_directory support for
+        if os.path.exists(self.config.pages_directory) and not is_compiled():
+            self.logger.debug(
+                f'Adding pages from : {self.config.pages_directory}'
+            )
             for page_path in os.listdir(self.config.pages_directory):
                 if page_path.endswith('.py'):
                     name = page_path.split('.py')[0]
