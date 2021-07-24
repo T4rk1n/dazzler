@@ -5,7 +5,7 @@ export interface DazzlerProps {
     /**
      * Class name automatically added by dazzler api with a prefix for the
      * component library.
-     * ie: core component Container become `dazzler-core-container`
+     * ie: core component Container become ``dazzler-core-container``.
      *
      * When added on the component, the class names will be concatenated.
      */
