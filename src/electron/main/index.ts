@@ -17,7 +17,7 @@ const isInstalled = process.env.DAZZLER_COMPILED === 'True';
 
 const serverUrl = `http://localhost:${port}`;
 
-let windows: {[key: string]: BrowserWindow} = {};
+const windows: {[key: string]: BrowserWindow} = {};
 
 async function setup() {
     const config = await createServer(!isInstalled, appFile, serverUrl);
@@ -36,6 +36,7 @@ let closed = false;
 
 app.on('ready', setup);
 app.on('will-quit', async (event) => {
+    logger.main.debug(`will-quit closed=${closed}`);
     if (!closed) {
         logger.main.debug('Will quit: closing server');
         event.preventDefault();
