@@ -1,7 +1,6 @@
 import json
 import os
 import sys
-import tempfile
 import shutil
 import pathlib
 import asyncio
@@ -69,10 +68,8 @@ class ElectronBuilder:
         self.target = target
         self.publish = publish
         self.app_name = app_path.split('.py')[0]
-        # Create a temporary directory to create the project files
-        self._workdir = pathlib.Path(output or tempfile.mkdtemp()).absolute()
+        self._workdir = pathlib.Path(output).absolute()
         self._workdir.mkdir(exist_ok=True)
-        # TODO add extension for proper targets.
         if sys.platform == 'win32':
             self._executable = 'server.exe'
         else:
@@ -113,7 +110,9 @@ class ElectronBuilder:
         }
         package['version'] = self.config.version
 
-        package['build']['appId'] = self.config.electron.builder.app_id
+        if self.config.electron.builder.app_id:
+            package['build']['appId'] = self.config.electron.builder.app_id
+
         if self.config.electron.builder.productName:
             package['build']['productName'] = \
                 self.config.electron.builder.productName
