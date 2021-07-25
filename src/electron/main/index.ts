@@ -32,8 +32,16 @@ async function setup() {
     }
 }
 
+let closed = false;
+
 app.on('ready', setup);
-app.on('will-quit', () => {
-    logger.main.info('Will quit: closing server');
-    closeServer();
+app.on('will-quit', async (event) => {
+    if (!closed) {
+        logger.main.debug('Will quit: closing server');
+        event.preventDefault();
+        await closeServer();
+        logger.main.debug('Server closed');
+        closed = true;
+        app.quit();
+    }
 });
