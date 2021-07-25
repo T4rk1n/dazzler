@@ -1,4 +1,5 @@
 import json
+import os
 import sys
 import tempfile
 import shutil
@@ -183,6 +184,8 @@ class ElectronBuilder:
         # and that will enable the server logs clutter on stderr.
         import PyInstaller.__main__
 
+        dest = os.path.join('dazzler', 'assets')
+
         args = [
             str(self.app_path),
             '--distpath',
@@ -191,9 +194,9 @@ class ElectronBuilder:
             '--name=server',
             # Need to copy the assets path where they going or
             # else the path is wrong with _MEI stuff
-            f'--add-data={assets_path}:dazzler/assets',
+            f'--add-data={assets_path}'
+            f'{os.pathsep}{dest}',
         ]
-        # Fixme
 
         sys.path.insert(0, '.')
         # Import the app to load all packages.
@@ -212,17 +215,20 @@ class ElectronBuilder:
             ):
                 continue
             for requirement in package.requirements:
-                args += f'--add-data={requirement.internal}:' \
-                        f'{requirement.internal}'
+                args.append(
+                    f'--add-data={requirement.internal}'
+                    f'{os.pathsep}{requirement.internal}')
                 if requirement.dev:
-                    args += f'--add-data={requirement.dev}:{requirement.dev}'
+                    args.append(
+                        f'--add-data={requirement.dev}'
+                        f'{os.pathsep}{requirement.dev}')
 
         if self.app.config_path:
             # Put the config file in the assets path, when
             # compiled, dazzler will get the configs from there.
             args.append(
-                f'--add-data={self.app.config_path}:'
-                f'dazzler/assets'
+                f'--add-data={self.app.config_path}'
+                f'{os.pathsep}{dest}'
             )
 
         PyInstaller.__main__.run(args)
