@@ -298,7 +298,6 @@ class DazzlerConfig(Config):
 
         class Builder(Nestable):
             app_id = ConfigProperty(
-                default='com.electron.${name}',
                 comment='The appId to use for the build,'
                         'it is recommended to change.'
             )
