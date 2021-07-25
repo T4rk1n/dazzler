@@ -32,7 +32,7 @@ function requestConfigs(serverUrl: string): Promise<ElectronConfig> {
 }
 
 function getProcesses(pid: number, spawner: (pid) => any): Promise<number[]> {
-    return new Promise((resolve, reject) => {
+    return new Promise(resolve => {
         const chunks = [];
         const ps = spawner(pid);
         ps.stdout.on('data', chunk => {
@@ -60,10 +60,14 @@ export function closeServer(): Promise<any> {
         const pid = serverProcess.pid;
         switch (process.platform) {
             case 'win32':
-                child_process.exec(`taskkill /pid ${pid} /T /F`, error => {
+                const cmd = `taskkill /pid ${pid} /T /F`;
+                logger.server.debug(`Win kill ${cmd}`);
+                child_process.exec(cmd, error => {
                     if (error) {
+                        logger.server.error(error);
                         reject(error);
                     } else {
+                        logger.server.debug('task killed');
                         resolve(null);
                     }
                 });
@@ -107,9 +111,6 @@ export default function(
                 ...args,
             ]);
         } else {
-            // TODO investigate `.exe` files support on windows.
-            //  Docs says it can't do IO so would need another solution for
-            //  asserting the server started and can receive requests.
             serverProcess = child_process.spawn(
                 path.join(process.resourcesPath, applicationFile),
                 [...args]
