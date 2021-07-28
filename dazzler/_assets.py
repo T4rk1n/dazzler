@@ -13,6 +13,7 @@ meta_ts_path = os.path.join(assets_path, 'meta-ts.js')
 electron_path = os.path.join(assets_path, 'electron-dazzler.js')
 electron_package_path = os.path.join(assets_path, 'electron-package.json')
 index_html_path = os.path.join(assets_path, 'index.html')
+loading_window_path = os.path.join(assets_path, 'electron-loading.html')
 
 _asset_json = os.path.join(assets_dist_path, 'assets.json')
 _asset_json_dev = os.path.join(assets_dev_path, 'assets.json')

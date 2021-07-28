@@ -133,6 +133,12 @@ class DazzlerConfig(Config):
             config_type=str,
             comment='Url to use for the requirements static.'
         )
+        clean_directory = ConfigProperty(
+            default=True,
+            config_type=bool,
+            comment='Remove the requirements directory before copying'
+                    'the new requirements.'
+        )
 
     requirements: Requirements
 
@@ -265,6 +271,113 @@ class DazzlerConfig(Config):
             )
 
         window_size: WindowSize
+
+        class LoadingWindow(Nestable):
+            enabled = ConfigProperty(
+                default=False,
+                config_type=bool,
+                comment='Add a loading window while waiting for the server to '
+                        'be available.'
+            )
+
+            html_file = ConfigProperty(
+                default='',
+                config_type=str,
+                comment='Path to an html file to use as loading window.'
+            )
+
+            title = ConfigProperty(
+                default='Loading',
+                config_type=str,
+            )
+
+            header = ConfigProperty(
+                default='',
+                config_type=str,
+                comment='Html to include on top of '
+                        'the default loading spinner'
+            )
+
+            footer = ConfigProperty(
+                default='<div>loading</div>',
+                config_type=str,
+            )
+
+            class Options(Nestable):
+                width = ConfigProperty(
+                    default=300,
+                    config_type=int,
+                    comment='Width of the loading window.'
+                )
+                height = ConfigProperty(
+                    default=400,
+                    config_type=int,
+                    comment='Height of the loading window.'
+                )
+
+                title = ConfigProperty(
+                    config_type=str,
+                    comment='Custom title to use for the loading window.'
+                )
+
+                fullscreen = ConfigProperty(
+                    default=False,
+                    config_type=bool,
+                )
+                center = ConfigProperty(
+                    default=True,
+                    config_type=bool,
+                    comment='Center the loading window in the middle'
+                            'of the screen.'
+                )
+                resizable = ConfigProperty(
+                    default=False,
+                    config_type=bool,
+                )
+                minimizable = ConfigProperty(
+                    default=False,
+                    config_type=bool,
+                )
+                maximizable = ConfigProperty(
+                    default=False,
+                    config_type=bool,
+                )
+
+                skip_taskbar = ConfigProperty(
+                    default=True,
+                    config_type=bool,
+                    comment='Turn off to activate icon on the '
+                            'taskbar with the loading window.'
+                )
+                frame = ConfigProperty(
+                    default=False,
+                    config_type=bool,
+                    comment='Create a frameless window if disabled, '
+                            'it has no toolbars.'
+                )
+                opacity = ConfigProperty(
+                    default=1.0,
+                    config_type=float,
+                )
+                transparent = ConfigProperty(
+                    default=False,
+                    config_type=bool,
+                )
+
+                title_bar_style = ConfigProperty(
+                    default='default',
+                    config_type=str,
+                    comment='Options: default,hidden,'
+                            'hiddenInset,customButtonsOnHover'
+                )
+                click_through = ConfigProperty(
+                    default=True,
+                    config_type=bool,
+                )
+
+            options: Options
+
+        loading_window: LoadingWindow
 
         class Metadata(Nestable):
             """Target package.json attributes and should be defined."""

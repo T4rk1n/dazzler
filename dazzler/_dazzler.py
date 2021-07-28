@@ -319,7 +319,8 @@ class Dazzler(precept.Precept):  # pylint: disable=too-many-instance-attributes
         if not os.path.exists(req_dir):
             os.makedirs(req_dir)
 
-        shutil.rmtree(req_dir, ignore_errors=True)
+        if self.config.requirements.clean_directory:
+            shutil.rmtree(req_dir, ignore_errors=True)
         os.makedirs(req_dir, exist_ok=True)
 
         for package in packages:
@@ -389,11 +390,11 @@ class Dazzler(precept.Precept):  # pylint: disable=too-many-instance-attributes
         precept.Argument('-o', '--output', default='electron'),
         precept.Argument('-p', '--publish', action='store_true'),
         precept.Argument('-c', '--clean', action='store_true'),
-        precept.Argument('-r', '--remove-output', action='store_true'),
+        precept.Argument('-e', '--remove-error', action='store_true'),
         description='Build the application for electron.'
     )
     async def electron_build(
-        self, app, target, output, publish, clean, remove_output
+        self, app, target, output, publish, clean, remove_error,
     ):
         builder = ElectronBuilder(self, app, target, output, publish)
 
@@ -403,8 +404,7 @@ class Dazzler(precept.Precept):  # pylint: disable=too-many-instance-attributes
             await builder.build()
         except Exception as error:  # pylint: disable=broad-except
             self.logger.exception(error)
-        finally:
-            if remove_output:
+            if remove_error:
                 builder.cleanup()
 
     # Handlers
