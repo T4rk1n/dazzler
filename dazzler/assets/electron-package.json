@@ -10,7 +10,8 @@
   },
   "scripts": {
     "build": "electron-builder",
-    "dist": "electron-builder --publish always"
+    "dist": "electron-builder --publish always",
+    "pack": "electron-builder --dir"
   },
   "build": {
     "directories": {

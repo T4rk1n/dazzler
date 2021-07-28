@@ -19,6 +19,7 @@ export default async function(
         },
         title,
         ...window_size,
+        show: false,
     });
 
     if (save_window_size) {

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>%(title)</title>
+        <style>
+            @-webkit-keyframes rotate {
+                from {
+                    -webkit-transform: rotate(0deg);
+                }
+                to {
+                    -webkit-transform: rotate(360deg);
+                }
+            }
+
+            @-moz-keyframes rotate {
+                from {
+                    -moz-transform: rotate(0deg);
+                }
+                to {
+                    -moz-transform: rotate(360deg);
+                }
+            }
+
+            @keyframes rotate {
+                from {
+                    transform: rotate(0deg);
+                }
+                to {
+                    transform: rotate(360deg);
+                }
+            }
+            .dazzler-spin {
+                width: 6rem;
+                height: 6rem;
+                border: 4px solid #dedede;
+
+                border-top-color: #0e84b5;
+                border-radius: 50%;
+
+                margin-bottom: 0.5rem;
+
+                -webkit-transition-property: -webkit-transform;
+                -webkit-transition-duration: 1.2s;
+                -webkit-animation-name: rotate;
+                -webkit-animation-iteration-count: infinite;
+                -webkit-animation-timing-function: linear;
+
+                -moz-transition-property: -moz-transform;
+                -moz-animation-name: rotate;
+                -moz-animation-duration: 1.2s;
+                -moz-animation-iteration-count: infinite;
+                -moz-animation-timing-function: linear;
+
+                transition-property: transform;
+                animation-name: rotate;
+                animation-duration: 1.2s;
+                animation-iteration-count: infinite;
+                animation-timing-function: linear;
+            }
+            .container {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 100vh;
+                padding: 0;
+                margin: 0;
+                overflow: no-display;
+                flex-direction: column;
+                font-family: Lato, 'Helvetica Neue', Arial, Helvetica,
+                    sans-serif;
+            }
+            /* Cheap Reset */
+            body, div {
+                padding: 0;
+                margin: 0;
+                box-sizing: content-box;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            %(header)
+            <div class="dazzler-spin"></div>
+            %(footer)
+        </div>
+    </body>
+</html>

@@ -31,7 +31,11 @@ function requestConfigs(serverUrl: string): Promise<ElectronConfig> {
     });
 }
 
-function getProcesses(pid: number, spawner: (pid) => any): Promise<number[]> {
+function getProcesses(
+    pid: number,
+    // eslint-disable-next-line no-unused-vars
+    spawner: (pid: number) => any
+): Promise<number[]> {
     return new Promise(resolve => {
         const chunks = [];
         const ps = spawner(pid);
@@ -58,11 +62,10 @@ function killProcesses(processes: number[]) {
 export function closeServer(): Promise<any> {
     return new Promise((resolve, reject) => {
         const pid = serverProcess.pid;
+        // eslint-disable-next-line default-case
         switch (process.platform) {
             case 'win32':
-                const cmd = `taskkill /pid ${pid} /T /F`;
-                logger.server.debug(`Win kill ${cmd}`);
-                child_process.exec(cmd, error => {
+                child_process.exec(`taskkill /pid ${pid} /T /F`, error => {
                     if (error) {
                         logger.server.error(error);
                         reject(error);
@@ -74,6 +77,7 @@ export function closeServer(): Promise<any> {
                 break;
             case 'darwin':
                 getProcesses(pid, p =>
+                    // @ts-ignore
                     child_process.spawn('pgrep', ['-P', p])
                 ).then(processes => {
                     killProcesses(processes);
@@ -87,6 +91,7 @@ export function closeServer(): Promise<any> {
                         'pid',
                         '--no-headers',
                         '--ppid',
+                        // @ts-ignore
                         p,
                     ])
                 ).then(processes => {

@@ -7,6 +7,7 @@ import asyncio
 import importlib
 
 from dazzler._assets import electron_package_path, electron_path, assets_path
+from dazzler.electron._loading import get_loading_options, build_loading_html
 from dazzler.system import Package
 from dazzler.tools import OrderedSet
 
@@ -156,11 +157,35 @@ class ElectronBuilder:
                 package['build']['synopsis'] = \
                     self.config.electron.linux_target.synopsis
 
+        if self.config.electron.loading_window.enabled:
+            self._create_loading_window(package)
+
         with open(package_path, 'w') as f:
             json.dump(package, f, indent=2)
 
+    def _create_loading_window(self, package):
+        dest = self._workdir.joinpath('electron-loading.html')
+
+        html_content = build_loading_html(self.config)
+        with open(dest, 'w') as f:
+            f.write(html_content)
+
+        package['build']['files'].append('electron-loading.html')
+
+        # Add the options as a json file
+        options = get_loading_options(self.config)
+        with open(self._workdir.joinpath('loading.json'), 'w') as f:
+            json.dump(options, f)
+
+        package['build']['files'].append('loading.json')
+
     async def _electron_builder(self):
-        command = 'dist' if self.publish else 'build'
+        if self.publish:
+            command = 'dist'
+        elif self.target == 'dir':
+            command = 'pack'
+        else:
+            command = 'build'
         proc = await asyncio.create_subprocess_shell(
             f'npm run {command}', cwd=str(self._workdir)
         )
@@ -169,7 +194,12 @@ class ElectronBuilder:
     def _create_environ(self):
         env = f'DAZZLER_PORT={self.config.port}\n' \
               f'DAZZLER_APP={self._executable}\n' \
-              f'DAZZLER_COMPILED=True'
+              'DAZZLER_COMPILED=True'
+
+        if self.config.electron.loading_window.enabled:
+            # Always the same path when compiled.
+            env += '\nDAZZLER_LOADING_WINDOW_FILE=electron-loading.html\n'
+            env += 'DAZZLER_LOADING_WINDOW_OPTIONS=loading.json\n'
 
         env_path = self._workdir.joinpath('.env')
 
