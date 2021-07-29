@@ -2,6 +2,7 @@ import {app, BrowserWindow} from 'electron';
 import {promises as fs} from 'fs';
 import * as path from 'path';
 import {debounce} from '../../commons/js/utils';
+import {omit} from 'ramda';
 
 const WINDOW_RESIZE = 'WINDOW_RESIZE';
 const WINDOW_MOVE = 'WINDOW_MOVE';
@@ -36,6 +37,10 @@ export async function createWindowState(
     window: BrowserWindow
 ): Promise<WindowState> {
     let state: WindowState;
+    if (!(await fs.stat(appData))) {
+        await fs.mkdir(appData);
+    }
+
     try {
         const content = await fs.readFile(
             getWindowStateFileName(windowName),
@@ -67,17 +72,16 @@ export async function createWindowState(
     };
 
     // Track change and save them.
-    const onChangeFactory = (eventName: string) =>
-        () => {
-            const newBounds = window.getBounds();
-            state.x = newBounds.x;
-            state.y = newBounds.y;
-            state.width = newBounds.width;
-            state.height = newBounds.height;
-            state.fullscreen = window.isFullScreen();
-            state.save();
-            window.webContents.send(eventName, state);
-        };
+    const onChangeFactory = (eventName: string) => () => {
+        const newBounds = window.getBounds();
+        state.x = newBounds.x;
+        state.y = newBounds.y;
+        state.width = newBounds.width;
+        state.height = newBounds.height;
+        state.fullscreen = window.isFullScreen();
+        state.save();
+        window.webContents.send(eventName, omit(['save', 'sync'], state));
+    };
 
     window.on('resize', onChangeFactory(WINDOW_RESIZE));
     window.on('move', onChangeFactory(WINDOW_MOVE));
