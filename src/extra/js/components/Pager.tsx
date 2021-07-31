@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import {range, join} from 'ramda';
 import {PagerPageProps, PagerProps, PagerState} from '../types';
 
@@ -165,5 +164,5 @@ export default class Pager extends React.Component<PagerProps, PagerState> {
         current_page: 1,
         items_per_page: 10,
         pages_displayed: 10,
-    }
+    };
 }

@@ -32,11 +32,13 @@ const TimePicker = (props: TimePickerProps) => {
     });
     const [minutes, setMinute] = useState(() => {
         if (value) {
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             const [_, m] = split(':', value);
             return m;
         }
         return '00';
     });
+    // eslint-disable-next-line prefer-const
     let [am_pm, setAMPM] = useState(() => {
         if (value) {
             if (mode === 'AM/PM') {

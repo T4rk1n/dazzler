@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import {timestampProp} from 'commons';
 import {merge} from 'ramda';
 import {NoticeProps} from '../types';
@@ -97,10 +96,10 @@ export default class Notice extends React.Component<NoticeProps> {
     }
 
     static defaultProps: {
-        require_interaction: false,
-        clicks: 0,
-        clicks_timestamp: -1,
-        closes: 0,
-        closes_timestamp: -1,
-    }
+        require_interaction: false;
+        clicks: 0;
+        clicks_timestamp: -1;
+        closes: 0;
+        closes_timestamp: -1;
+    };
 }

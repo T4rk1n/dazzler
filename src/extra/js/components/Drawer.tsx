@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import {join, concat} from 'ramda';
 import {CaretProps, DrawerProps} from '../types';
 
@@ -13,6 +12,8 @@ const Caret = ({side, opened}: CaretProps) => {
             return opened ? <span>&#9666;</span> : <span>&#9656;</span>;
         case 'bottom':
             return opened ? <span>&#9660;</span> : <span>&#9650;</span>;
+        default:
+            return null;
     }
 };
 
@@ -37,7 +38,7 @@ const Drawer = (props: DrawerProps) => {
         children,
         opened,
         side,
-        updateAspects
+        updateAspects,
     } = props;
 
     const css: string[] = [side];
@@ -67,8 +68,7 @@ const Drawer = (props: DrawerProps) => {
             </div>
         </div>
     );
-}
-
+};
 
 Drawer.defaultProps = {
     side: 'top',

@@ -1,5 +1,4 @@
 import React, {useEffect, useMemo, useState} from 'react';
-import PropTypes from 'prop-types';
 import {join} from 'ramda';
 import {ToastProps} from '../types';
 
