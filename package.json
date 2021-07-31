@@ -21,7 +21,7 @@
     "build:docs": "docs/build.sh",
     "build": "run-s build:webpack build:dev",
     "watch": "npm run build:dev -- --watch",
-    "lint": "eslint src",
+    "lint": "eslint src --ext js --ext jsx --ext ts --ext tsx",
     "format": "prettier --write ./src/**/*.js src/**/*.jsx src/**/*.ts src/**/*.tsx",
     "format:test": "prettier ./src/**/*.js src/**/*.jsx src/**/*.ts src/**/*.tsx --list-different"
   },
