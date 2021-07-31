@@ -196,6 +196,12 @@ class DazzlerConfig(Config):
             comment='Time to wait from first detected change '
                     'to actual reload.'
         )
+        reload_delay = ConfigProperty(
+            default=5.0,
+            config_type=float,
+            comment='Delay until the reloader start watching for changes.'
+                    'Some libraries changes their files when first run.'
+        )
 
     development: Development
 
