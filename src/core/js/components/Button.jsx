@@ -40,21 +40,13 @@ import {collectTruePropKeys} from 'commons';
  *         await ctx.set_aspect('output', f'Clicked {ctx.trigger.value}')
  */
 export default class Button extends React.Component {
-    shouldComponentUpdate(nextProps, nextState, nextContext) {
+    shouldComponentUpdate(nextProps) {
         return !(this.props.clicks < nextProps.clicks);
     }
 
     render() {
-        const {
-            label,
-            identity,
-            id,
-            class_name,
-            preset,
-            style,
-            disabled,
-            size,
-        } = this.props;
+        const {label, identity, id, class_name, preset, style, disabled, size} =
+            this.props;
 
         const css = collectTruePropKeys(this.props, [
             'rounded',

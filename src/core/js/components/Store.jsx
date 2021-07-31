@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
  * Store data in the browser memory. Data last until the page is refreshed.
  */
 export default class Store extends React.Component {
-    shouldComponentUpdate(nextProps, nextState, nextContext) {
+    shouldComponentUpdate() {
         return false;
     }
 

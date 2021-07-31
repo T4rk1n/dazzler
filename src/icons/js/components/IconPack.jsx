@@ -7,12 +7,12 @@ import IconContext from '../IconContext';
  * A pack of font icons to load.
  */
 const IconPack = (props) => {
-    const {name, icon_type, url} = props;
+    const {name, url} = props;
     const context = useContext(IconContext);
 
     useEffect(() => {
         loadCss(url).then(() => {
-            context.addPack({name, url, icon_type});
+            context.addPack({name, url});
         });
     }, []);
 

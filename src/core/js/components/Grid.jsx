@@ -60,4 +60,5 @@ Grid.propTypes = {
      * Update aspects on the backend.
      */
     updateAspects: PropTypes.func,
+    class_name: PropTypes.string,
 };
