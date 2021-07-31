@@ -6,6 +6,7 @@ Versions follow [Semantic Versioning](https://www.semver.org)
 ### Added
 
 - :sparkles: Typescript component generation support for functional components.
+- :wrench: Add reload delay config, wait for a moment before starting the reload watch.
 
 ## [0.6.1]
 ### Fixed
