@@ -31,14 +31,14 @@ export default class Modal extends React.Component {
             <div className={class_name} style={style} id={identity}>
                 <div
                     className={`modal-overlay${active ? ' modal-active' : ''}`}
-                    onClick={e => {
+                    onClick={(e) => {
                         this.props.updateAspects({active: false});
                         e.stopPropagation();
                     }}
                 >
                     <div
                         className="modal-content"
-                        onClick={e => e.stopPropagation()}
+                        onClick={(e) => e.stopPropagation()}
                     >
                         <div className="modal-header">
                             <div>{header}</div>
@@ -56,7 +56,9 @@ export default class Modal extends React.Component {
                             )}
                         </div>
                         <div className="modal-body">{body}</div>
-                        {footer && <div className="modal-footer">{footer}</div>}
+                        {footer && (
+                            <div className="modal-footer">{footer}</div>
+                        )}
                     </div>
                 </div>
             </div>

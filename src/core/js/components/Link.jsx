@@ -8,15 +8,8 @@ import PropTypes from 'prop-types';
  */
 export default class Link extends React.Component {
     render() {
-        const {
-            id,
-            class_name,
-            href,
-            children,
-            style,
-            page_name,
-            identity,
-        } = this.props;
+        const {id, class_name, href, children, style, page_name, identity} =
+            this.props;
         let url = href;
         if (page_name) {
             url = `${

@@ -5,14 +5,14 @@ const args = process.argv.slice(2);
 const src = args[0];
 
 function walk(directory, components = {}) {
-    fs.readdirSync(src).forEach(f => {
+    fs.readdirSync(src).forEach((f) => {
         const filepath = path.join(directory, f);
         if (fs.lstatSync(filepath).isDirectory()) {
             walk(f, components);
         } else {
             try {
                 const handlers = reactDocs.defaultHandlers.concat([
-                    function(doc, path, importer) {
+                    function (doc, path, importer) {
                         const isContext = reactDocs.utils.getMemberValuePath(
                             path,
                             'isContext',

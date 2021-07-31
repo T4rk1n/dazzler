@@ -23,15 +23,8 @@ export default class Container extends React.Component {
     }
 
     render() {
-        const {
-            id,
-            class_name,
-            style,
-            children,
-            title,
-            identity,
-            draggable,
-        } = this.props;
+        const {id, class_name, style, children, title, identity, draggable} =
+            this.props;
         return (
             <div
                 id={id || identity}

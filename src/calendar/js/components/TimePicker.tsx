@@ -14,14 +14,8 @@ import {TimePickerProps} from '../types';
  *     - ``time-value``
  */
 const TimePicker = (props: TimePickerProps) => {
-    const {
-        fallback_mode,
-        value,
-        class_name,
-        identity,
-        mode,
-        updateAspects,
-    } = props;
+    const {fallback_mode, value, class_name, identity, mode, updateAspects} =
+        props;
     const [opened, setOpened] = useState(false);
     const [hour, setHour] = useState(() => {
         if (value) {
@@ -93,7 +87,7 @@ const TimePicker = (props: TimePickerProps) => {
                         {range(
                             mode === '24h' ? 0 : 1,
                             mode === '24h' ? 24 : 13
-                        ).map(h => (
+                        ).map((h) => (
                             <div
                                 className="time-value"
                                 key={`${identity}-hour-${h}`}
@@ -105,7 +99,7 @@ const TimePicker = (props: TimePickerProps) => {
                     </div>
                     <div className="time-range">
                         <div>MM</div>
-                        {range(0, 60).map(m => (
+                        {range(0, 60).map((m) => (
                             <div
                                 className="time-value"
                                 key={`${identity}-min-${m}`}
@@ -118,7 +112,7 @@ const TimePicker = (props: TimePickerProps) => {
                     {mode === 'AM/PM' && (
                         <div className="time-range">
                             <div>AM/PM</div>
-                            {['AM', 'PM'].map(e => (
+                            {['AM', 'PM'].map((e) => (
                                 <div
                                     className="time-value"
                                     key={`${identity}-${e}`}

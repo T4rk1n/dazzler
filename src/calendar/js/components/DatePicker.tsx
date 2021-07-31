@@ -13,14 +13,8 @@ import {DatePickerProps} from '../types';
  *     - ``picker``
  */
 const DatePicker = (props: DatePickerProps) => {
-    const {
-        class_name,
-        identity,
-        opened,
-        value,
-        date_format,
-        updateAspects,
-    } = props;
+    const {class_name, identity, opened, value, date_format, updateAspects} =
+        props;
 
     useEffect(() => {
         if (!value) {
@@ -30,13 +24,15 @@ const DatePicker = (props: DatePickerProps) => {
         }
     }, [value, updateAspects]);
 
-    if (value === undefined) {return null;}
+    if (value === undefined) {
+        return null;
+    }
 
     return (
         <div className={class_name} id={identity}>
             <input
                 type="text"
-                onClick={e => {
+                onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
                     updateAspects({opened: !opened});
@@ -64,6 +60,5 @@ const DatePicker = (props: DatePickerProps) => {
 DatePicker.defaultProps = {
     date_format: 'DD MMM YYYY',
 };
-
 
 export default DatePicker;

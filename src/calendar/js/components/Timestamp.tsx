@@ -10,10 +10,10 @@ import {TimestampProps} from '../types';
 const Timestamp = (props: TimestampProps) => {
     const {class_name, style, identity, value, format} = props;
 
-    const formattedValue = useMemo(() => formatter(new Date(value), format), [
-        value,
-        format,
-    ]);
+    const formattedValue = useMemo(
+        () => formatter(new Date(value), format),
+        [value, format]
+    );
 
     return (
         <span className={class_name} style={style} id={identity}>

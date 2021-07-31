@@ -80,30 +80,26 @@ export default class Slider extends React.Component {
     }
 
     render() {
-        const {
-            class_name,
-            identity,
-            minimum,
-            maximum,
-            value,
-            style,
-        } = this.props;
+        const {class_name, identity, minimum, maximum, value, style} =
+            this.props;
         const {dragging} = this.state;
         const total = maximum - minimum;
         const width = ((value - minimum) / total) * 100;
         return (
             <div className={class_name} id={identity} style={style}>
-                <div className="slider-area" ref={r => (this._root = r)}>
+                <div className="slider-area" ref={(r) => (this._root = r)}>
                     <div
                         className="slider-spacer"
                         style={{width: `${width}%`}}
                     />
                     <div
-                        className={`slider-handle${dragging ? ' dragged' : ''}`}
+                        className={`slider-handle${
+                            dragging ? ' dragged' : ''
+                        }`}
                         draggable={true}
                         onDragStart={this.onDragStart}
                         onDragEnd={this.onDragEnd}
-                        ref={r => (this._draggable = r)}
+                        ref={(r) => (this._draggable = r)}
                     />
                 </div>
             </div>

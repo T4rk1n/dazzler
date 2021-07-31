@@ -12,7 +12,7 @@ export default class DataList extends React.Component {
             <div className={class_name} id={id || identity} title={title}>
                 <input
                     list={list_id}
-                    onChange={e => {
+                    onChange={(e) => {
                         const value = e.target.value;
                         const data_value = options.reduce(
                             (data, option) =>
@@ -24,7 +24,7 @@ export default class DataList extends React.Component {
                     value={value}
                 />
                 <datalist id={list_id}>
-                    {options.map(option => (
+                    {options.map((option) => (
                         <option value={option.label} />
                     ))}
                 </datalist>

@@ -42,12 +42,14 @@ export default class CheckList extends React.Component {
                                     input_class_name || inputs_class_name
                                 }
                                 style={options_style}
-                                onChange={e =>
+                                onChange={(e) =>
                                     this.props.updateAspects({
                                         values: e.target.checked
-                                            ? concat(this.props.values, [value])
+                                            ? concat(this.props.values, [
+                                                  value,
+                                              ])
                                             : this.props.values.filter(
-                                                  v => v !== value
+                                                  (v) => v !== value
                                               ),
                                     })
                                 }

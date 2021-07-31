@@ -12,10 +12,10 @@ import {
 export function isComponent(c: any): boolean {
     return (
         type(c) === 'Object' &&
-        (c.hasOwnProperty('package') &&
-            c.hasOwnProperty('aspects') &&
-            c.hasOwnProperty('name') &&
-            c.hasOwnProperty('identity'))
+        c.hasOwnProperty('package') &&
+        c.hasOwnProperty('aspects') &&
+        c.hasOwnProperty('name') &&
+        c.hasOwnProperty('identity')
     );
 }
 
@@ -29,7 +29,7 @@ export function hydrateProps(
     const replace = {};
     Object.entries(props).forEach(([k, v]) => {
         if (type(v) === 'Array') {
-            replace[k] = v.map(c => {
+            replace[k] = v.map((c) => {
                 if (!isComponent(c)) {
                     // Mixing components and primitives
                     if (type(c) === 'Object') {

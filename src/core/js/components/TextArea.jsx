@@ -49,10 +49,10 @@ export default class TextArea extends React.Component {
                 rows={rows}
                 value={value}
                 required={required}
-                ref={r => (this.elem = r)}
+                ref={(r) => (this.elem = r)}
                 className={join(' ', css)}
                 style={{...style}}
-                onChange={e => {
+                onChange={(e) => {
                     this.props.updateAspects({value: e.target.value});
                     if (autosize) {
                         this.resize();

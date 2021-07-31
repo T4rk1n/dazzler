@@ -54,13 +54,13 @@ export default class PopUp extends React.Component<PopUpProps, PopUpState> {
                         ...(content_style || {}),
                         left: this.state.pos || 0,
                     }}
-                    ref={r => (this.popupRef = r)}
+                    ref={(r) => (this.popupRef = r)}
                 >
                     {content}
                 </div>
                 <div
                     className="popup-children"
-                    onMouseEnter={e => {
+                    onMouseEnter={(e) => {
                         if (mode === 'hover') {
                             this.setState(
                                 {pos: getMouseX(e, this.popupRef)},
@@ -71,7 +71,7 @@ export default class PopUp extends React.Component<PopUpProps, PopUpState> {
                     onMouseLeave={() =>
                         mode === 'hover' && updateAspects({active: false})
                     }
-                    onClick={e => {
+                    onClick={(e) => {
                         if (mode === 'click') {
                             this.setState(
                                 {pos: getMouseX(e, this.popupRef)},

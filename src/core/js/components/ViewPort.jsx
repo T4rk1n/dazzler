@@ -37,7 +37,7 @@ export default class ViewPort extends React.Component {
                             vertical_tabs ? ' vertical' : ''
                         }${rounded_tabs ? ' rounded' : ''}`}
                     >
-                        {keys(views).map(k => (
+                        {keys(views).map((k) => (
                             <div
                                 className={`dazzler-tab${
                                     k === active ? ' tab-active' : ''

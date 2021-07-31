@@ -13,7 +13,7 @@ const OptionType = {
     class_name: PropTypes.string,
 };
 
-const DropdownOption = props => {
+const DropdownOption = (props) => {
     const {label, value, onClick, style, class_name, selected} = props;
 
     const className = useMemo(() => {
@@ -30,7 +30,7 @@ const DropdownOption = props => {
     return (
         <div
             className={className}
-            onClick={e => {
+            onClick={(e) => {
                 e.stopPropagation();
                 onClick({value, label});
             }}
@@ -47,14 +47,14 @@ DropdownOption.propTypes = {
     selected: PropTypes.bool,
 };
 
-const SelectedItem = props => {
+const SelectedItem = (props) => {
     const {option, onRemove} = props;
     return (
         <div className="drop-selected-item">
             <div className="selected-label">{option.label}</div>
             <div
                 className="selected-remover"
-                onClick={e => {
+                onClick={(e) => {
                     e.stopPropagation();
                     onRemove(option);
                 }}
@@ -95,7 +95,7 @@ const SelectedItem = props => {
  *      )
  *
  */
-const Dropdown = props => {
+const Dropdown = (props) => {
     const {
         options,
         class_name,
@@ -172,7 +172,7 @@ const Dropdown = props => {
         return join(' ', css);
     }, [opened, scrollable]);
 
-    const onItemClick = option => {
+    const onItemClick = (option) => {
         const {value: itemValue} = option;
 
         const payload = {opened: false};
@@ -211,7 +211,7 @@ const Dropdown = props => {
         const matcher = includes(search_value);
 
         updateAspects({
-            filtered_options: filter(option => {
+            filtered_options: filter((option) => {
                 if (is(String, option)) {
                     return matcher(option);
                 }
@@ -243,7 +243,7 @@ const Dropdown = props => {
     }, [search_value, search_backend, options, search_props, search_label]);
 
     const onSearch = useCallback(
-        e => {
+        (e) => {
             const payload = {search_value: e.target.value};
             if (!opened) {
                 payload.opened = true;
@@ -287,7 +287,7 @@ const Dropdown = props => {
     }, [options, filtered_options, value, selectedItems]);
 
     const onToggle = useCallback(
-        event => {
+        (event) => {
             let open = !opened;
             updateAspects({opened: open});
             event.stopPropagation();

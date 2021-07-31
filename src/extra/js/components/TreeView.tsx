@@ -17,10 +17,10 @@ const TreeViewElement = ({
         () => selected && includes(identifier, selected),
         [selected, identifier]
     );
-    const isExpanded = useMemo(() => includes(identifier, expanded_items), [
-        expanded_items,
-        expanded_items,
-    ]);
+    const isExpanded = useMemo(
+        () => includes(identifier, expanded_items),
+        [expanded_items, expanded_items]
+    );
     const css = ['tree-item-label', `level-${level}`];
     if (isSelected) {
         css.push('selected');
@@ -33,7 +33,7 @@ const TreeViewElement = ({
         >
             <div
                 className={join(' ', css)}
-                onClick={e => onClick(e, identifier, Boolean(items))}
+                onClick={(e) => onClick(e, identifier, Boolean(items))}
             >
                 {items && (
                     <span className="tree-caret">
@@ -45,7 +45,7 @@ const TreeViewElement = ({
 
             {items && isExpanded && (
                 <div className="tree-sub-items">
-                    {items.map(item =>
+                    {items.map((item) =>
                         renderItem({
                             parent: identifier,
                             onClick,
@@ -144,7 +144,7 @@ const TreeView = ({
     };
     return (
         <div className={class_name} style={style} id={identity}>
-            {items.map(item =>
+            {items.map((item) =>
                 renderItem({
                     item,
                     onClick,
