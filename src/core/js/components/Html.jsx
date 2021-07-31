@@ -15,14 +15,14 @@ function prepareType(obj) {
         case 'Object':
             return map(prepareObject, obj);
         default:
-            return;
+            return null;
     }
 }
 
 function prepareObject(obj) {
     const payload = {};
 
-    for (let k in obj) {
+    for (const k in obj) {
         // noinspection JSUnfilteredForInLoop
         if (!k.startsWith('_')) {
             // noinspection JSUnfilteredForInLoop
@@ -69,7 +69,7 @@ export default class Html extends React.Component {
         });
     }
 
-    shouldComponentUpdate(nextProps, nextState, nextContext) {
+    shouldComponentUpdate(nextProps) {
         // Ignore virtual event don't need a re-render of
         // the whole children.
         return !(this.props.event !== nextProps.event);

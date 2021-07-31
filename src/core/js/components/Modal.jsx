@@ -56,9 +56,7 @@ export default class Modal extends React.Component {
                             )}
                         </div>
                         <div className="modal-body">{body}</div>
-                        {footer && (
-                            <div className="modal-footer">{footer}</div>
-                        )}
+                        {footer && <div className="modal-footer">{footer}</div>}
                     </div>
                 </div>
             </div>

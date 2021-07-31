@@ -31,15 +31,8 @@ const Caret = ({side, opened}: CaretProps) => {
  *     - ``bottom``
  */
 const Drawer = (props: DrawerProps) => {
-    const {
-        class_name,
-        identity,
-        style,
-        children,
-        opened,
-        side,
-        updateAspects,
-    } = props;
+    const {class_name, identity, style, children, opened, side, updateAspects} =
+        props;
 
     const css: string[] = [side];
 

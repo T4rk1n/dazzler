@@ -19,6 +19,7 @@ const Icon = (props) => {
         if (split2.length > 1) {
             return split2[0];
         }
+        return name;
     }, [icon_pack, name]);
 
     if (!find(propEq('name', pack))(context.packs)) {

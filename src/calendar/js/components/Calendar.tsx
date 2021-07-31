@@ -61,8 +61,7 @@ const Calendar = (props: CalendarProps) => {
     }
 
     useEffect(() => {
-        const payload: {month_timestamp?: number; selected?: CalendarDate} =
-            {};
+        const payload: {month_timestamp?: number; selected?: CalendarDate} = {};
         let ts, toUpdate;
 
         if (month_timestamp === undefined) {

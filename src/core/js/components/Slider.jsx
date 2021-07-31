@@ -48,7 +48,7 @@ export default class Slider extends React.Component {
         // then the value is equal to  minimum + percent * range width
         const {minimum, maximum, round} = this.props;
         const x = pageX - this._root.offsetLeft;
-        let percentage = x / this._root.offsetWidth;
+        const percentage = x / this._root.offsetWidth;
         const width = maximum - minimum;
 
         let value = minimum + percentage * width;
@@ -93,9 +93,7 @@ export default class Slider extends React.Component {
                         style={{width: `${width}%`}}
                     />
                     <div
-                        className={`slider-handle${
-                            dragging ? ' dragged' : ''
-                        }`}
+                        className={`slider-handle${dragging ? ' dragged' : ''}`}
                         draggable={true}
                         onDragStart={this.onDragStart}
                         onDragEnd={this.onDragEnd}

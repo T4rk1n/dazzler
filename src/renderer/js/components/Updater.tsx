@@ -391,10 +391,7 @@ export default class Updater extends React.Component<
                         response.requirements,
                         response.packages
                     ).then(() => {
-                        if (
-                            keys(response.bindings).length ||
-                            response.reload
-                        ) {
+                        if (keys(response.bindings).length || response.reload) {
                             this._connectWS();
                         } else {
                             this.setState({ready: true});

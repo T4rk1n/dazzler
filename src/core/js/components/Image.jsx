@@ -15,7 +15,7 @@ import {collectTruePropKeys} from 'commons';
  *     - ``centered``
  */
 export default class Image extends React.Component {
-    shouldComponentUpdate(nextProps, nextState, nextContext) {
+    shouldComponentUpdate(nextProps) {
         return !(this.props.clicks < nextProps.clicks);
     }
 

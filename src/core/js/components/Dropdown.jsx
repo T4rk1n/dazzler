@@ -65,6 +65,11 @@ const SelectedItem = (props) => {
     );
 };
 
+SelectedItem.propTypes = {
+    option: OptionType,
+    onRemove: PropTypes.func,
+};
+
 /**
  * A dropdown to select options from a list.
  *
@@ -142,7 +147,9 @@ const Dropdown = (props) => {
 
     const containerStyle = useMemo(() => {
         const s = {};
-        if (!opened) return s;
+        if (!opened) {
+            return s;
+        }
 
         // TODO orient top or bottom.
 
@@ -288,7 +295,7 @@ const Dropdown = (props) => {
 
     const onToggle = useCallback(
         (event) => {
-            let open = !opened;
+            const open = !opened;
             updateAspects({opened: open});
             event.stopPropagation();
             if (open) {

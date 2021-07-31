@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useCallback, useReducer} from 'react';
+import React, {useEffect, useReducer} from 'react';
 import PropTypes from 'prop-types';
 import IconContext from '../IconContext';
 import {concat} from 'ramda';

@@ -16,7 +16,7 @@ import PropTypes from 'prop-types';
  *     - ``hidden``
  */
 export default class Container extends React.Component {
-    shouldComponentUpdate(nextProps, nextState, nextContext) {
+    shouldComponentUpdate(nextProps) {
         // Ignore virtual n_clicks don't need a re-render of
         // the whole children.
         return !(this.props.clicks < nextProps.clicks);
