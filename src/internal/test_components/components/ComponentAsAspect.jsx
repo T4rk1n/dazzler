@@ -14,7 +14,7 @@ export default class ComponentAsAspect extends React.Component {
                 </div>
                 <div className="shape">{shape.shaped}</div>
                 <div className="list_of_dict">
-                    {list_of_dict.map(e => (
+                    {list_of_dict.map((e) => (
                         <div key={e.value}>{e.label}</div>
                     ))}
                 </div>

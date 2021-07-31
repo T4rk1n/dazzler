@@ -6,7 +6,7 @@ import IconContext from '../IconContext';
 /**
  * A pack of font icons to load.
  */
-const IconPack = props => {
+const IconPack = (props) => {
     const {name, icon_type, url} = props;
     const context = useContext(IconContext);
 

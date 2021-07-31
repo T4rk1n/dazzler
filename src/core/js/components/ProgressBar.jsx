@@ -65,9 +65,9 @@ export default class ProgressBar extends React.Component {
             <div
                 id={id || identity}
                 className={join(' ', outerClasses)}
-                ref={r => (this.progress = r)}
+                ref={(r) => (this.progress = r)}
                 style={style}
-                onClick={e => {
+                onClick={(e) => {
                     const x = e.pageX - this.progress.offsetLeft;
                     const y = e.pageY - this.progress.offsetTop;
                     const clicked = (x * maximum) / this.progress.offsetWidth;

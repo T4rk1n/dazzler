@@ -55,16 +55,16 @@ export default class Updater extends React.Component<
     }
 
     updateAspects(identity, aspects) {
-        return new Promise(resolve => {
+        return new Promise((resolve) => {
             const aspectKeys = keys(aspects);
             let bindings: Binding[] | EvolvedBinding[] = aspectKeys
                 .map((key: string) => ({
                     ...this.state.bindings[`${key}@${identity}`],
                     value: aspects[key],
                 }))
-                .filter(e => e.trigger);
+                .filter((e) => e.trigger);
 
-            this.state.rebindings.forEach(binding => {
+            this.state.rebindings.forEach((binding) => {
                 if (binding.trigger.identity.test(identity)) {
                     // @ts-ignore
                     bindings = concat(
@@ -73,7 +73,7 @@ export default class Updater extends React.Component<
                             .filter((k: string) =>
                                 binding.trigger.aspect.test(k)
                             )
-                            .map(k => ({
+                            .map((k) => ({
                                 ...binding,
                                 value: aspects[k],
                                 trigger: {
@@ -87,7 +87,7 @@ export default class Updater extends React.Component<
             });
 
             flatten(
-                aspectKeys.map(key => {
+                aspectKeys.map((key) => {
                     const ties = [];
                     for (let i = 0; i < this.state.ties.length; i++) {
                         const tie = this.state.ties[i];
@@ -107,7 +107,7 @@ export default class Updater extends React.Component<
                     }
                     return ties;
                 })
-            ).forEach(tie => {
+            ).forEach((tie) => {
                 const {transforms} = tie;
                 let value = tie.value;
                 if (transforms) {
@@ -122,7 +122,7 @@ export default class Updater extends React.Component<
                     }, value);
                 }
 
-                tie.targets.forEach(t => {
+                tie.targets.forEach((t) => {
                     const component = this.boundComponents[t.identity];
                     if (component) {
                         component.updateAspects({[t.aspect]: value});
@@ -133,7 +133,7 @@ export default class Updater extends React.Component<
             if (!bindings) {
                 resolve(0);
             } else {
-                bindings.forEach(binding =>
+                bindings.forEach((binding) =>
                     this.sendBinding(binding, binding.value)
                 );
                 resolve(bindings.length);
@@ -173,7 +173,7 @@ export default class Updater extends React.Component<
         }
         switch (kind) {
             case 'set-aspect':
-                const setAspects = component =>
+                const setAspects = (component) =>
                     component
                         .setAspects(
                             hydrateProps(
@@ -188,7 +188,7 @@ export default class Updater extends React.Component<
                     const pattern = new RegExp(data.identity);
                     keys(this.boundComponents)
                         .filter((k: string) => pattern.test(k))
-                        .map(k => this.boundComponents[k])
+                        .map((k) => this.boundComponents[k])
                         .forEach(setAspects);
                 } else {
                     setAspects(this.boundComponents[identity]);
@@ -247,7 +247,7 @@ export default class Updater extends React.Component<
                     return;
                 }
                 filenames.forEach(loadRequirement);
-                deleted.forEach(r => disableCss(r.url));
+                deleted.forEach((r) => disableCss(r.url));
                 break;
             case 'ping':
                 // Just do nothing.
@@ -316,8 +316,10 @@ export default class Updater extends React.Component<
         const connexion = () => {
             const url = `ws${
                 window.location.href.startsWith('https') ? 's' : ''
-            }://${(this.props.baseUrl && this.props.baseUrl) ||
-                window.location.host}/${this.state.page}/ws`;
+            }://${
+                (this.props.baseUrl && this.props.baseUrl) ||
+                window.location.host
+            }/${this.state.page}/ws`;
             this.ws = new WebSocket(url);
             this.ws.addEventListener('message', this.onMessage);
             this.ws.onopen = () => {
@@ -348,15 +350,15 @@ export default class Updater extends React.Component<
     }
 
     componentDidMount() {
-        this.pageApi('', {method: 'POST'}).then(response => {
-            const toRegex = x => new RegExp(x);
+        this.pageApi('', {method: 'POST'}).then((response) => {
+            const toRegex = (x) => new RegExp(x);
             this.setState(
                 {
                     page: response.page,
                     layout: response.layout,
-                    bindings: pickBy(b => !b.regex, response.bindings),
+                    bindings: pickBy((b) => !b.regex, response.bindings),
                     // Regex bindings triggers
-                    rebindings: map(x => {
+                    rebindings: map((x) => {
                         const binding = response.bindings[x];
                         binding.trigger = evolve(
                             {
@@ -366,13 +368,18 @@ export default class Updater extends React.Component<
                             binding.trigger
                         );
                         return binding;
-                    }, keys(pickBy(b => b.regex, response.bindings))),
+                    }, keys(pickBy((b) => b.regex, response.bindings))),
                     packages: response.packages,
                     requirements: response.requirements,
-                    ties: map(tie => {
+                    ties: map((tie) => {
                         if (tie.trigger.regex) {
                             return evolve(
-                                {trigger: {identity: toRegex, aspect: toRegex}},
+                                {
+                                    trigger: {
+                                        identity: toRegex,
+                                        aspect: toRegex,
+                                    },
+                                },
                                 tie
                             );
                         }
@@ -384,7 +391,10 @@ export default class Updater extends React.Component<
                         response.requirements,
                         response.packages
                     ).then(() => {
-                        if (keys(response.bindings).length || response.reload) {
+                        if (
+                            keys(response.bindings).length ||
+                            response.reload
+                        ) {
                             this._connectWS();
                         } else {
                             this.setState({ready: true});
@@ -418,7 +428,7 @@ export default class Updater extends React.Component<
 
         const contexts = [];
 
-        const onContext = contextComponent => {
+        const onContext = (contextComponent) => {
             contexts.push(contextComponent);
         };
 

@@ -1,12 +1,12 @@
 import {DazzlerProps} from '../commons/js/types';
 
 type FooBarProps = {
-    foo: string,
-    bar: number,
-}
+    foo: string;
+    bar: number;
+};
 
 type DefinedUnion = string | number | string[] | number[];
-type DefinedEnum = "foo" | "bar"
+type DefinedEnum = 'foo' | 'bar';
 
 export interface TypedComponentProps extends DazzlerProps {
     foobar?: FooBarProps;
@@ -29,7 +29,7 @@ export interface TypedComponentProps extends DazzlerProps {
 
     obj?: object;
     obj_lit?: {
-        name: string,
+        name: string;
     };
 
     enumeration?: 'foo' | 'bar';

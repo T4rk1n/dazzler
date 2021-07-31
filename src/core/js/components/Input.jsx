@@ -50,7 +50,7 @@ export default class Input extends React.Component {
                 minLength={min_length}
                 maxLength={max_length}
                 {...omit(omitted, this.props)}
-                onChange={e => {
+                onChange={(e) => {
                     const payload = {};
                     switch (this.props.type) {
                         case 'number':
@@ -67,7 +67,7 @@ export default class Input extends React.Component {
                 onBlur={() =>
                     this.props.updateAspects({n_blur: this.props.n_blur + 1})
                 }
-                onKeyUp={e => {
+                onKeyUp={(e) => {
                     if (e.key === 'Enter') {
                         this.props.updateAspects({
                             n_submit: this.props.n_submit + 1,

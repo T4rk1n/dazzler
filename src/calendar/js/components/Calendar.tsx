@@ -14,7 +14,7 @@ function calendar(month, year) {
     );
     const cal = concat(
         shift.map(() => ({empty: true})),
-        range(1, days + 1).map(day => ({day, month, year}))
+        range(1, days + 1).map((day) => ({day, month, year}))
     );
     const chunked = chunk(cal, 7);
     if (chunked.length < 6) {
@@ -61,7 +61,8 @@ const Calendar = (props: CalendarProps) => {
     }
 
     useEffect(() => {
-        const payload: {month_timestamp?: number; selected?: CalendarDate} = {};
+        const payload: {month_timestamp?: number; selected?: CalendarDate} =
+            {};
         let ts, toUpdate;
 
         if (month_timestamp === undefined) {
@@ -128,7 +129,7 @@ const Calendar = (props: CalendarProps) => {
                 </span>
             </div>
             <div className="week-labels">
-                {week_labels.map(week => (
+                {week_labels.map((week) => (
                     <div className="week-label" key={`${identity}-wl-${week}`}>
                         {week}
                     </div>
@@ -161,7 +162,7 @@ const Calendar = (props: CalendarProps) => {
                                         )
                                     )}
                                     key={`${identity}-day-${day.day}`}
-                                    onClick={e => {
+                                    onClick={(e) => {
                                         e.preventDefault();
                                         e.stopPropagation();
                                         const payload = {

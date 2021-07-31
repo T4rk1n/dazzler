@@ -10,15 +10,8 @@ import {LogoutProps} from '../types';
  *     - ``logout-button``
  */
 const Logout = (props: LogoutProps) => {
-    const {
-        logout_url,
-        label,
-        method,
-        class_name,
-        style,
-        identity,
-        next_url,
-    } = props;
+    const {logout_url, label, method, class_name, style, identity, next_url} =
+        props;
 
     return (
         <form

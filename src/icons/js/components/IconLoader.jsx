@@ -13,16 +13,16 @@ const reducer = (state, action) => concat(state, [action]);
  * Manage the loaded packs so icons knows when to render.
  * ``IconPack``'s in the layout need this component.
  */
-const IconLoader = props => {
+const IconLoader = (props) => {
     const {packs, children} = props;
     const [loadedPacks, dispatch] = useReducer(reducer, []);
 
-    const addPack = pack => {
+    const addPack = (pack) => {
         dispatch(pack);
     };
 
     useEffect(() => {
-        packs.forEach(pack => loadCss(pack.url).then(() => addPack(pack)));
+        packs.forEach((pack) => loadCss(pack.url).then(() => addPack(pack)));
     }, [packs]);
 
     return (

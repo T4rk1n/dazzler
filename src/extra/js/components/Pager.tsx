@@ -59,12 +59,8 @@ export default class Pager extends React.Component<PagerProps, PagerState> {
     }
 
     onChangePage(page) {
-        const {
-            items_per_page,
-            total_items,
-            updateAspects,
-            pages_displayed,
-        } = this.props;
+        const {items_per_page, total_items, updateAspects, pages_displayed} =
+            this.props;
         const {total_pages} = this.state;
 
         const start_offset = startOffset(page, items_per_page);
@@ -130,7 +126,7 @@ export default class Pager extends React.Component<PagerProps, PagerState> {
                         on_change={this.onChangePage}
                     />
                 )}
-                {pages.map(e => (
+                {pages.map((e) => (
                     <Page
                         page={e}
                         key={`page-${e}`}

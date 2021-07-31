@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import {join, find, propEq} from 'ramda';
 import IconContext from '../IconContext';
 
-const Icon = props => {
+const Icon = (props) => {
     const {name, class_name, style, identity, icon_pack} = props;
     const context = useContext(IconContext);
 

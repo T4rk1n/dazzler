@@ -6,7 +6,10 @@ import {WrapperProps, WrapperState} from '../types';
 /**
  * Wraps components for aspects updating.
  */
-export default class Wrapper extends React.Component<WrapperProps, WrapperState> {
+export default class Wrapper extends React.Component<
+    WrapperProps,
+    WrapperState
+> {
     constructor(props) {
         super(props);
         this.state = {
@@ -27,7 +30,7 @@ export default class Wrapper extends React.Component<WrapperProps, WrapperState>
     }
 
     setAspects(aspects) {
-        return new Promise<void>(resolve => {
+        return new Promise<void>((resolve) => {
             this.setState(
                 {aspects: {...this.state.aspects, ...aspects}},
                 resolve
@@ -41,8 +44,8 @@ export default class Wrapper extends React.Component<WrapperProps, WrapperState>
 
     matchAspects(pattern) {
         return keys(this.state.aspects)
-            .filter(k => pattern.test(k))
-            .map(k => [k, this.state.aspects[k]]);
+            .filter((k) => pattern.test(k))
+            .map((k) => [k, this.state.aspects[k]]);
     }
 
     componentDidMount() {
@@ -69,7 +72,9 @@ export default class Wrapper extends React.Component<WrapperProps, WrapperState>
     render() {
         const {component, component_name, package_name} = this.props;
         const {aspects, ready} = this.state;
-        if (!ready) {return null;}
+        if (!ready) {
+            return null;
+        }
 
         return React.cloneElement(component, {
             ...aspects,

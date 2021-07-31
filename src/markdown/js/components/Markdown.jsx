@@ -29,7 +29,7 @@ export default class Markdown extends React.Component {
                         snakeToCamelCase
                     )}
                     renderers={{
-                        code: props => <CodeBlock {...props} />,
+                        code: (props) => <CodeBlock {...props} />,
                     }}
                 >
                     {source}

@@ -26,9 +26,9 @@ const TypedComponent = (props: TypedComponentProps) => {
 
     return (
         <div className={class_name} id={identity} style={style}>
-            <div className='children'>{children}</div>
-            <div className='state'>{state}</div>
-            <div className='json-output'>
+            <div className="children">{children}</div>
+            <div className="state">{state}</div>
+            <div className="json-output">
                 {JSON.stringify({
                     num,
                     text,
@@ -40,7 +40,7 @@ const TypedComponent = (props: TypedComponentProps) => {
                     obj_lit,
                     required_str,
                     default_required_str,
-                    enumeration
+                    enumeration,
                 })}
             </div>
         </div>
@@ -50,7 +50,7 @@ const TypedComponent = (props: TypedComponentProps) => {
 TypedComponent.defaultProps = {
     default_str: 'default',
     default_required_str: 'default required',
-    default_num: 3
+    default_num: 3,
 };
 
 export default TypedComponent;

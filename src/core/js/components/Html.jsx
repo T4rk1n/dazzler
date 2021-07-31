@@ -11,7 +11,7 @@ function prepareType(obj) {
         case 'Null':
             return obj;
         case 'Array':
-            return obj.map(prepareType).filter(e => type(e) !== 'Undefined');
+            return obj.map(prepareType).filter((e) => type(e) !== 'Undefined');
         case 'Object':
             return map(prepareObject, obj);
         default:
@@ -46,7 +46,7 @@ export default class Html extends React.Component {
 
     componentDidMount() {
         if (this.props.events) {
-            this.props.events.forEach(e => {
+            this.props.events.forEach((e) => {
                 this.element.addEventListener(e, this.onEvent);
             });
         }
@@ -54,7 +54,7 @@ export default class Html extends React.Component {
 
     componentWillUnmount() {
         if (this.props.events) {
-            this.props.events.forEach(e => {
+            this.props.events.forEach((e) => {
                 this.element.removeEventListener(e, this.onEvent);
             });
         }
@@ -76,20 +76,14 @@ export default class Html extends React.Component {
     }
 
     render() {
-        const {
-            tag,
-            id,
-            class_name,
-            attributes,
-            identity,
-            children,
-        } = this.props;
+        const {tag, id, class_name, attributes, identity, children} =
+            this.props;
         return React.createElement(tag, {
             id: id || identity,
             className: class_name,
             children: children,
             ...attributes,
-            ref: r => (this.element = r),
+            ref: (r) => (this.element = r),
         });
     }
 }

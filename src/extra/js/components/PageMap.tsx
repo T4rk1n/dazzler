@@ -14,7 +14,7 @@ const PageMap = (props: DazzlerProps) => {
 
     useEffect(() => {
         // @ts-ignore
-        fetch(`${window.dazzler_base_url}/dazzler/page-map`).then(rep =>
+        fetch(`${window.dazzler_base_url}/dazzler/page-map`).then((rep) =>
             rep.json().then(setPageMap)
         );
     }, []);
@@ -22,7 +22,7 @@ const PageMap = (props: DazzlerProps) => {
     return (
         <ul className={class_name} style={style} id={identity}>
             {pageMap &&
-                pageMap.map(page => (
+                pageMap.map((page) => (
                     <li key={page.name}>
                         <a href={page.url}>{page.title}</a>
                     </li>

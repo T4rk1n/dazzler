@@ -24,7 +24,7 @@ export default class Select extends React.Component {
                 multiple={multi}
                 disabled={disabled}
                 placeholder={placeholder}
-                onChange={e => {
+                onChange={(e) => {
                     let value;
                     if (multi) {
                         const opts = e.target.options;
