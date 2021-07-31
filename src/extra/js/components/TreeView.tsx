@@ -1,9 +1,8 @@
 import React, {useMemo} from 'react';
-import PropTypes from 'prop-types';
 import {is, join, includes, split, slice, concat, without} from 'ramda';
-import {TreeViewItem, TreeViewItemProps, TreeViewProps} from '../types';
+import {TreeViewItemProps, TreeViewProps} from '../types';
 
-const TreeViewItem = ({
+const TreeViewElement = ({
     label,
     onClick,
     identifier,
@@ -34,7 +33,7 @@ const TreeViewItem = ({
         >
             <div
                 className={join(' ', css)}
-                onClick={e => onClick(e, identifier, !!items)}
+                onClick={e => onClick(e, identifier, Boolean(items))}
             >
                 {items && (
                     <span className="tree-caret">
@@ -67,7 +66,7 @@ const TreeViewItem = ({
 const renderItem = ({parent, item, level, ...rest}: any) => {
     if (is(String, item)) {
         return (
-            <TreeViewItem
+            <TreeViewElement
                 label={item}
                 identifier={parent ? join('.', [parent, item]) : item}
                 level={level || 0}
@@ -77,7 +76,7 @@ const renderItem = ({parent, item, level, ...rest}: any) => {
         );
     }
     return (
-        <TreeViewItem
+        <TreeViewElement
             {...item}
             level={level || 0}
             key={item.identifier}

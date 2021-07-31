@@ -69,7 +69,7 @@ export default class Wrapper extends React.Component<WrapperProps, WrapperState>
     render() {
         const {component, component_name, package_name} = this.props;
         const {aspects, ready} = this.state;
-        if (!ready) return null;
+        if (!ready) {return null;}
 
         return React.cloneElement(component, {
             ...aspects,

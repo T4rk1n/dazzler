@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import {PopUpProps} from '../types';
 
 function getMouseX(e, popup) {

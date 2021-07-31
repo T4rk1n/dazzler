@@ -1,5 +1,4 @@
 import {DazzlerProps} from '../../commons/js/types';
-import PropTypes from 'prop-types';
 
 type DrawerSide = 'top' | 'left' | 'right' | 'bottom';
 type DrawerProps = {
@@ -14,7 +13,7 @@ type DrawerProps = {
 type CaretProps = {
     side: DrawerSide;
     opened?: boolean;
-}
+};
 
 type NoticePermission = 'denied' | 'granted' | 'default' | 'unsupported';
 
@@ -72,7 +71,7 @@ type NoticeProps = {
 type NoticeState = {
     lastMessage?: string;
     notification?: any;
-}
+};
 
 type PagerProps = {
     /**
@@ -129,7 +128,7 @@ type PagerState = {
     end_offset?: number;
     total_pages?: number;
     pages?: number[];
-}
+};
 
 type PagerPageProps = {
     style?: object;
@@ -137,7 +136,7 @@ type PagerPageProps = {
     on_change?: Function;
     text?: string;
     page: number;
-}
+};
 
 type PopUpProps = {
     /**
@@ -234,7 +233,6 @@ type TreeViewProps = {
     nest_icon_expanded?: string;
 } & DazzlerProps;
 
-
 type TreeViewItemProps = TreeViewItem & {
     onClick?: Function;
     level?: number;
@@ -242,4 +240,4 @@ type TreeViewItemProps = TreeViewItem & {
     expanded_items?: string[];
     nest_icon_expanded?: string;
     nest_icon_collapsed?: string;
-}
+};

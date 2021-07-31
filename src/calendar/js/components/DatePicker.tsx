@@ -30,7 +30,7 @@ const DatePicker = (props: DatePickerProps) => {
         }
     }, [value, updateAspects]);
 
-    if (value === undefined) return null;
+    if (value === undefined) {return null;}
 
     return (
         <div className={class_name} id={identity}>

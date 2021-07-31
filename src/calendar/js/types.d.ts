@@ -1,6 +1,4 @@
 import {DazzlerProps} from '../../commons/js/types';
-import PropTypes from 'prop-types';
-
 
 type CalendarProps = {
     /**
@@ -12,9 +10,9 @@ type CalendarProps = {
      * The currently selected day as an object
      */
     selected?: {
-        day: number,
-        month: number,
-        year: number,
+        day: number;
+        month: number;
+        year: number;
     };
 
     /**
@@ -26,7 +24,7 @@ type CalendarProps = {
      */
     week_labels?: string[];
 
-    _on_click?: (date: CalendarDate) => void,
+    _on_click?: (date: CalendarDate) => void;
 
     /**
      * Whether to set selected aspect on click/start up.
@@ -35,13 +33,11 @@ type CalendarProps = {
     use_selected?: boolean;
 } & DazzlerProps;
 
-
 type DatePickerProps = {
     value?: number;
     opened?: boolean;
     date_format?: string;
 } & DazzlerProps;
-
 
 type TimePickerProps = {
     /**
@@ -60,16 +56,14 @@ type TimePickerProps = {
     mode?: '24h' | 'AM/PM';
 } & DazzlerProps;
 
-
 type TimestampProps = {
     value: number | string;
     format?: string;
     locale?: object;
 } & DazzlerProps;
 
-
 type CalendarDate = {
     day?: number;
     month?: number;
     year?: number;
-}
+};

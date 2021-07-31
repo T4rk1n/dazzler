@@ -114,10 +114,9 @@ type TransformFunc = (
     getAspect?: TransformGetAspectFunc
 ) => any;
 
-
 type XhrRequestOptions = {
     method?: string;
     headers?: AnyDict;
     payload?: string | Blob | ArrayBuffer | object | Array<any>;
     json?: boolean;
-}
+};

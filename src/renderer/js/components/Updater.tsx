@@ -131,19 +131,22 @@ export default class Updater extends React.Component<
             });
 
             if (!bindings) {
-                return resolve(0);
+                resolve(0);
+            } else {
+                bindings.forEach(binding =>
+                    this.sendBinding(binding, binding.value)
+                );
+                resolve(bindings.length);
             }
-
-            bindings.forEach(binding =>
-                this.sendBinding(binding, binding.value)
-            );
-            resolve(bindings.length);
         });
     }
 
-    getAspect(identity, aspect) {
+    getAspect(identity, aspect): any | undefined {
         const c = this.boundComponents[identity];
-        if (c) return c.getAspect(aspect);
+        if (c) {
+            return c.getAspect(aspect);
+        }
+        return undefined;
     }
 
     connect(identity, setAspects, getAspect, matchAspects, updateAspects) {
@@ -234,12 +237,14 @@ export default class Updater extends React.Component<
                 const {filenames, hot, refresh, deleted} = data;
                 if (refresh) {
                     this.ws.close();
-                    return this.setState({reloading: true, needRefresh: true});
+                    this.setState({reloading: true, needRefresh: true});
+                    return;
                 }
                 if (hot) {
                     // The ws connection will close, when it
                     // reconnect it will do a hard reload of the page api.
-                    return this.setState({reloading: true});
+                    this.setState({reloading: true});
+                    return;
                 }
                 filenames.forEach(loadRequirement);
                 deleted.forEach(r => disableCss(r.url));
@@ -437,12 +442,11 @@ export default class Updater extends React.Component<
         return (
             <div className="dazzler-rendered">
                 {contexts.length
-                    ? contexts.reduce((acc, Context, i) => {
+                    ? contexts.reduce((acc, Context) => {
                           if (!acc) {
                               return <Context>{hydrated}</Context>;
-                          } else {
-                              return <Context>{acc}</Context>;
                           }
+                          return <Context>{acc}</Context>;
                       }, null)
                     : hydrated}
             </div>
