@@ -1,8 +1,13 @@
 {
-  "extends": ["eslint:recommended", "prettier"],
-  "parser": "babel-eslint",
+  "root": true,
+  "extends": [
+    "eslint:recommended",
+    "prettier",
+    "plugin:@typescript-eslint/recommended"
+  ],
+  "parser": "@typescript-eslint/parser",
   "parserOptions": {
-    "ecmaVersion": 6,
+    "ecmaVersion": 2021,
     "sourceType": "module",
     "ecmaFeatures": {
       "arrowFunctions": true,
@@ -29,14 +34,15 @@
   },
   "plugins": [
     "react",
-    "import"
+    "import",
+    "@typescript-eslint"
   ],
   "rules": {
     "accessor-pairs": ["error"],
     "block-scoped-var": ["error"],
     "consistent-return": ["error"],
     "curly": ["error", "all"],
-    "default-case": ["error"],
+    "default-case": ["warn"],
     "dot-location": ["off"],
     "dot-notation": ["error"],
     "eqeqeq": ["error"],
@@ -47,7 +53,7 @@
     "new-cap": ["error"],
     "no-alert": [1],
     "no-caller": ["error"],
-    "no-case-declarations": ["error"],
+    "no-case-declarations": ["warn"],
     "no-console": ["off"],
     "no-div-regex": ["error"],
     "no-dupe-keys": ["error"],
@@ -73,7 +79,7 @@
     "no-new-func": ["error"],
     "no-new-wrappers": ["error"],
     "no-param-reassign": ["error"],
-    "no-process-env": ["warn"],
+    "no-process-env": ["off"],
     "no-proto": ["error"],
     "no-redeclare": ["error"],
     "no-return-assign": ["error"],
@@ -82,9 +88,9 @@
     "no-sequences": ["error"],
     "no-shadow": ["off"],
     "no-throw-literal": ["error"],
-    "no-undefined": ["error"],
+    "no-undefined": ["off"],
     "no-unused-expressions": ["error"],
-    "no-use-before-define": ["error", "nofunc"],
+    "no-use-before-define": ["off"],
     "no-useless-call": ["error"],
     "no-useless-concat": ["error"],
     "no-with": ["error"],
@@ -107,16 +113,25 @@
         "exceptions": ["*"]
       }
     }],
-    "no-unused-vars": ["error", {
-        "args": "after-used",
-        "argsIgnorePattern": "^_",
-        "caughtErrorsIgnorePattern": "^e$"
-    }],
+    "no-unused-vars": ["off"],
     "no-magic-numbers": ["off", {
       "ignoreArrayIndexes": true,
         "ignore": [-1, 0, 1, 2, 3, 100, 10, 0.5]
     }],
-    "no-underscore-dangle": ["off"]
+    "no-underscore-dangle": ["off"],
+    "no-undef": "off",
+    "prefer-rest-params": "warn",
+    "no-prototype-builtins": "off",
+    "@typescript-eslint/ban-types": "off",
+    "@typescript-eslint/ban-ts-comment": "off",
+    "@typescript-eslint/no-explicit-any": "off",
+    "@typescript-eslint/explicit-module-boundary-types": "off",
+    "@typescript-eslint/no-unused-vars": ["error", {
+        "args": "after-used",
+        "argsIgnorePattern": "^_",
+        "caughtErrorsIgnorePattern": "^e$"
+    }],
+    "@typescript-eslint/no-var-requires": "off"
   },
   "settings": {
     "react": {
