@@ -22,6 +22,7 @@ async def watch(
         on_change: typing.Callable,
         interval: float = 0.5,
         threshold: float = 3.0,
+        delay: float = 5.0
 ):
     """
     Watch for file changes in directories and files.
@@ -32,10 +33,13 @@ async def watch(
         files as first argument.
     :param interval: The rate at which to perform the change check on the files
     :param threshold: Wait time from first change til it fires reload events.
+    :param delay: Delay to sleep before starting the watch.
     :return:
     """
     timestamps = {}
     initial = True
+
+    await asyncio.sleep(delay)
 
     def handle_file(filepath):
         path = pathlib.Path(filepath)
@@ -230,5 +234,6 @@ async def start_reloader(app, reloaded=False, start_event=None):
             app.on_file_change,
             app.config.development.reload_interval,
             app.config.development.reload_threshold,
+            app.config.development.reload_delay
         )
         await app.stop()
