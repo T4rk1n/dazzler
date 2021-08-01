@@ -114,6 +114,11 @@ class ElectronBuilder:
         }
         package['version'] = self.config.version
 
+        package['devDependencies']['electron'] =\
+            self.config.electron.builder.electron_version
+        package['devDependencies']['electron-builder'] =\
+            self.config.electron.builder.electron_builder_version
+
         if self.config.electron.builder.app_id:
             package['build']['appId'] = self.config.electron.builder.app_id
 
