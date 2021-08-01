@@ -20,7 +20,7 @@
     "build:dazzler::icons": "dazzler generate src/icons/js/components dazzler/components/icons",
     "build:dazzler": "run-p build:dazzler::core build:dazzler::test build:dazzler::extra build:dazzler::calendar build:dazzler::markdown build:dazzler::auth build:dazzler::icons build:dazzler::ts",
     "build:docs": "docs/build.sh",
-    "build": "run-s build:webpack build:dev",
+    "build": "run-s build:webpack build:dev build:electron",
     "watch": "npm run build:dev -- --watch",
     "lint": "eslint src --ext js --ext jsx --ext ts --ext tsx",
     "format": "prettier --write ./src/**/*.js src/**/*.jsx src/**/*.ts src/**/*.tsx",
