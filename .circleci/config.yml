@@ -6,6 +6,8 @@ jobs:
       - image: circleci/redis:latest
     environment:
       PYTHONPATH: ~/repo
+      ELECTRON_DRIVER: electron-driver
+      ELECTRON_CHROME_VERSION: 91.0.4472.101
 
     working_directory: ~/repo
 
@@ -25,6 +27,14 @@ jobs:
             pip install -r requirements-dev.txt --quiet
             npm ci
 
+      - run:
+          name: Install chromedriver version for electron.
+          command: |
+            mkdir ~/electron-driver
+            curl https://chromedriver.storage.googleapis.com/$ELECTRON_CHROME_VERSION/chromedriver_linux64.zip -o ~/electron-driver/driver.zip
+            unzip ~/electron-driver/driver.zip -d ~/electron-driver
+            mv ~/electron-driver/chromedriver ~/electron-driver/electron-driver
+
       - save_cache:
           paths:
             - ./venv
@@ -42,6 +52,8 @@ jobs:
           name: Test
           command: |
             . venv/bin/activate
+            echo 'export PATH=$HOME/electron-driver:$PATH' >> $BASH_ENV
+            source $BASH_ENV
             pytest -ra --junitxml=~/test-reports/dazzler/results.xml --cov=dazzler
 
       - store_artifacts:
