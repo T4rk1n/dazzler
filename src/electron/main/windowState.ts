@@ -53,7 +53,9 @@ export async function createWindowState(
             width: 800,
             height: 600,
             fullscreen: false,
+            // eslint-disable-next-line @typescript-eslint/no-empty-function
             save() {},
+            // eslint-disable-next-line @typescript-eslint/no-empty-function
             sync() {},
         };
         await saveWindowState(state);

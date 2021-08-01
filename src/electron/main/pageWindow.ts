@@ -2,11 +2,9 @@ import {BrowserWindow} from 'electron';
 import installExtension, {
     REACT_DEVELOPER_TOOLS,
 } from 'electron-devtools-installer';
-import PageWindow = dazzler_electron.PageWindow;
-import CreatePageWindowOptions = dazzler_electron.CreatePageWindowOptions;
 import {createWindowState} from './windowState';
 
-export default async function(
+export default async function (
     isDevelopment: boolean,
     pageWindow: PageWindow,
     options: CreatePageWindowOptions
