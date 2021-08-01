@@ -81,22 +81,24 @@ def start_page(start_visit):  # pylint: disable=redefined-outer-name
 
 @pytest.fixture()
 def run_background_cmd():
-    ns = {'processes': [], 'tasks': []}
+    namespace = {'processes': [], 'tasks': []}
 
     def _runner(cmd):
         async def runner():
-            ns['proceses'].append(await asyncio.create_subprocess_shell(cmd))
+            namespace['proceses'].append(
+                await asyncio.create_subprocess_shell(cmd))
 
-        ns['tasks'].append(asyncio.get_event_loop().create_task(runner()))
+        namespace['tasks'].append(
+            asyncio.get_event_loop().create_task(runner()))
 
     yield _runner
 
     async def killer():
-        for proc in ns['processes']:
+        for proc in namespace['processes']:
             await kill_processes(proc.pid)
             await proc.wait()
 
-        for task in ns['tasks']:
+        for task in namespace['tasks']:
             task.cancel()
 
     asyncio.get_event_loop().run_until_complete(killer())
@@ -104,16 +106,16 @@ def run_background_cmd():
 
 @pytest.fixture()
 def electron_driver():
-    ns = {}
+    namespace = {}
 
     def initialize(binary_location):
         options = webdriver.ChromeOptions()
         options.binary_location = binary_location
-        driver = ns['driver'] = webdriver.Chrome(chrome_options=options)
+        driver = namespace['driver'] = webdriver.Chrome(chrome_options=options)
         return AsyncDriver(driver)
 
     yield initialize
 
-    if 'driver' in ns:
+    if 'driver' in namespace:
         # Need close not quit to cleanup the processes in electron.
-        ns['driver'].close()
+        namespace['driver'].close()
