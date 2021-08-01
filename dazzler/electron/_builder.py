@@ -8,6 +8,7 @@ import importlib
 
 from dazzler._assets import electron_package_path, electron_path, assets_path
 from dazzler.electron._loading import get_loading_options, build_loading_html
+from dazzler.errors import ElectronBuildError
 from dazzler.system import Package
 from dazzler.tools import OrderedSet
 
@@ -190,6 +191,11 @@ class ElectronBuilder:
             f'npm run {command}', cwd=str(self._workdir)
         )
         await proc.communicate()
+        code = await proc.wait()
+        if code != 0:
+            raise ElectronBuildError(
+                f'{code}: Failed to build with "npm run {command}"'
+            )
 
     def _create_environ(self):
         env = f'DAZZLER_PORT={self.config.port}\n' \
@@ -234,7 +240,12 @@ class ElectronBuilder:
             [self.app_path.stem]
         )
         self.logger.debug(f'Module path: {module_path}')
-        importlib.import_module(module_path)
+
+        try:
+            importlib.import_module(module_path)
+        except ImportError as err:
+            raise ElectronBuildError(
+                f'Invalid module path: {module_path}') from err
 
         for package_name, package in Package.package_registry.items():
             if package_name in (

@@ -406,6 +406,7 @@ class Dazzler(precept.Precept):  # pylint: disable=too-many-instance-attributes
             self.logger.exception(error)
             if remove_error:
                 builder.cleanup()
+            sys.exit(-1)
 
     # Handlers
 
