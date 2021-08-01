@@ -7,7 +7,7 @@ import pytest
 from selenium import webdriver
 
 from dazzler import Dazzler
-from tests.tools import AsyncDriver
+from tests.tools import AsyncDriver, kill_processes
 
 
 @pytest.mark.tryfirst
@@ -77,3 +77,26 @@ def start_page(start_visit):  # pylint: disable=redefined-outer-name
         await start_visit(app, debug=debug)
 
     return _start_page
+
+
+@pytest.fixture()
+def run_background_cmd():
+    ns = {'processes': [], 'tasks': []}
+
+    def _runner(cmd):
+        async def runner():
+            ns['proceses'].append(await asyncio.create_subprocess_shell(cmd))
+
+        ns['tasks'].append(asyncio.get_event_loop().create_task(runner()))
+
+    yield _runner
+
+    async def killer():
+        for proc in ns['processes']:
+            await kill_processes(proc.pid)
+            await proc.wait()
+
+        for task in ns['tasks']:
+            task.cancel()
+
+    asyncio.get_event_loop().run_until_complete(killer())
