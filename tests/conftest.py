@@ -100,3 +100,20 @@ def run_background_cmd():
             task.cancel()
 
     asyncio.get_event_loop().run_until_complete(killer())
+
+
+@pytest.fixture()
+def electron_driver():
+    ns = {}
+
+    def initialize(binary_location):
+        options = webdriver.ChromeOptions()
+        options.binary_location = binary_location
+        driver = ns['driver'] = webdriver.Chrome(chrome_options=options)
+        return AsyncDriver(driver)
+
+    yield initialize
+
+    if 'driver' in ns:
+        # Need close not quit to cleanup the processes in electron.
+        ns['driver'].close()

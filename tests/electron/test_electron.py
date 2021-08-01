@@ -4,27 +4,6 @@ import tempfile
 import pytest
 import asyncio
 
-from selenium import webdriver
-
-from tests.tools import AsyncDriver
-
-
-@pytest.fixture()
-def electron_driver():
-    ns = {}
-
-    def initialize(binary_location):
-        options = webdriver.ChromeOptions()
-        options.binary_location = binary_location
-        driver = ns['driver'] = webdriver.Chrome(chrome_options=options)
-        return AsyncDriver(driver)
-
-    yield initialize
-
-    if 'driver' in ns:
-        # Need close not quit to cleanup the processes in electron.
-        ns['driver'].close()
-
 
 @pytest.mark.async_test
 async def test_electron_builder(electron_driver):
