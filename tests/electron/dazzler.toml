@@ -1,0 +1,13 @@
+port = 8950
+
+[session]
+enable = false
+
+[electron]
+windows = [
+    "main"
+]
+save_window_size = false
+
+[electron.metadata]
+app_name = "dazzler-electron"
