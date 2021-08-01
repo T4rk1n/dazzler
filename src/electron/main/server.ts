@@ -4,17 +4,15 @@ import {net} from 'electron';
 import path from 'path';
 import logger from './logger';
 import process from 'process';
-import ElectronConfig = dazzler_electron.ElectronConfig;
-
 let serverProcess;
 
 function requestConfigs(serverUrl: string): Promise<ElectronConfig> {
     return new Promise<ElectronConfig>((resolve, reject) => {
         logger.server.info('Requesting configs');
         const request = net.request(`${serverUrl}/dazzler/electron-config`);
-        request.on('response', response => {
+        request.on('response', (response) => {
             const chunks = [];
-            response.on('data', chunk => {
+            response.on('data', (chunk) => {
                 chunks.push(chunk);
             });
             response.on('end', () => {
@@ -23,7 +21,7 @@ function requestConfigs(serverUrl: string): Promise<ElectronConfig> {
                 resolve(configs);
             });
         });
-        request.on('error', error => {
+        request.on('error', (error) => {
             logger.server.error(error);
             reject(error);
         });
@@ -36,24 +34,27 @@ function getProcesses(
     // eslint-disable-next-line no-unused-vars
     spawner: (pid: number) => any
 ): Promise<number[]> {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
         const chunks = [];
         const ps = spawner(pid);
-        ps.stdout.on('data', chunk => {
+        ps.stdout.on('data', (chunk) => {
             chunks.push(chunk);
         });
         ps.on('close', () => {
-            const pids = join('', chunks.map(c => `${c}`))
+            const pids = join(
+                '',
+                chunks.map((c) => `${c}`)
+            )
                 .trim()
                 .split(' ')
-                .map(p => Number.parseInt(p));
+                .map((p) => Number.parseInt(p));
             resolve(pids.concat(pid));
         });
     });
 }
 
 function killProcesses(processes: number[]) {
-    processes.forEach(p => {
+    processes.forEach((p) => {
         logger.server.debug(`Kill process: ${p}`);
         process.kill(p, 'SIGKILL');
     });
@@ -65,7 +66,7 @@ export function closeServer(): Promise<any> {
         // eslint-disable-next-line default-case
         switch (process.platform) {
             case 'win32':
-                child_process.exec(`taskkill /pid ${pid} /T /F`, error => {
+                child_process.exec(`taskkill /pid ${pid} /T /F`, (error) => {
                     if (error) {
                         logger.server.error(error);
                         reject(error);
@@ -76,16 +77,16 @@ export function closeServer(): Promise<any> {
                 });
                 break;
             case 'darwin':
-                getProcesses(pid, p =>
+                getProcesses(pid, (p) =>
                     // @ts-ignore
                     child_process.spawn('pgrep', ['-P', p])
-                ).then(processes => {
+                ).then((processes) => {
                     killProcesses(processes);
                     resolve(null);
                 });
                 break;
             case 'linux':
-                getProcesses(pid, p =>
+                getProcesses(pid, (p) =>
                     child_process.spawn('ps', [
                         '-o',
                         'pid',
@@ -94,7 +95,7 @@ export function closeServer(): Promise<any> {
                         // @ts-ignore
                         p,
                     ])
-                ).then(processes => {
+                ).then((processes) => {
                     killProcesses(processes);
                     resolve(null);
                 });
@@ -103,12 +104,12 @@ export function closeServer(): Promise<any> {
     });
 }
 
-export default function(
+export default function (
     isDevelopment,
     applicationFile,
     serverUrl,
     ...args
-): Promise<dazzler_electron.ElectronConfig> {
+): Promise<ElectronConfig> {
     return new Promise((resolve, reject) => {
         if (isDevelopment) {
             serverProcess = child_process.spawn('python', [
@@ -126,25 +127,23 @@ export default function(
             logger.server.debug('Successfully spawned server process');
         });
 
-        serverProcess.on('error', err => {
+        serverProcess.on('error', (err) => {
             logger.server.error('Error spawning process', err);
             reject(err);
         });
 
-        serverProcess.stdout.on('data', data => {
+        serverProcess.stdout.on('data', (data) => {
             const d = `${data}`;
             console.log(d);
         });
-        serverProcess.stderr.on('data', data => {
+        serverProcess.stderr.on('data', (data) => {
             const d = `${data}`;
             console.log(d);
             if (/Started server/.test(d)) {
-                requestConfigs(serverUrl)
-                    .then(resolve)
-                    .catch(reject);
+                requestConfigs(serverUrl).then(resolve).catch(reject);
             }
         });
-        serverProcess.on('close', code => {
+        serverProcess.on('close', (code) => {
             logger.server.info(`Server closed with code: ${code}`);
         });
     });

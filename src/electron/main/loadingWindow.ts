@@ -1,7 +1,6 @@
 import {BrowserWindow} from 'electron';
 import {promises as fs} from 'fs';
 import path from 'path';
-import LoadingWindowOptions = dazzler_electron.LoadingWindowOptions;
 import logger from './logger';
 
 export async function createLoadingWindow(

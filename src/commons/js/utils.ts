@@ -25,7 +25,7 @@ export function loadScript(uri: string, timeout = 3000) {
             async: true,
         };
         const element = document.createElement('script');
-        Object.keys(attributes).forEach(k =>
+        Object.keys(attributes).forEach((k) =>
             element.setAttribute(k, attributes[k])
         );
         element.onload = onload;
@@ -64,7 +64,7 @@ export function loadCss(uri: string, timeout = 3000) {
             id: `css-${uri}`,
         };
         const element = document.createElement('link');
-        Object.keys(attributes).forEach(k =>
+        Object.keys(attributes).forEach((k) =>
             element.setAttribute(k, attributes[k])
         );
         element.onload = onload;
@@ -80,12 +80,14 @@ export function loadCss(uri: string, timeout = 3000) {
 
 export function debounce(func: Function, wait: number, immediate?: boolean) {
     let timeout, lastCall;
-    return function() {
+    // eslint-disable-next-line consistent-return
+    return function () {
         const now = new Date();
         if (!lastCall) {
             lastCall = now;
             if (immediate) {
-                return func.apply(this, arguments)
+                /* eslint-disable no-invalid-this */
+                return func.apply(this, arguments);
             }
         }
         const later = () => {
@@ -102,9 +104,8 @@ export function debounce(func: Function, wait: number, immediate?: boolean) {
             /* eslint-disable no-invalid-this */
             lastCall = now;
             return func.apply(this, arguments);
-        } else {
-            timeout = setTimeout(later, diff);
         }
+        timeout = setTimeout(later, diff);
     };
 }
 
@@ -114,8 +115,11 @@ export function collectTruePropKeys(obj: object, filterKeys: string[]) {
         // @ts-ignore
         pairs = pairs.filter(([k, _]) => includes(k, filterKeys));
     }
-    // @ts-ignore
-    return pluck(0, pairs.filter(([_, v]) => v));
+    return pluck(
+        0,
+        // @ts-ignore
+        pairs.filter(([_, v]) => v)
+    );
 }
 
 export function chunk(arr: any[], n: number): Array<Array<any>> {
@@ -123,5 +127,5 @@ export function chunk(arr: any[], n: number): Array<Array<any>> {
         .map((item, index) =>
             index % n === 0 ? arr.slice(index, index + n) : null
         )
-        .filter(item => item);
+        .filter((item) => item);
 }

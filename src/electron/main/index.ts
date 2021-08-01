@@ -47,13 +47,13 @@ async function setup() {
         loadingWindow.close();
     }
 
-    values(windows).forEach(window => window.show());
+    values(windows).forEach((window) => window.show());
 }
 
 let closed = false;
 
 app.on('ready', setup);
-app.on('will-quit', async event => {
+app.on('will-quit', async (event) => {
     logger.main.debug(`will-quit closed=${closed}`);
     if (!closed) {
         logger.main.debug('Will quit: closing server');
