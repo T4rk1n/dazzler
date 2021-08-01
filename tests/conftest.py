@@ -1,4 +1,6 @@
 import asyncio
+import os
+
 import pytest
 
 
@@ -111,7 +113,10 @@ def electron_driver():
     def initialize(binary_location):
         options = webdriver.ChromeOptions()
         options.binary_location = binary_location
-        driver = namespace['driver'] = webdriver.Chrome(chrome_options=options)
+        driver = namespace['driver'] = webdriver.Chrome(
+            executable_path=os.getenv('ELECTRON_DRIVER', 'chromedriver'),
+            chrome_options=options
+        )
         return AsyncDriver(driver)
 
     yield initialize
