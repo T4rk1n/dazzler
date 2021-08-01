@@ -441,6 +441,85 @@ class DazzlerConfig(Config):
 
         linux_target: LinuxTarget
 
+        class Publish(Nestable):
+            provider = ConfigProperty(
+                config_type=str, default='',
+                comment='One of: "generic", "bintray", "github",'
+                        ' "s3", "spaces", "snap"'
+            )
+
+            class Generic(Nestable):
+                url = ConfigProperty(
+                    config_type=str, default='',
+                )
+                channel = ConfigProperty(
+                    config_type=str, default='latest'
+                )
+                use_multiple_range_request = ConfigProperty(
+                    config_type=bool
+                )
+
+            generic: Generic
+
+            class Bintray(Nestable):
+                package = ConfigProperty(config_type=str, default='')
+                repo = ConfigProperty(config_type=str, default='generic')
+                owner = ConfigProperty(config_type=str)
+                component = ConfigProperty(config_type=str)
+                distribution = ConfigProperty(config_type=str)
+                user = ConfigProperty(config_type=str)
+                token = ConfigProperty(config_type=str)
+
+            bintray: Bintray
+
+            class Github(Nestable):
+                repo = ConfigProperty(config_type=str)
+                owner = ConfigProperty(config_type=str)
+                v_prefixed_tag_name = ConfigProperty(
+                    config_type=bool, default=True
+                )
+                host = ConfigProperty(
+                    config_type=str, default='github.com'
+                )
+                protocol = ConfigProperty(config_type=str, default='https')
+                token = ConfigProperty(config_type=str)
+                private = ConfigProperty(config_type=bool)
+                release_type = ConfigProperty(
+                    config_type=str, default='draft'
+                )
+
+            github: Github
+
+            class S3(Nestable):
+                """Help"""
+                bucket = ConfigProperty(config_type=str, default='')
+                region = ConfigProperty(config_type=str)
+                acl = ConfigProperty(config_type=str)
+                storage_class = ConfigProperty(config_type=str)
+                encryption = ConfigProperty(config_type=str)
+                endpoint = ConfigProperty(config_type=str)
+                channel = ConfigProperty(config_type=str)
+                path = ConfigProperty(config_type=str, auto_environ=False)
+
+            s3: S3
+
+            class Spaces(Nestable):
+                """Digital ocean, define DO_KEY_ID & DO_SECRET_KEY"""
+                name = ConfigProperty(config_type=str)
+                region = ConfigProperty(config_type=str)
+                channel = ConfigProperty(config_type=str)
+                path = ConfigProperty(config_type=str, auto_environ=False)
+                acl = ConfigProperty(config_type=str)
+
+            spaces: Spaces
+
+            class Snap(Nestable):
+                channels = ConfigProperty(config_type=list, default=['edge'])
+
+            snap: Snap
+
+        publish: Publish
+
     electron: Electron
 
     def __init__(self):
