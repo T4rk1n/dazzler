@@ -52,3 +52,7 @@ class SessionError(DazzlerError):
 
 class AuthError(DazzlerError):
     """Error related to authentication system."""
+
+
+class ElectronBuildError(DazzlerError):
+    """Error from building the electron binary"""
