@@ -1,5 +1,10 @@
 """Tests tools for running selenium with asyncio."""
+import asyncio
 import functools
+import os
+import signal
+import subprocess
+import sys
 
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.support.wait import WebDriverWait
@@ -260,3 +265,31 @@ class AsyncDriver:
     get = _async_wrap(_get_url)
 
     click = _async_wrap(_click_element)
+
+
+async def get_child_processes(cmd, pid):
+    proc = await asyncio.create_subprocess_shell(
+        cmd.format(pid), stdout=subprocess.PIPE
+    )
+    out, err = await proc.communicate()
+    return [int(x) for x in out.decode().strip(' \n').split(' ')]
+
+
+async def kill_processes(pid):
+    if sys.platform == 'win32':
+        proc = await asyncio.create_subprocess_shell(
+            f'taskkill /pid {pid} /T /F'
+        )
+        await proc.communicate()
+        return
+
+    if sys.platform == 'darwin':
+        processes = await get_child_processes(
+            'psgrep -P {0}', pid
+        )
+    else:
+        processes = await get_child_processes(
+            'ps -o pid --no-headers --ppid {0}', pid
+        )
+    for proc in (processes + [pid]):
+        os.kill(proc, signal.SIGTERM)
