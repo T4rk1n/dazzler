@@ -4,6 +4,69 @@ import shutil
 import tempfile
 import pytest
 
+import stringcase
+
+from dazzler import Dazzler
+from dazzler.electron import ElectronBuilder
+
+
+@pytest.mark.parametrize(
+    'provider, provider_config',
+    [
+        (
+            'generic',
+            {
+                'url': '/url',
+                'channel': 'chan',
+                'use_multiple_range_request': True
+            }
+        ),
+        (
+            'bintray',
+            {
+                'package': 'pack',
+                'repo': 'rep'
+            }
+        ),
+        (
+            'github',
+            {
+                'v_prefixed_tag_name': True,
+            }
+        ),
+        (
+            's3',
+            {
+                'storage_class': 'normal'
+            }
+        ),
+        (
+            'spaces',
+            {
+                'path': 'not $PATH'
+            }
+        ),
+        (
+            'snap', {}
+        )
+    ]
+)
+def test_publish_config(provider, provider_config):
+    app = Dazzler(__name__)
+    app.config.read_dict(
+        {'electron': {'publish': {provider: provider_config}}}
+    )
+    app.config.electron.publish.provider = provider
+
+    builder = ElectronBuilder(
+        app, 'tests/electron/electron_app.py', 'dir', 'output', publish=True)
+
+    package = {'build': {}}
+    builder._create_publish(package)
+    assert package['build']['publish']['provider'] == provider
+    for k, v in provider_config.items():
+        assert package['build']['publish'][stringcase.camelcase(k)] == v
+
 
 @pytest.mark.async_test
 async def test_electron_builder(electron_driver):
