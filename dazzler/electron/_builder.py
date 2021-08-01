@@ -6,6 +6,8 @@ import pathlib
 import asyncio
 import importlib
 
+import stringcase
+
 from dazzler._assets import electron_package_path, electron_path, assets_path
 from dazzler.electron._loading import get_loading_options, build_loading_html
 from dazzler.errors import ElectronBuildError
@@ -213,6 +215,17 @@ class ElectronBuilder:
 
         with open(env_path, 'w') as f:
             f.write(env)
+
+    def _create_publish(self, package):
+        provider = self.config.electron.publish.provider
+
+        # noinspection PyProtectedMember
+        package['build']['publish'] = {
+            stringcase.camelcase(k): v
+            for k, v in
+            self.config._data['electron']['publish'][provider].items()
+        }
+        package['build']['publish']['provider'] = provider
 
     def _freeze_app(self):
         # Import it here not top level since it setup the logging
