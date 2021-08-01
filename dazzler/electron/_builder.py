@@ -229,12 +229,12 @@ class ElectronBuilder:
 
         sys.path.insert(0, '.')
         # Import the app to load all packages.
-        importlib.import_module(
-            '.'.join(
-                [x.stem for x in self.app_path.parents if x.stem] +
-                [self.app_path.stem]
-            )
+        module_path = '.'.join(
+            list(reversed([x.stem for x in self.app_path.parents if x.stem])) +
+            [self.app_path.stem]
         )
+        self.logger.debug(f'Module path: {module_path}')
+        importlib.import_module(module_path)
 
         for package_name, package in Package.package_registry.items():
             if package_name in (
