@@ -271,7 +271,7 @@ async def get_child_processes(cmd, pid):
     proc = await asyncio.create_subprocess_shell(
         cmd.format(pid), stdout=subprocess.PIPE
     )
-    out, err = await proc.communicate()
+    out, _ = await proc.communicate()
     return [int(x) for x in out.decode().strip(' \n').split(' ')]
 
 
@@ -291,5 +291,5 @@ async def kill_processes(pid):
         processes = await get_child_processes(
             'ps -o pid --no-headers --ppid {0}', pid
         )
-    for proc in (processes + [pid]):
+    for proc in processes + [pid]:
         os.kill(proc, signal.SIGTERM)

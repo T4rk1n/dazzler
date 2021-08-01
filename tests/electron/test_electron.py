@@ -1,8 +1,8 @@
+import asyncio
 import os
 import shutil
 import tempfile
 import pytest
-import asyncio
 
 
 @pytest.mark.async_test
