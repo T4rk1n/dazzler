@@ -27,21 +27,18 @@ LINUX_TARGETS = (
     'tar.lz',
     'tar.gz',
     'tar.bz2',
-    'dir',
 )
 
 WINDOWS_TARGETS = (
     'NSIS',
     'AppX',
     'Squirrel.Windows',
-    'dir'
 )
 
 MAC_TARGETS = (
     'DMG',
     'MAS',
     'PKG',
-    'dir'
 )
 
 ELECTRON_TARGETS = tuple(
@@ -149,19 +146,26 @@ class ElectronBuilder:
         if self.config.electron.icon:
             package['build']['icon'] = self.config.electron.icon
 
-        if self.target in LINUX_TARGETS:
-            if self.config.electron.linux_target.category:
-                package['build']['category'] = \
-                    self.config.electron.linux_target.category
-            if self.config.electron.linux_target.maintainer:
-                package['build']['maintainer'] = \
-                    self.config.electron.linux_target.maintainer
-            if self.config.electron.linux_target.vendor:
-                package['build']['vendor'] = \
-                    self.config.electron.linux_target.vendor
-            if self.config.electron.linux_target.synopsis:
-                package['build']['synopsis'] = \
-                    self.config.electron.linux_target.synopsis
+        if self.target != 'dir':
+            if self.target in LINUX_TARGETS:
+                package['build']['linux'] = \
+                    {'target': [{'target': self.target}]}
+                if self.config.electron.linux_target.category:
+                    package['build']['category'] = \
+                        self.config.electron.linux_target.category
+                if self.config.electron.linux_target.maintainer:
+                    package['build']['maintainer'] = \
+                        self.config.electron.linux_target.maintainer
+                if self.config.electron.linux_target.vendor:
+                    package['build']['vendor'] = \
+                        self.config.electron.linux_target.vendor
+                if self.config.electron.linux_target.synopsis:
+                    package['build']['synopsis'] = \
+                        self.config.electron.linux_target.synopsis
+            elif self.target in WINDOWS_TARGETS:
+                package['build']['win'] = {'target': [{'target': self.target}]}
+            elif self.target in MAC_TARGETS:
+                package['build']['mac'] = {'target': [{'target': self.target}]}
 
         if self.config.electron.loading_window.enabled:
             self._create_loading_window(package)
