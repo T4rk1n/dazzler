@@ -1,12 +1,15 @@
 import os
 import importlib
 
+import stringcase
+
 
 __all__ = [
     'get_package_path',
     'replace_all',
     'format_tag',
     'get_member',
+    'transform_dict_keys',
 ]
 
 
@@ -68,3 +71,12 @@ def format_tag(tag_name, attributes, content=None, opened=True, close=True):
         tag += f'</{tag_name}>'
 
     return tag
+
+
+def transform_dict_keys(data, casing=stringcase.camelcase):
+    if not isinstance(data, dict):
+        return data
+    return {
+        casing(k): transform_dict_keys(v, casing)
+        for k, v in data.items()
+    }

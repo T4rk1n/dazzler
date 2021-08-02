@@ -17,12 +17,17 @@ export default async function (
         },
         title,
         ...window_size,
+        ...pageWindow?.window_options,
         show: false,
     });
 
     if (save_window_size) {
         const state = await createWindowState(name, window);
         state.sync();
+    }
+
+    if (!pageWindow?.window_options.menuBar) {
+        window.setMenu(null);
     }
 
     await window.loadURL(url);

@@ -8,6 +8,7 @@ type PageWindow = {
     url: string;
     title: string;
     name: string;
+    window_options?: WindowOptions;
 };
 type ElectronConfig = {
     windows: PageWindow[];
@@ -34,6 +35,7 @@ type WindowOptions = WindowSize & {
         | 'hidden'
         | 'hiddenInset'
         | 'customButtonsOnHover';
+    menuBar?: boolean;
 };
 
 type LoadingWindowOptions = WindowOptions & {
