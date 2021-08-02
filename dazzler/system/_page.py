@@ -3,6 +3,7 @@ import typing
 from aiohttp import web
 
 from .transforms import TiedTransform
+from ..electron import ElectronWindowSettings
 from ..tools import get_package_path
 from ._binding import (
     Binding, BoundAspect, Trigger, State, Target, coerce_binding
@@ -34,6 +35,7 @@ class Page:
             meta_tags: typing.List[typing.Dict[str, str]] = None,
             packages: typing.List[str] = None,
             require_login: bool = False,
+            electron_window: ElectronWindowSettings = None
     ):
         """
         :param name: Unique name for the page, usually give __name__.
@@ -52,6 +54,7 @@ class Page:
         :param packages: Packages list to use on the page instead
             of the whole registry.
         :param require_login: Page requires that user is logged in.
+        :param electron_window: Settings for the electron window like size.
         """
         self.name = name.split('.')[-1]
         self.base_name = name
@@ -87,6 +90,7 @@ class Page:
         self._bindings = {str(x.trigger): x for x in self.bindings}
         self.require_login = require_login
         self._ties = []
+        self.electron_window = electron_window
 
     async def prepare(
             self,

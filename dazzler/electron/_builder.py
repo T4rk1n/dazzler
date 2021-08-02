@@ -6,13 +6,11 @@ import pathlib
 import asyncio
 import importlib
 
-import stringcase
-
 from dazzler._assets import electron_package_path, electron_path, assets_path
 from dazzler.electron._loading import get_loading_options, build_loading_html
 from dazzler.errors import ElectronBuildError
 from dazzler.system import Package
-from dazzler.tools import OrderedSet
+from dazzler.tools import OrderedSet, transform_dict_keys
 
 LINUX_TARGETS = (
     'AppImage',
@@ -225,11 +223,8 @@ class ElectronBuilder:
         provider = self.config.electron.publish.provider
 
         # noinspection PyProtectedMember
-        package['build']['publish'] = {
-            stringcase.camelcase(k): v
-            for k, v in
-            self.config._data['electron']['publish'][provider].items()
-        }
+        package['build']['publish'] = transform_dict_keys(
+            self.config._data['electron']['publish'][provider])
         package['build']['publish']['provider'] = provider
 
     def _freeze_app(self):

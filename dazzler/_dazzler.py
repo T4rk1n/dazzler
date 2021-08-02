@@ -12,9 +12,6 @@ from concurrent.futures import ThreadPoolExecutor
 import appdirs
 import precept
 
-from .electron import (
-    ElectronBuilder, run_electron, is_compiled, ELECTRON_TARGETS
-)
 from .system.auth import Authenticator, DazzlerAuth, AuthBackend
 from .tools import get_member
 from .system.session import (
@@ -30,7 +27,9 @@ from .system import (
     Route,
     RouteMethod,
 )
-
+from .electron import (
+    ElectronBuilder, run_electron, is_compiled, ELECTRON_TARGETS
+)
 from ._config import DazzlerConfig
 from ._server import Server
 from ._version import __version__

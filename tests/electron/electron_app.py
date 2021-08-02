@@ -1,14 +1,23 @@
 from dazzler import Dazzler
 from dazzler.system import Page
-from dazzler.electron import is_compiled
+from dazzler.electron import is_compiled, ElectronWindowSettings
 from dazzler.components import core
 
 app = Dazzler(__name__)
-page = Page('main', core.Container([
-    core.Container('Main', identity='main'),
-    core.Button('Click', identity='clicker'),
-    core.Container(identity='output')
-]))
+page = Page(
+    'main',
+    core.Container([
+        core.Container('Main', identity='main'),
+        core.Button('Click', identity='clicker'),
+        core.Container(identity='output')
+    ]),
+    electron_window=ElectronWindowSettings(
+        width=800,
+        height=600,
+        fullscreen=False,
+        menu_bar=False,
+    )
+)
 app.add_page(page)
 
 

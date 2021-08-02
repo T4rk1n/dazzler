@@ -11,7 +11,7 @@ from aiohttp import web, WSCloseCode
 
 from .system import Page, UNDEFINED, Route
 
-from .tools import replace_all, format_tag
+from .tools import replace_all, format_tag, transform_dict_keys
 from ._renderer import package as renderer
 from ._assets import index_html_path
 
@@ -305,7 +305,10 @@ class Server:
                 {
                     'name': page.name,
                     'url': str(request.app.router[page.name].url_for()),
-                    'title': page.title
+                    'title': page.title,
+                    'window_options': transform_dict_keys(
+                        page.electron_window
+                    )
                 }
                 for page in self.dazzler.pages.values()
                 if page.name in config.electron.windows
