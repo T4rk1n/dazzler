@@ -268,6 +268,10 @@ class Dazzler(precept.Precept):  # pylint: disable=too-many-instance-attributes
                 return requirement
         return None
 
+    @staticmethod
+    def get_packages() -> typing.List[Package]:
+        return Package.package_registry.values()
+
     def _remove_requirement(self, requirement: Requirement):
         # Remove from page requirement most probably
         for page in self.pages.values():
