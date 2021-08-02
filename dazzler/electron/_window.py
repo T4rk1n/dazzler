@@ -1,4 +1,8 @@
-from typing import TypedDict, Optional
+from typing import Optional
+try:
+    from typing import TypedDict  # pylint: disable=no-name-in-module
+except ImportError:
+    TypedDict = dict
 
 
 class ElectronWindowSettings(TypedDict):
