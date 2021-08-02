@@ -9,7 +9,6 @@ import importlib
 from dazzler._assets import electron_package_path, electron_path, assets_path
 from dazzler.electron._loading import get_loading_options, build_loading_html
 from dazzler.errors import ElectronBuildError
-from dazzler.system import Package
 from dazzler.tools import OrderedSet, transform_dict_keys
 
 LINUX_TARGETS = (
@@ -264,8 +263,8 @@ class ElectronBuilder:
             raise ElectronBuildError(
                 f'Invalid module path: {module_path}') from err
 
-        for package_name, package in Package.package_registry.items():
-            if package_name in (
+        for package in self.app.get_packages():
+            if package.name in (
                 'dazzler_core', 'dazzler_extra', 'dazzler_auth',
                 'dazzler_icons', 'dazzler_markdown', 'dazzler_calendar',
                 'dazzler_renderer'
