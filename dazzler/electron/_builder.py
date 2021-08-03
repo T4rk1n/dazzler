@@ -20,8 +20,6 @@ LINUX_TARGETS = (
     'pacman',
     'p5p',
     'apk',
-    '7z',
-    'zip',
     'tar.xy',
     'tar.lz',
     'tar.gz',
@@ -32,6 +30,8 @@ WINDOWS_TARGETS = (
     'NSIS',
     'AppX',
     'Squirrel.Windows',
+    '7z',
+    'zip',
 )
 
 MAC_TARGETS = (
@@ -116,9 +116,9 @@ class ElectronBuilder:
         if self.config.electron.builder.app_id:
             package['build']['appId'] = self.config.electron.builder.app_id
 
-        if self.config.electron.builder.productName:
+        if self.config.electron.builder.product_name:
             package['build']['productName'] = \
-                self.config.electron.builder.productName
+                self.config.electron.builder.product_name
 
         package['build']['copyright'] = self.config.electron.builder.copyright
 
@@ -142,29 +142,11 @@ class ElectronBuilder:
 
         package['build']['asar'] = self.config.electron.asar
 
+        if self.target != 'dir':
+            self._create_target(package)
+
         if self.config.electron.icon:
             package['build']['icon'] = self.config.electron.icon
-
-        if self.target != 'dir':
-            if self.target in LINUX_TARGETS:
-                package['build']['linux'] = \
-                    {'target': [{'target': self.target}]}
-                if self.config.electron.linux_target.category:
-                    package['build']['category'] = \
-                        self.config.electron.linux_target.category
-                if self.config.electron.linux_target.maintainer:
-                    package['build']['maintainer'] = \
-                        self.config.electron.linux_target.maintainer
-                if self.config.electron.linux_target.vendor:
-                    package['build']['vendor'] = \
-                        self.config.electron.linux_target.vendor
-                if self.config.electron.linux_target.synopsis:
-                    package['build']['synopsis'] = \
-                        self.config.electron.linux_target.synopsis
-            elif self.target in WINDOWS_TARGETS:
-                package['build']['win'] = {'target': [{'target': self.target}]}
-            elif self.target in MAC_TARGETS:
-                package['build']['mac'] = {'target': [{'target': self.target}]}
 
         if self.config.electron.loading_window.enabled:
             self._create_loading_window(package)
@@ -187,6 +169,38 @@ class ElectronBuilder:
             json.dump(options, f)
 
         package['build']['files'].append('loading.json')
+
+    # noinspection PyProtectedMember
+    def _create_target(self, package):
+        target_options = {}
+
+        if self.config.electron.target.arch:
+            target_options = {'arch': self.config.electron.target.arch}
+
+        if self.config.electron.target.platform:
+            platform = self.config.electron.target.platform
+        elif self.target in LINUX_TARGETS:
+            platform = 'linux'
+        elif self.target in WINDOWS_TARGETS:
+            platform = 'win'
+        elif self.target in MAC_TARGETS:
+            platform = 'mac'
+        else:
+            raise ElectronBuildError(f'Invalid target: {self.target}')
+
+        package['build'][platform] = \
+            {'target': [{'target': self.target, **target_options}],
+             **transform_dict_keys(
+                 self.config._data['electron']['target'][platform])
+             }
+
+        if self.config.electron.target.options_file:
+            with open(self.config.electron.target.options_file) as f:
+                options = json.load(f)
+                package['build'][self.target] = {
+                    **package['build'].get(self.target, {}),
+                    **options
+                }
 
     async def _electron_builder(self):
         if self.publish:

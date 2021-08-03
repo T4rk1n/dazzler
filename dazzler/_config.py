@@ -414,7 +414,7 @@ class DazzlerConfig(Config):
                 comment='The appId to use for the build,'
                         'it is recommended to change.'
             )
-            productName = ConfigProperty(
+            product_name = ConfigProperty(
                 comment='Executable name that can contains spaces.'
                         ' Defaults to electron.metadata.name'
             )
@@ -433,21 +433,71 @@ class DazzlerConfig(Config):
 
         builder: Builder
 
-        class LinuxTarget(Nestable):
-            maintainer = ConfigProperty(
-                config_type=str, comment='Defaults to author'
-            )
-            vendor = ConfigProperty(
-                config_type=str, comment='Defaults to author'
-            )
-            synopsis = ConfigProperty(
-                config_type=str, comment='Short description'
-            )
-            category = ConfigProperty(
-                config_type=str, comment='Category to use.'
+        class Target(Nestable):
+            options_file = ConfigProperty(
+                config_type=str,
+                comment='json file to use as target options.'
             )
 
-        linux_target: LinuxTarget
+            arch = ConfigProperty(
+                config_type=list,
+                comment='List of architecture to target. Possible values: '
+                        '“x64” | “ia32” | “armv7l” | “arm64”> | “x64” | '
+                        '“ia32” | “armv7l” | “arm64”'
+            )
+            platform = ConfigProperty(
+                config_type=str,
+                comment='For multi platform targets like 7z and zip, specify '
+                        'the platform (os) to configure. '
+                        'One of: "win", "linux", "mac"'
+            )
+
+            class Linux(Nestable):
+                maintainer = ConfigProperty(
+                    config_type=str, comment='Defaults to author'
+                )
+                vendor = ConfigProperty(
+                    config_type=str, comment='Defaults to author'
+                )
+                synopsis = ConfigProperty(
+                    config_type=str, comment='Short description'
+                )
+                category = ConfigProperty(
+                    config_type=str, comment='Category to use.'
+                )
+                executable_name = ConfigProperty(
+                    config_type=str, comment='Default to `product_name`'
+                )
+                mime_types = ConfigProperty(config_type=list)
+
+            linux: Linux
+
+            class Win(Nestable):
+                legal_trademarks = ConfigProperty(config_type=str)
+                signing_hash_algorithms = ConfigProperty(config_type=list)
+                certificate_file = ConfigProperty(config_type=str)
+                certificate_password = ConfigProperty(config_type=str)
+                certificate_subject_name = ConfigProperty(config_type=str)
+                certificate_sha1 = ConfigProperty(config_type=str)
+                additional_certificate_file = ConfigProperty(config_type=str)
+                publisher_name = ConfigProperty(config_type=str)
+                verify_update_code_signature = ConfigProperty(config_type=bool)
+                requested_execution_level = ConfigProperty(config_type=str)
+
+            win: Win
+
+            class Mac(Nestable):
+                entitlements = ConfigProperty(config_type=str)
+                entitlements_inherit = ConfigProperty(config_type=str)
+                provisioning_profile = ConfigProperty(config_type=str)
+                type = ConfigProperty(config_type=str)
+                binaries = ConfigProperty(config_type=str)
+                hardened_runtime = ConfigProperty(config_type=bool)
+                gatekeeper_assess = ConfigProperty(config_type=bool)
+
+            mac: Mac
+
+        target: Target
 
         class Publish(Nestable):
             provider = ConfigProperty(
