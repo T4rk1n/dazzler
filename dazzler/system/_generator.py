@@ -49,6 +49,18 @@ UNSUPPORTED_DEFAULT = (
 )
 
 
+def generate_shape(t):
+    props = OrderedSet(*(PROP_TYPING.get(  # type: ignore
+        item['name'],
+        _default_prop_type
+    )(item) for item in t['value'].values()))
+    if len(props) == 0:
+        # ts Dict like object, {[key: string]: any} will be
+        # an object with no props
+        return 'typing.Any'
+    return 'typing.Dict[str, typing.Union[{}]]'.format(', '.join(props))
+
+
 # React PropTypes to Python typing
 PROP_TYPING = {
     'array': lambda t: 'typing.List',
@@ -59,15 +71,11 @@ PROP_TYPING = {
         )(t['value'])
     ),
     'object': lambda t: 'typing.Dict',
-    'shape': lambda t: 'typing.Dict[str, typing.Union[{}]]'.format(
-        ', '.join(OrderedSet(*(PROP_TYPING.get(  # type: ignore
-            item['name'],
-            _default_prop_type
-        )(item) for item in t['value'].values())))
-    ),
+    'shape': generate_shape,
     'string': lambda t: 'str',
     'bool': lambda t: 'bool',
     'number': lambda t: 'typing.Union[float, int]',
+    # Node is ts JSX.Element, means anything renderable.
     'node': lambda t: 'typing.Union[str, int, float, Component,'
                       ' typing.List[typing.Union'
                       '[str, int, float, Component]]]',
