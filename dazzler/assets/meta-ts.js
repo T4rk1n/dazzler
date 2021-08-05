@@ -358,6 +358,9 @@ function walk(directory, components = {}) {
         // an ObjectLiteralExpression or an Identifier which get in the
         // newChild with the proper props.
         const defaultProps = type.getProperty('defaultProps');
+        if (!defaultProps) {
+            return {}
+        }
         const decl = defaultProps.getDeclarations()[0];
         let propValues = {};
 
