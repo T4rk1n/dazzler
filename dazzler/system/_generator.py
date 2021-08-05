@@ -326,7 +326,7 @@ async def generate_meta(source_dir: str, ts: bool) -> dict:
     )
     out, err = await proc.communicate()
     if err:
-        print(err, file=sys.stderr)
+        print(err.decode(), file=sys.stderr)
         sys.exit(1)
     else:
         return json.loads(out.decode())
