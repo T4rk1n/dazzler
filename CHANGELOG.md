@@ -7,6 +7,7 @@ Versions follow [Semantic Versioning](https://www.semver.org)
 
 - :sparkles: Typescript component generation support for functional components.
 - :wrench: Add reload delay config, wait for a moment before starting the reload watch.
+- :sparkles: Add `electron` & `electron-build` commands to create desktop applications.
 
 ## [0.6.1]
 ### Fixed
