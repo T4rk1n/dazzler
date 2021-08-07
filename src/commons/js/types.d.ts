@@ -1,11 +1,13 @@
-type AnyDict = {[key: string]: any};
-type UpdateAspectFunc = (aspects: AnyDict) => void
+type Dict<T> = {[key: string]: T};
+type StringDict = {[key: string]: string};
+type AnyDict = Dict<any>;
+type UpdateAspectFunc = (aspects: AnyDict) => void;
 
 export interface DazzlerProps {
     /**
      * Class name automatically added by dazzler api with a prefix for the
-     * component library.
-     * ie: core component Container become ``dazzler-core-container``.
+     *  component library.
+     * ie: core component Container become ``dazzler-core-container``
      *
      * When added on the component, the class names will be concatenated.
      */

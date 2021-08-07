@@ -1,5 +1,4 @@
 import React, {useEffect, useRef, useState} from 'react';
-import PropTypes from 'prop-types';
 import {
     concat as concatArray,
     isNil,
@@ -9,6 +8,70 @@ import {
     join,
     mergeAll,
 } from 'ramda';
+import {DazzlerProps} from '../../../commons/js/types';
+
+type ListBoxProps = {
+    /**
+     * List of items to render.
+     */
+    items: JSX.Element[];
+
+    /**
+     * Maximum amount of items in the list, extra items will be popped off.
+     */
+    max_length?: number;
+    /**
+     * Add an item to the end of the list.
+     */
+    append?: JSX.Element;
+    /**
+     * Add an item to the start of the list.
+     */
+    prepend?: JSX.Element;
+    /**
+     * Concatenate another list with the current items.
+     */
+    concat?: JSX.Element[];
+    /**
+     * Insert an item at an index position.
+     */
+    insert?: {
+        /**
+         * Index to insert the item at.
+         */
+        index: number;
+        /**
+         * Item to insert.
+         */
+        item: JSX.Element;
+    };
+
+    /**
+     * Delete the item at the index.
+     */
+    delete_index?: number;
+
+    /**
+     * Wether the list box container is scrollable.
+     */
+    scrollable?: boolean;
+
+    /**
+     * In which direction the items will be inserted.
+     */
+    direction?: 'vertical' | 'horizontal';
+
+    /**
+     * Must be set for the scrollable aspect to work.
+     * Height or width in pixels depending on the direction aspect.
+     */
+    size?: number;
+
+    /**
+     * Keep the last appended item in view if scrolling is enabled.
+     */
+    keep_scroll?: boolean;
+} & DazzlerProps;
 
 /**
  * A component where you can ``add`` items to instead of rendering
@@ -41,7 +104,7 @@ const ListBox = ({
     style,
     identity,
     updateAspects,
-}) => {
+}: ListBoxProps) => {
     const root = useRef(null);
     const [toScroll, setToScroll] = useState(false);
 
@@ -113,7 +176,7 @@ const ListBox = ({
 
     // Render
 
-    const internalStyle = {};
+    const internalStyle: any = {};
     const css = [class_name, direction];
     if (scrollable) {
         css.push('scrollable');
@@ -138,74 +201,6 @@ const ListBox = ({
 ListBox.defaultProps = {
     items: [],
     direction: 'vertical',
-};
-
-ListBox.propTypes = {
-    /**
-     * List of items to render.
-     */
-    items: PropTypes.arrayOf(PropTypes.node).isRequired,
-
-    /**
-     * Maximum amount of items in the list, extra items will be popped off.
-     */
-    max_length: PropTypes.number,
-    /**
-     * Add an item to the end of the list.
-     */
-    append: PropTypes.node,
-    /**
-     * Add an item to the start of the list.
-     */
-    prepend: PropTypes.node,
-    /**
-     * Concatenate another list with the current items.
-     */
-    concat: PropTypes.arrayOf(PropTypes.node),
-    /**
-     * Insert an item at an index position.
-     */
-    insert: PropTypes.shape({
-        /**
-         * Index to insert the item at.
-         */
-        index: PropTypes.number,
-        /**
-         * Item to insert.
-         */
-        item: PropTypes.node,
-    }),
-
-    /**
-     * Delete the item at the index.
-     */
-    delete_index: PropTypes.number,
-
-    /**
-     * Wether the list box container is scrollable.
-     */
-    scrollable: PropTypes.bool,
-
-    /**
-     * In which direction the items will be inserted.
-     */
-    direction: PropTypes.oneOf(['vertical', 'horizontal']),
-
-    /**
-     * Must be set for the scrollable aspect to work.
-     * Height or width in pixels depending on the direction aspect.
-     */
-    size: PropTypes.number,
-
-    /**
-     * Keep the last appended item in view if scrolling is enabled.
-     */
-    keep_scroll: PropTypes.bool,
-
-    class_name: PropTypes.string,
-    style: PropTypes.object,
-    identity: PropTypes.string,
-    updateAspects: PropTypes.func,
 };
 
 export default ListBox;

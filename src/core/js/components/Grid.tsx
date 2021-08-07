@@ -1,6 +1,17 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import {chunk} from 'commons';
+import {DazzlerProps} from '../../../commons/js/types';
+
+type GridProps = {
+    /**
+     * Children to render in a grid.
+     */
+    children: JSX.Element[];
+    /**
+     * Number of columns
+     */
+    columns: number;
+} & DazzlerProps;
 
 /**
  * Render a list in a grid with a number of ``columns``.
@@ -17,7 +28,7 @@ import {chunk} from 'commons';
  *
  *     grid = core.Grid([1, 2, 3, 4], 2)
  */
-export default class Grid extends React.Component {
+export default class Grid extends React.Component<GridProps> {
     render() {
         const {identity, class_name, children, columns} = this.props;
         return (
@@ -38,27 +49,3 @@ export default class Grid extends React.Component {
         );
     }
 }
-
-Grid.defaultProps = {};
-
-Grid.propTypes = {
-    /**
-     * Children to render in a grid.
-     */
-    children: PropTypes.arrayOf(PropTypes.node).isRequired,
-    /**
-     * Number of columns
-     */
-    columns: PropTypes.number.isRequired,
-
-    /**
-     *  Unique id for this component
-     */
-    identity: PropTypes.string,
-
-    /**
-     * Update aspects on the backend.
-     */
-    updateAspects: PropTypes.func,
-    class_name: PropTypes.string,
-};

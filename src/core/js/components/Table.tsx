@@ -1,6 +1,60 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import {join} from 'ramda';
+
+import {DazzlerProps} from '../../../commons/js/types';
+import {Size} from '../types';
+
+type TableProps = {
+    /**
+     * Rows of data or components to display.
+     */
+    rows?: JSX.Element[][];
+    /**
+     * Title of the table
+     */
+    caption?: JSX.Element;
+    /**
+     * Table headings
+     */
+    headers?: JSX.Element[];
+
+    /**
+     * Content of tfoot element (.table-footer)
+     */
+    footer?: JSX.Element;
+
+    /**
+     * Each row start with the row number.
+     */
+    include_row_number?: boolean;
+
+    /**
+     * The start of the row number, useful if paged.
+     */
+    row_number_start?: number;
+
+    /**
+     * Apply default style.
+     */
+    default_table?: boolean;
+    /**
+     * Collapse the borders of the table.
+     */
+    collapsed?: boolean;
+    /**
+     * Center the cell
+     */
+    centered?: boolean;
+    /**
+     * Put a border around elements
+     */
+    bordered?: boolean;
+
+    /**
+     * The size of the table.
+     */
+    size?: Size;
+} & DazzlerProps;
 
 /**
  * Display data in a tabular manner (Non interactive).
@@ -20,7 +74,7 @@ import {join} from 'ramda';
  * .. literalinclude:: ../../tests/components/pages/table.py
  *     :lines: 5-22
  */
-export default class Table extends React.Component {
+export default class Table extends React.Component<TableProps> {
     render() {
         const {
             identity,
@@ -107,88 +161,8 @@ export default class Table extends React.Component {
             </table>
         );
     }
+    static defaultProps = {
+        default_table: true,
+        collapsed: true,
+    };
 }
-
-Table.defaultProps = {
-    default_table: true,
-    collapsed: true,
-};
-
-Table.propTypes = {
-    /**
-     * Rows of data or components to display.
-     */
-    rows: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.node)),
-    /**
-     * Title of the table
-     */
-    caption: PropTypes.node,
-    /**
-     * Table headings
-     */
-    headers: PropTypes.arrayOf(PropTypes.node),
-    /**
-     * CSS class of the table.
-     */
-    class_name: PropTypes.string,
-
-    /**
-     * Style of the table element.
-     */
-    style: PropTypes.object,
-
-    /**
-     * Content of tfoot element (.table-footer)
-     */
-    footer: PropTypes.node,
-
-    /**
-     * Each row start with the row number.
-     */
-    include_row_number: PropTypes.bool,
-
-    /**
-     * The start of the row number, useful if paged.
-     */
-    row_number_start: PropTypes.number,
-
-    /**
-     * Apply default style.
-     */
-    default_table: PropTypes.bool,
-    /**
-     * Collapse the borders of the table.
-     */
-    collapsed: PropTypes.bool,
-    /**
-     * Center the cell
-     */
-    centered: PropTypes.bool,
-    /**
-     * Put a border around elements
-     */
-    bordered: PropTypes.bool,
-
-    /**
-     * The size of the table.
-     */
-    size: PropTypes.oneOf([
-        'tiny',
-        'small',
-        'medium',
-        'large',
-        'larger',
-        'x-large',
-        'xx-large',
-    ]),
-
-    /**
-     *  Unique id for this component
-     */
-    identity: PropTypes.string,
-
-    /**
-     * Update aspects on the backend.
-     */
-    updateAspects: PropTypes.func,
-};

@@ -1,5 +1,90 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+import {OnOff} from '../types';
+import {DazzlerProps} from '../../../commons/js/types';
+
+type FormProps = {
+    /**
+     * Fields of the form, either provide a component or a type for the input.
+     */
+    fields?: {
+        label?: string;
+        name: string;
+        type?: string;
+        component?: JSX.Element;
+        value?: any;
+    }[];
+
+    /**
+     * Render on top of the form (CSS: form-header)
+     */
+    header?: JSX.Element;
+    /**
+     * Render in the middle of the form, after the fields. (CSS: form-body)
+     */
+    body?: JSX.Element;
+    /**
+     * Render at the bottom of the form (CSS: form-footer)
+     */
+    footer?: JSX.Element;
+
+    /**
+     * Url to submit the form.
+     */
+    action?: string;
+
+    /**
+     * Http method to submit the form.
+     */
+    method?: 'get' | 'post' | 'put' | 'patch';
+
+    /**
+     * How will the response display.
+     */
+    target?: '_blank' | '_self' | '_parent' | '_top';
+
+    /**
+     * Name of the form.
+     */
+    name?: string;
+
+    /**
+     * Specifies auto complete for the form.
+     */
+    auto_complete?: OnOff;
+
+    /**
+     * How the data is encode before submit.
+     */
+    enctype?:
+        | 'application/x-www-form-urlencoded'
+        | 'multipart/form-data'
+        | 'text/plain';
+
+    /**
+     * Character encoding for submission.
+     */
+    accept_charset?: string;
+
+    /**
+     * Specify the form should be validated on submission.
+     */
+    no_validate?: boolean;
+
+    /**
+     * Errors to show with the fields. Keys are name.
+     */
+    errors?: object;
+
+    /**
+     * Include a submit button on the form.
+     */
+    include_submit?: boolean;
+
+    /**
+     * Label of the submit button.
+     */
+    submit_label?: string;
+} & DazzlerProps;
 
 /**
  * A form element with auto fields.
@@ -16,7 +101,7 @@ import PropTypes from 'prop-types';
  *     - ``form-footer``
  *     - ``form-submit``
  */
-export default class Form extends React.Component {
+export default class Form extends React.Component<FormProps> {
     render() {
         const {
             identity,
@@ -90,117 +175,9 @@ export default class Form extends React.Component {
             </form>
         );
     }
+    static defaultProps = {
+        include_submit: true,
+        submit_label: 'Submit',
+        errors: {},
+    };
 }
-
-Form.defaultProps = {
-    include_submit: true,
-    submit_label: 'Submit',
-    errors: {},
-};
-
-Form.propTypes = {
-    /**
-     * Fields of the form, either provide a component or a type for the input.
-     */
-    fields: PropTypes.arrayOf(
-        PropTypes.shape({
-            label: PropTypes.string,
-            name: PropTypes.string.isRequired,
-            type: PropTypes.string,
-            component: PropTypes.node,
-            value: PropTypes.any,
-        })
-    ),
-
-    /**
-     * Render on top of the form (CSS: form-header)
-     */
-    header: PropTypes.node,
-    /**
-     * Render in the middle of the form, after the fields. (CSS: form-body)
-     */
-    body: PropTypes.node,
-    /**
-     * Render at the bottom of the form (CSS: form-footer)
-     */
-    footer: PropTypes.node,
-
-    /**
-     * Url to submit the form.
-     */
-    action: PropTypes.string,
-
-    /**
-     * Http method to submit the form.
-     */
-    method: PropTypes.oneOf(['get', 'post']),
-
-    /**
-     * How will the response display.
-     */
-    target: PropTypes.oneOf(['_blank', '_self', '_parent', '_top']),
-
-    /**
-     * Name of the form.
-     */
-    name: PropTypes.string,
-
-    /**
-     * Specifies auto complete for the form.
-     */
-    auto_complete: PropTypes.oneOf(['on', 'off']),
-
-    /**
-     * How the data is encode before submit.
-     */
-    enctype: PropTypes.oneOf([
-        'application/x-www-form-urlencoded',
-        'multipart/form-data',
-        'text/plain',
-    ]),
-
-    /**
-     * Character encoding for submission.
-     */
-    accept_charset: PropTypes.string,
-
-    /**
-     * Specify the form should be validated on submission.
-     */
-    no_validate: PropTypes.bool,
-
-    /**
-     * CSS class of the form element.
-     */
-    class_name: PropTypes.string,
-
-    /**
-     * Style object of the form element.
-     */
-    style: PropTypes.object,
-
-    /**
-     *  Unique id for this component
-     */
-    identity: PropTypes.string,
-
-    /**
-     * Errors to show with the fields. Keys are name.
-     */
-    errors: PropTypes.object,
-
-    /**
-     * Include a submit button on the form.
-     */
-    include_submit: PropTypes.bool,
-
-    /**
-     * Label of the submit button.
-     */
-    submit_label: PropTypes.string,
-
-    /**
-     * Update aspects on the backend.
-     */
-    updateAspects: PropTypes.func,
-};

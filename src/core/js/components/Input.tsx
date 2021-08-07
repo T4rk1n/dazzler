@@ -1,11 +1,59 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import {omit} from 'ramda';
+import {DazzlerProps} from '../../../commons/js/types';
+
+type InputPayload = {
+    value?: number | string;
+    checked?: boolean;
+};
+
+type InputProps = {
+    id?: string;
+    name?: string;
+    required?: boolean;
+
+    value?: string | number;
+
+    type?:
+        | 'hidden'
+        | 'text'
+        | 'number'
+        | 'search'
+        | 'tel'
+        | 'password'
+        | 'range'
+        | 'email'
+        | 'url'
+        | 'submit'
+        | 'checkbox'
+        | 'reset';
+
+    placeholder?: string;
+
+    pattern?: string;
+    auto_complete?: string;
+    auto_focus?: boolean;
+    auto_save?: string;
+    auto_correct?: string;
+
+    disabled?: boolean;
+
+    n_blur?: number;
+    n_submit?: number;
+
+    min?: number;
+    min_length?: number;
+    max_length?: number;
+    max?: number;
+    step?: string | number;
+    multiple?: boolean;
+    checked?: boolean;
+} & DazzlerProps;
 
 /**
  * Html input wrapper.
  */
-export default class Input extends React.Component {
+export default class Input extends React.Component<InputProps> {
     render() {
         const {
             id,
@@ -51,7 +99,7 @@ export default class Input extends React.Component {
                 maxLength={max_length}
                 {...omit(omitted, this.props)}
                 onChange={(e) => {
-                    const payload = {};
+                    const payload: InputPayload = {};
                     switch (this.props.type) {
                         case 'number':
                             payload.value = Number(e.target.value);
@@ -77,67 +125,10 @@ export default class Input extends React.Component {
             />
         );
     }
+    static defaultProps = {
+        value: '',
+        n_blur: 0,
+        n_submit: 0,
+        checked: false,
+    };
 }
-
-Input.defaultProps = {
-    value: '',
-    n_blur: 0,
-    n_submit: 0,
-    checked: false,
-};
-
-Input.propTypes = {
-    id: PropTypes.string,
-    class_name: PropTypes.string,
-    style: PropTypes.object,
-    name: PropTypes.string,
-    required: PropTypes.bool,
-
-    value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-
-    type: PropTypes.oneOf([
-        'hidden',
-        'text',
-        'number',
-        'search',
-        'tel',
-        'password',
-        'range',
-        'email',
-        'url',
-        'submit',
-        'checkbox',
-        'reset',
-    ]),
-
-    placeholder: PropTypes.string,
-
-    pattern: PropTypes.string,
-    auto_complete: PropTypes.string,
-    auto_focus: PropTypes.bool,
-    auto_save: PropTypes.string,
-    auto_correct: PropTypes.string,
-
-    disabled: PropTypes.bool,
-
-    n_blur: PropTypes.number,
-    n_submit: PropTypes.number,
-
-    min: PropTypes.number,
-    min_length: PropTypes.number,
-    max_length: PropTypes.number,
-    max: PropTypes.number,
-    step: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    multiple: PropTypes.bool,
-    checked: PropTypes.bool,
-
-    /**
-     *  Unique id for this component
-     */
-    identity: PropTypes.string,
-
-    /**
-     * Update aspects on the backend.
-     */
-    updateAspects: PropTypes.func,
-};
