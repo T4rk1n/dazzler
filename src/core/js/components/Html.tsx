@@ -1,7 +1,37 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import {type, map} from 'ramda';
 import {camelToSnakeCase} from 'commons';
+import {AnyDict, DazzlerProps} from '../../../commons/js/types';
+
+type HtmlProps = {
+    /**
+     * Tag name of the component.
+     */
+    tag: string;
+
+    /**
+     * Children of the html tag.
+     */
+    children?: JSX.Element;
+    /**
+     * Id of the element in DOM.
+     */
+    id?: string;
+    /**
+     * Any other html attributes relevant to the html tag
+     */
+    attributes?: AnyDict;
+
+    /**
+     * Events to subscribe.
+     */
+    events?: string[];
+
+    /**
+     * Last event fired.
+     */
+    event?: object;
+} & DazzlerProps;
 
 function prepareType(obj) {
     switch (type(obj)) {
@@ -38,7 +68,8 @@ function prepareObject(obj) {
  * Listen to events with the readonly event aspect containing the
  * latest event fired.
  */
-export default class Html extends React.Component {
+export default class Html extends React.Component<HtmlProps> {
+    element: Element;
     constructor(props) {
         super(props);
         this.onEvent = this.onEvent.bind(this);
@@ -87,46 +118,3 @@ export default class Html extends React.Component {
         });
     }
 }
-
-Html.defaultProps = {};
-
-Html.propTypes = {
-    /**
-     * Tag name of the component.
-     */
-    tag: PropTypes.string.isRequired,
-
-    /**
-     * Children of the html tag.
-     */
-    children: PropTypes.node,
-    /**
-     * Id of the element in DOM.
-     */
-    id: PropTypes.string,
-    /**
-     * Class of the element.
-     */
-    class_name: PropTypes.string,
-    /**
-     * Any other html attributes relevant to the html tag
-     */
-    attributes: PropTypes.object,
-
-    /**
-     * Events to subscribe.
-     */
-    events: PropTypes.array,
-
-    /**
-     * Last event fired.
-     */
-    event: PropTypes.object,
-
-    identity: PropTypes.string,
-
-    /**
-     * Update aspects on the backend.
-     */
-    updateAspects: PropTypes.func,
-};

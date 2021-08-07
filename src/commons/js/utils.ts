@@ -109,12 +109,16 @@ export function debounce(func: Function, wait: number, immediate?: boolean) {
     };
 }
 
-export function collectTruePropKeys(obj: object, filterKeys: string[]) {
+export function collectTruePropKeys(
+    obj: object,
+    filterKeys: string[]
+): string[] {
     let pairs = toPairs(obj);
     if (filterKeys) {
         // @ts-ignore
         pairs = pairs.filter(([k, _]) => includes(k, filterKeys));
     }
+
     return pluck(
         0,
         // @ts-ignore

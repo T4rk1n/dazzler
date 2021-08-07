@@ -1,10 +1,33 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+import {DazzlerProps} from '../../../commons/js/types';
+
+type IntervalProps = {
+    /**
+     * The delay between each time.
+     */
+    timeout?: number;
+    /**
+     * Number of times the interval was fired.
+     */
+    times?: number;
+
+    /**
+     * Enable/disable the interval loop.
+     */
+    active?: boolean;
+} & DazzlerProps;
+
+type IntervalState = {
+    intervalId?: number;
+};
 
 /**
  * Update ``times`` aspect every interval to trigger a binding.
  */
-export default class Interval extends React.Component {
+export default class Interval extends React.Component<
+    IntervalProps,
+    IntervalState
+> {
     constructor(props) {
         super(props);
         this.state = {
@@ -48,31 +71,10 @@ export default class Interval extends React.Component {
     render() {
         return null;
     }
+
+    static defaultProps = {
+        timeout: 1000,
+        times: 0,
+        active: true,
+    };
 }
-
-Interval.defaultProps = {
-    timeout: 1000,
-    times: 0,
-    active: true,
-};
-
-Interval.propTypes = {
-    /**
-     * The delay between each time.
-     */
-    timeout: PropTypes.number,
-    /**
-     * Number of times the interval was fired.
-     */
-    times: PropTypes.number,
-
-    /**
-     * Enable/disable the interval loop.
-     */
-    active: PropTypes.bool,
-
-    /**
-     * Update aspects on the backend.
-     */
-    updateAspects: PropTypes.func,
-};

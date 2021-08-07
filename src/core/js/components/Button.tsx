@@ -1,7 +1,55 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import {join, concat} from 'ramda';
 import {collectTruePropKeys} from 'commons';
+import {PresetColor, Size} from '../types';
+import {DazzlerProps} from '../../../commons/js/types';
+
+type ButtonProps = {
+    /**
+     * Text or component to display.
+     */
+    label: JSX.Element;
+
+    /**
+     * The number of times the button was clicked.
+     */
+    clicks?: number;
+
+    /**
+     * DOM id, otherwise the identity is used.
+     */
+    id?: string;
+
+    /**
+     * Preset style colors to apply.
+     */
+    preset?: PresetColor;
+
+    /**
+     * Disable the button.
+     */
+    disabled?: boolean;
+
+    /**
+     * Round the edges.
+     */
+    rounded?: boolean;
+
+    /**
+     * Circle button
+     */
+    circle?: boolean;
+
+    /**
+     * Add a border around the button.
+     */
+    bordered?: boolean;
+
+    /**
+     * The size of the button.
+     */
+    size?: Size;
+} & DazzlerProps;
 
 /**
  * A button to click on!
@@ -23,7 +71,7 @@ import {collectTruePropKeys} from 'commons';
  *     - ``x-large``
  *     - ``xx-large``
  *
- * @example
+ * :example:
  *
  *     from dazzler.system import Page, Trigger
  *     from dazzler.components import core
@@ -39,7 +87,7 @@ import {collectTruePropKeys} from 'commons';
  *     async def on_click(ctx):
  *         await ctx.set_aspect('output', f'Clicked {ctx.trigger.value}')
  */
-export default class Button extends React.Component {
+export default class Button extends React.Component<ButtonProps> {
     shouldComponentUpdate(nextProps) {
         return !(this.props.clicks < nextProps.clicks);
     }
@@ -79,90 +127,8 @@ export default class Button extends React.Component {
             </button>
         );
     }
+    static defaultProps = {
+        clicks: 0,
+        bordered: true,
+    };
 }
-
-Button.defaultProps = {
-    clicks: 0,
-    bordered: true,
-};
-
-Button.propTypes = {
-    /**
-     * Text or component to display.
-     */
-    label: PropTypes.node.isRequired,
-
-    /**
-     * The number of times the button was clicked.
-     */
-    clicks: PropTypes.number,
-
-    /**
-     * Class name to give the button.
-     */
-    class_name: PropTypes.string,
-
-    /**
-     * Style object to give to the Button.
-     */
-    style: PropTypes.object,
-
-    /**
-     * DOM id, otherwise the identity is used.
-     */
-    id: PropTypes.string,
-
-    /**
-     * Preset style colors to apply.
-     */
-    preset: PropTypes.oneOf([
-        'primary',
-        'secondary',
-        'danger',
-        'warning',
-        'success',
-    ]),
-
-    /**
-     * Disable the button.
-     */
-    disabled: PropTypes.bool,
-
-    /**
-     * Round the edges.
-     */
-    rounded: PropTypes.bool,
-
-    /**
-     * Circle button
-     */
-    circle: PropTypes.bool,
-
-    /**
-     * Add a border
-     */
-    bordered: PropTypes.bool,
-
-    /**
-     * The size of the button.
-     */
-    size: PropTypes.oneOf([
-        'tiny',
-        'small',
-        'medium',
-        'large',
-        'larger',
-        'x-large',
-        'xx-large',
-    ]),
-
-    /**
-     *  Unique id for this component
-     */
-    identity: PropTypes.string,
-
-    /**
-     * Update aspects on the backend.
-     */
-    updateAspects: PropTypes.func,
-};

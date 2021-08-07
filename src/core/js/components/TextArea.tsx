@@ -1,6 +1,51 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import {join} from 'ramda';
+
+import {DazzlerProps} from '../../../commons/js/types';
+
+type TextAreaProps = {
+    /**
+     * Current value of the textarea
+     */
+    value?: string;
+    /**
+     * Name of the element for forms.
+     */
+    name?: string;
+    /**
+     * Number of columns.
+     */
+    cols?: number;
+    /**
+     * Number of rows.
+     */
+    rows?: number;
+
+    /**
+     * Is it required in a form.
+     */
+    required?: boolean;
+
+    /**
+     * Is it disabled ?
+     */
+    disabled?: boolean;
+
+    /**
+     * Hint when no value is entered.
+     */
+    placeholder?: string;
+
+    /**
+     * Max length of the value.
+     */
+    max_length?: number;
+
+    /**
+     * Auto size the text area to the content value.
+     */
+    autosize?: boolean;
+} & DazzlerProps;
 
 /**
  * Html Textarea wrapper.
@@ -10,7 +55,8 @@ import {join} from 'ramda';
  *     - ``dazzler-core-text-area``
  *     - ``autosize``
  */
-export default class TextArea extends React.Component {
+export default class TextArea extends React.Component<TextAreaProps> {
+    elem: HTMLTextAreaElement;
     resize() {
         this.elem.style.height = 'auto';
         this.elem.style.height = `${this.elem.scrollHeight}px`;
@@ -62,62 +108,3 @@ export default class TextArea extends React.Component {
         );
     }
 }
-
-TextArea.defaultProps = {};
-
-TextArea.propTypes = {
-    /**
-     * Current value of the textarea
-     */
-    value: PropTypes.string,
-    /**
-     * Name of the element for forms.
-     */
-    name: PropTypes.string,
-    /**
-     * Number of columns.
-     */
-    cols: PropTypes.number,
-    /**
-     * Number of rows.
-     */
-    rows: PropTypes.number,
-
-    /**
-     * Is it required in a form.
-     */
-    required: PropTypes.bool,
-
-    /**
-     * Is it disabled ?
-     */
-    disabled: PropTypes.bool,
-
-    /**
-     * Hint when no value is entered.
-     */
-    placeholder: PropTypes.string,
-
-    /**
-     * Max length of the value.
-     */
-    max_length: PropTypes.number,
-
-    /**
-     * Auto size the
-     */
-    autosize: PropTypes.bool,
-
-    style: PropTypes.object,
-    class_name: PropTypes.string,
-
-    /**
-     *  Unique id for this component
-     */
-    identity: PropTypes.string,
-
-    /**
-     * Update aspects on the backend.
-     */
-    updateAspects: PropTypes.func,
-};

@@ -1,19 +1,91 @@
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
-import PropTypes from 'prop-types';
 import {is, join, includes, concat, without, filter, any, values} from 'ramda';
+import {LabelValueAny, LabelValueAnyList, StylableLabelValue} from '../types';
+import {AnyDict, DazzlerProps} from '../../../commons/js/types';
 
-const OptionType = {
-    label: PropTypes.node.isRequired,
-    value: PropTypes.oneOfType([
-        PropTypes.string,
-        PropTypes.number,
-        PropTypes.object,
-    ]).isRequired,
-    style: PropTypes.object,
-    class_name: PropTypes.string,
+type DropdownOptionsProps = StylableLabelValue & {
+    onClick?: (value: LabelValueAny) => void;
+    selected?: boolean;
 };
 
-const DropdownOption = (props) => {
+type SelectedItemProps = {
+    option: DropdownOptionsProps;
+    onRemove: (value: LabelValueAny) => void;
+};
+
+type DDropdownProps = {
+    /**
+     * List of options to choose/search from.
+     */
+    options: StylableLabelValue[] | string[];
+
+    /**
+     * Currently selected value(s).
+     */
+    value?: string | any[] | number | object;
+
+    /**
+     * Allow multiple values to be chosen, the value become a list of values.
+     */
+    multi?: boolean;
+    /**
+     * If true, render an input
+     */
+    searchable?: boolean;
+    /**
+     * Value entered by user to search options.
+     */
+    search_value?: string;
+    /**
+     * Keys to filter on searching the options.
+     *
+     * - Leave empty for all props.
+     * - Valid values types to search on are strings & arrays.
+     * - Nested prop access with dot notation.
+     */
+    search_props?: string[];
+
+    /**
+     * Search the label along with the value.
+     */
+    search_label?: boolean;
+
+    /**
+     * Do not perform any search on the options from the frontend and instead
+     * relies on binding the ``search_value`` to filter and set the
+     * ``filtered_options`` aspect.
+     */
+    search_backend?: boolean;
+
+    /**
+     * Array of options that are filtered, set from backend with search
+     */
+    filtered_options?: StylableLabelValue[] | number[] | string[];
+
+    /**
+     * Is the dropdown currently open ?
+     */
+    opened?: boolean;
+
+    /**
+     * Label to use when no search results are available.
+     */
+    no_results_label?: JSX.Element;
+
+    /**
+     * Unicode character used as the toggle button.
+     */
+    toggle_symbol?: JSX.Element;
+
+    /**
+     * Make the menu scrollable.
+     */
+    scrollable?: boolean;
+
+    scroll_max_size?: number;
+} & DazzlerProps;
+
+const DropdownOption = (props: DropdownOptionsProps) => {
     const {label, value, onClick, style, class_name, selected} = props;
 
     const className = useMemo(() => {
@@ -41,13 +113,7 @@ const DropdownOption = (props) => {
     );
 };
 
-DropdownOption.propTypes = {
-    ...OptionType,
-    onClick: PropTypes.func,
-    selected: PropTypes.bool,
-};
-
-const SelectedItem = (props) => {
+const SelectedItem = (props: SelectedItemProps) => {
     const {option, onRemove} = props;
     return (
         <div className="drop-selected-item">
@@ -63,11 +129,6 @@ const SelectedItem = (props) => {
             </div>
         </div>
     );
-};
-
-SelectedItem.propTypes = {
-    option: OptionType,
-    onRemove: PropTypes.func,
 };
 
 /**
@@ -90,7 +151,7 @@ SelectedItem.propTypes = {
  *     - ``dropdown-search-input``
  *     - ``drop-controls``
  *
- * @example
+ * :example:
  *
  *      from dazzler.components.core import Dropdown
  *
@@ -100,7 +161,7 @@ SelectedItem.propTypes = {
  *      )
  *
  */
-const Dropdown = (props) => {
+const Dropdown = (props: DDropdownProps) => {
     const {
         options,
         class_name,
@@ -130,23 +191,25 @@ const Dropdown = (props) => {
     const selectedRef = useRef(null);
 
     // Keep them items with labels
-    const [selectedItems, setSelectedItems] = useState(() => {
-        if (value) {
-            if (is(String, value)) {
-                return [{value, label: value}];
+    const [selectedItems, setSelectedItems] = useState<LabelValueAnyList>(
+        (): any => {
+            if (value) {
+                if (is(String, value)) {
+                    return [{value, label: value}];
+                }
+                if (is(Array, value)) {
+                    return value;
+                }
+                if (is(Object, value)) {
+                    return [value];
+                }
             }
-            if (is(Array, value)) {
-                return value;
-            }
-            if (is(Object, value)) {
-                return [value];
-            }
+            return [];
         }
-        return [];
-    });
+    );
 
     const containerStyle = useMemo(() => {
-        const s = {};
+        const s: AnyDict = {};
         if (!opened) {
             return s;
         }
@@ -182,14 +245,15 @@ const Dropdown = (props) => {
     const onItemClick = (option) => {
         const {value: itemValue} = option;
 
-        const payload = {opened: false};
+        const payload: AnyDict = {opened: false};
 
         if (multi) {
-            if (includes(itemValue, value || [])) {
-                payload.value = without([itemValue], value);
+            const v: any = value || [];
+            if (includes(itemValue, v)) {
+                payload.value = without([itemValue], v);
                 setSelectedItems(without([option], selectedItems));
             } else {
-                payload.value = concat(value || [], [itemValue]);
+                payload.value = concat(v, [itemValue]);
                 setSelectedItems(concat(selectedItems, [option]));
             }
         } else {
@@ -218,7 +282,7 @@ const Dropdown = (props) => {
         const matcher = includes(search_value);
 
         updateAspects({
-            filtered_options: filter((option) => {
+            filtered_options: filter((option: any) => {
                 if (is(String, option)) {
                     return matcher(option);
                 }
@@ -251,7 +315,7 @@ const Dropdown = (props) => {
 
     const onSearch = useCallback(
         (e) => {
-            const payload = {search_value: e.target.value};
+            const payload: AnyDict = {search_value: e.target.value};
             if (!opened) {
                 payload.opened = true;
             }
@@ -391,90 +455,6 @@ Dropdown.defaultProps = {
     filtered_options: null,
     search_value: '',
     no_results_label: 'No results!',
-};
-
-Dropdown.propTypes = {
-    /**
-     * List of options to choose/search from.
-     */
-    options: PropTypes.arrayOf(
-        PropTypes.oneOfType([PropTypes.shape(OptionType), PropTypes.string])
-    ).isRequired,
-
-    /**
-     * Currently selected value(s).
-     */
-    value: PropTypes.oneOfType([
-        PropTypes.string,
-        PropTypes.array,
-        PropTypes.number,
-        PropTypes.object,
-    ]),
-
-    /**
-     * Allow multiple values to be chosen, the value become a list of values.
-     */
-    multi: PropTypes.bool,
-    /**
-     * If true, render an input
-     */
-    searchable: PropTypes.bool,
-    /**
-     * Value entered by user to search options.
-     */
-    search_value: PropTypes.string,
-    /**
-     * Keys to filter on searching the options.
-     *
-     * - Leave empty for all props.
-     * - Valid values types to search on are strings & arrays.
-     * - Nested prop access with dot notation.
-     */
-    search_props: PropTypes.arrayOf(PropTypes.string),
-
-    /**
-     * Search the label along with the value.
-     */
-    search_label: PropTypes.bool,
-
-    /**
-     * Do not perform any search on the options from the frontend and instead
-     * relies on binding the ``search_value`` to filter and set the
-     * ``filtered_options`` aspect.
-     */
-    search_backend: PropTypes.bool,
-
-    /**
-     * Array of options that are filtered, set from backend with search
-     */
-    filtered_options: PropTypes.array,
-
-    /**
-     * Is the dropdown currently open ?
-     */
-    opened: PropTypes.bool,
-
-    /**
-     * Label to use when no search results are available.
-     */
-    no_results_label: PropTypes.node,
-
-    /**
-     * Unicode character used as the toggle button.
-     */
-    toggle_symbol: PropTypes.string,
-
-    /**
-     * Make the menu scrollable.
-     */
-    scrollable: PropTypes.bool,
-
-    scroll_max_size: PropTypes.number,
-
-    class_name: PropTypes.string,
-    style: PropTypes.object,
-    identity: PropTypes.string,
-    updateAspects: PropTypes.func,
 };
 
 export default Dropdown;

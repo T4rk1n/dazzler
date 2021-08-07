@@ -1,6 +1,35 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import {debounce} from 'commons';
+import {DazzlerProps} from '../../../commons/js/types';
+
+type SliderProps = {
+    /**
+     * Minimum (leftmost) value of the slider.
+     */
+    minimum: number;
+    /**
+     * Maximum (rightmost) value of the slider.
+     */
+    maximum: number;
+    /**
+     * Current value
+     */
+    value?: number;
+
+    /**
+     * Round the value
+     */
+    round?: 'ceil' | 'floor';
+
+    /**
+     * Time in milliseconds to wait before updating the value.
+     */
+    debounce?: number;
+} & DazzlerProps;
+
+type SliderState = {
+    dragging: boolean;
+};
 
 /**
  * A slider with a caret contained within a min and max value.
@@ -17,7 +46,11 @@ import {debounce} from 'commons';
  * .. literalinclude:: ../../tests/components/pages/slider.py
  *     :lines: 5-43
  */
-export default class Slider extends React.Component {
+export default class Slider extends React.Component<SliderProps, SliderState> {
+    dragX: number;
+    _draggable: any;
+    _root: HTMLDivElement;
+
     constructor(props) {
         super(props);
         this.onDragStart = this.onDragStart.bind(this);
@@ -103,54 +136,8 @@ export default class Slider extends React.Component {
             </div>
         );
     }
+    static defaultProps = {
+        value: 0,
+        debounce: 50,
+    };
 }
-
-Slider.defaultProps = {
-    value: 0,
-    debounce: 50,
-};
-
-Slider.propTypes = {
-    /**
-     * Minimum (leftmost) value of the slider.
-     */
-    minimum: PropTypes.number.isRequired,
-    /**
-     * Maximum (rightmost) value of the slider.
-     */
-    maximum: PropTypes.number.isRequired,
-    /**
-     * Current value
-     */
-    value: PropTypes.number,
-
-    /**
-     * Round the value
-     */
-    round: PropTypes.oneOf(['ceil', 'floor']),
-
-    /**
-     * Time in milliseconds to wait before updating the value.
-     */
-    debounce: PropTypes.number,
-
-    /**
-     * CSS classes to use. (Scope: dazzler-core-slider)
-     */
-    class_name: PropTypes.string,
-
-    /**
-     * Style object of the root div.
-     */
-    style: PropTypes.object,
-
-    /**
-     *  Unique id for this component
-     */
-    identity: PropTypes.string,
-
-    /**
-     * Update aspects on the backend.
-     */
-    updateAspects: PropTypes.func,
-};

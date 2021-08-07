@@ -1,7 +1,117 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import {concat, join} from 'ramda';
 import {collectTruePropKeys} from 'commons';
+import {DazzlerProps} from '../../../commons/js/types';
+
+type ImageProps = {
+    /**
+     * The source url of the image.
+     */
+    src: string;
+    /**
+     * Alt img attribute to show when the browser cannot display the image.
+     */
+    alt: string;
+
+    /**
+     * Height in pixel
+     */
+    height?: number;
+    /**
+     * Width in pixel
+     */
+    width?: number;
+
+    /**
+     * Link to another page when the image is clicked.
+     */
+    link?: string;
+
+    /**
+     * Text to include beneath the image.
+     */
+    caption?: JSX.Element;
+
+    /**
+     * Fetch the image with CORS.
+     */
+    cross_origin?: 'anonymous' | 'use-credentials';
+
+    /**
+     * Decoding hint for the browser
+     */
+    decoding?: 'sync' | 'async' | 'auto';
+
+    /**
+     * Preload the image before mount.
+     */
+    preload?: boolean;
+
+    /**
+     * Times the image was clicked on.
+     */
+    clicks?: number;
+
+    /**
+     * Add bordered style class
+     */
+    bordered?: boolean;
+    /**
+     * Add rounded style class
+     */
+    rounded?: boolean;
+
+    /**
+     * Add centered style class for the image to
+     * appear in the horizontal middle
+     */
+    centered?: boolean;
+
+    /**
+     * Take up the whole size of the parent container.
+     */
+    flexible?: boolean;
+
+    /**
+     * Image is a circle
+     */
+    circle?: boolean;
+
+    /**
+     * Add a little padding around the image.
+     */
+    padded?: boolean;
+
+    /**
+     * Style to give to the caption of the image.
+     */
+    caption_style?: object;
+
+    /**
+     * CSS class to give to the caption of the image.
+     */
+    caption_class_name?: string;
+
+    /**
+     * CSS class to give to figure if caption is provided.
+     */
+    figure_class_name?: string;
+
+    /**
+     * Style object to give to figure if caption is provided.
+     */
+    figure_style?: object;
+
+    /**
+     * CSS class to give to the link element.
+     */
+    link_class_name?: string;
+
+    /**
+     * Style object to give to the link.
+     */
+    link_style?: object;
+} & DazzlerProps;
 
 /**
  * An image.
@@ -14,7 +124,7 @@ import {collectTruePropKeys} from 'commons';
  *     - ``rounded``
  *     - ``centered``
  */
-export default class Image extends React.Component {
+export default class Image extends React.Component<ImageProps> {
     shouldComponentUpdate(nextProps) {
         return !(this.props.clicks < nextProps.clicks);
     }
@@ -112,138 +222,7 @@ export default class Image extends React.Component {
 
         return content;
     }
+    static defaultProps = {
+        clicks: 0,
+    };
 }
-
-Image.defaultProps = {
-    clicks: 0,
-};
-
-Image.propTypes = {
-    /**
-     * The source url of the image.
-     */
-    src: PropTypes.string.isRequired,
-    /**
-     * Alt img attribute to show when the browser cannot display the image.
-     */
-    alt: PropTypes.string.isRequired,
-
-    /**
-     * Height in pixel
-     */
-    height: PropTypes.number,
-    /**
-     * Width in pixel
-     */
-    width: PropTypes.number,
-
-    /**
-     * Link to another page when the image is clicked.
-     */
-    link: PropTypes.string,
-
-    /**
-     * Text to include beneath the image.
-     */
-    caption: PropTypes.node,
-
-    /**
-     * Fetch the image with CORS.
-     */
-    cross_origin: PropTypes.oneOf(['anonymous', 'use-credentials']),
-
-    /**
-     * Decoding hint for the browser
-     */
-    decoding: PropTypes.oneOf(['sync', 'async', 'auto']),
-
-    /**
-     * Preload the image before mount.
-     */
-    preload: PropTypes.bool,
-
-    /**
-     * Times the image was clicked on.
-     */
-    clicks: PropTypes.number,
-
-    /**
-     * CSS class to give to root element, (Scoped: dazzler-core-image)
-     */
-    class_name: PropTypes.string,
-
-    /**
-     * Style object of the root element.
-     */
-    style: PropTypes.object,
-
-    /**
-     * Add bordered style class
-     */
-    bordered: PropTypes.bool,
-    /**
-     * Add rounded style class
-     */
-    rounded: PropTypes.bool,
-
-    /**
-     * Add centered style class for the image to
-     * appear in the horizontal middle
-     */
-    centered: PropTypes.bool,
-
-    /**
-     * Take up the whole size of the parent container.
-     */
-    flexible: PropTypes.bool,
-
-    /**
-     * Image is a circle
-     */
-    circle: PropTypes.bool,
-
-    /**
-     * Add a little padding around the image.
-     */
-    padded: PropTypes.bool,
-
-    /**
-     * Style to give to the caption of the image.
-     */
-    caption_style: PropTypes.object,
-
-    /**
-     * CSS class to give to the caption of the image.
-     */
-    caption_class_name: PropTypes.string,
-
-    /**
-     * CSS class to give to figure if caption is provided.
-     */
-    figure_class_name: PropTypes.string,
-
-    /**
-     * Style object to give to figure if caption is provided.
-     */
-    figure_style: PropTypes.object,
-
-    /**
-     * CSS class to give to the link element.
-     */
-    link_class_name: PropTypes.string,
-
-    /**
-     * Style object to give to the link.
-     */
-    link_style: PropTypes.object,
-
-    /**
-     *  Unique id for this component
-     */
-    identity: PropTypes.string,
-
-    /**
-     * Update aspects on the backend.
-     */
-    updateAspects: PropTypes.func,
-};

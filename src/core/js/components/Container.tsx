@@ -1,5 +1,21 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+import {DazzlerProps} from '../../../commons/js/types';
+
+type ContainerProps = {
+    children?: JSX.Element;
+    /**
+     * Native html attribute to show a little yellow textual popover.
+     */
+    title?: string;
+
+    draggable?: boolean;
+
+    /**
+     * Number of times the container was clicked.
+     */
+    clicks?: number;
+    id?: string;
+} & DazzlerProps;
 
 /**
  * Virtual div
@@ -15,7 +31,7 @@ import PropTypes from 'prop-types';
  *     - ``center``
  *     - ``hidden``
  */
-export default class Container extends React.Component {
+export default class Container extends React.Component<ContainerProps> {
     shouldComponentUpdate(nextProps) {
         // Ignore virtual n_clicks don't need a re-render of
         // the whole children.
@@ -42,34 +58,8 @@ export default class Container extends React.Component {
             </div>
         );
     }
+
+    static defaultProps = {
+        clicks: 0,
+    };
 }
-
-Container.defaultProps = {
-    clicks: 0,
-};
-
-Container.propTypes = {
-    children: PropTypes.node,
-    id: PropTypes.string,
-    class_name: PropTypes.string,
-    style: PropTypes.object,
-
-    title: PropTypes.string,
-
-    draggable: PropTypes.bool,
-
-    /**
-     * Number of times the container was clicked.
-     */
-    clicks: PropTypes.number,
-
-    /**
-     *  Unique id for this component
-     */
-    identity: PropTypes.string,
-
-    /**
-     * Update aspects on the backend.
-     */
-    updateAspects: PropTypes.func,
-};

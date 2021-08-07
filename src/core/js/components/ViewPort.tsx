@@ -1,6 +1,42 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import {toPairs, keys} from 'ramda';
+
+import {DazzlerProps, StringDict} from '../../../commons/js/types';
+
+type ViewPortProps = {
+    /**
+     * The view that is active.
+     */
+    active: string;
+    /**
+     * A dictionary of components to render with the active key.
+     */
+    views: {[k: string]: JSX.Element};
+
+    /**
+     * Incorporate tabs before the views.
+     */
+    tabbed?: boolean;
+
+    /**
+     * Labels for the tabs otherwise the tab keys will be used.
+     */
+    tab_labels?: StringDict;
+
+    /**
+     * Make the tabs vertical aligned.
+     */
+    vertical_tabs?: boolean;
+    /**
+     * Round tab style
+     */
+    rounded_tabs?: boolean;
+
+    /**
+     * Add a border around the viewport content (CSS bordered).
+     */
+    bordered?: boolean;
+} & DazzlerProps;
 
 /**
  * Activate a view with key.
@@ -15,7 +51,7 @@ import {toPairs, keys} from 'ramda';
  *     - ``dazzler-tabs``
  *     - ``tab-active``
  */
-export default class ViewPort extends React.Component {
+export default class ViewPort extends React.Component<ViewPortProps> {
     render() {
         const {
             active,
@@ -75,59 +111,3 @@ export default class ViewPort extends React.Component {
         );
     }
 }
-
-ViewPort.defaultProps = {};
-
-ViewPort.propTypes = {
-    /**
-     * The view that is active.
-     */
-    active: PropTypes.string.isRequired,
-    /**
-     * A dictionary of components to render with the active key.
-     */
-    views: PropTypes.objectOf(PropTypes.node).isRequired,
-
-    /**
-     * The class name of the outer div.
-     */
-    class_name: PropTypes.string,
-    /**
-     * Style object of the outer div.
-     */
-    style: PropTypes.object,
-
-    /**
-     * Incorporate tabs before the views.
-     */
-    tabbed: PropTypes.bool,
-
-    /**
-     * Labels for the tabs otherwise the tab keys will be used.
-     */
-    tab_labels: PropTypes.objectOf(PropTypes.string),
-
-    /**
-     * Make the tabs vertical aligned.
-     */
-    vertical_tabs: PropTypes.bool,
-    /**
-     * Round tab style
-     */
-    rounded_tabs: PropTypes.bool,
-
-    /**
-     * Add a border around the viewport content (CSS bordered).
-     */
-    bordered: PropTypes.bool,
-
-    /**
-     *  Unique id for this component
-     */
-    identity: PropTypes.string,
-
-    /**
-     * Update aspects on the backend.
-     */
-    updateAspects: PropTypes.func,
-};

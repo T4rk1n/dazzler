@@ -1,10 +1,44 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+import {DazzlerProps} from '../../../commons/js/types';
+import {StylableInputLabelValue} from '../types';
+
+type RadioListProps = {
+    /**
+     * Items in the radio list with labels, values and elements attributes.
+     */
+    options: StylableInputLabelValue[];
+
+    /**
+     * Selected radio button.
+     */
+    value?: string | number;
+
+    /**
+     * Global class name to give to labels.
+     */
+    labels_class_name?: string;
+    /**
+     * Global labels style objects.
+     */
+    labels_style?: object;
+    /**
+     * Global options class name.
+     */
+    options_class_name?: string;
+    /**
+     * Global style object of options.
+     */
+    options_style?: object;
+    /**
+     * Html id of the component, otherwise the identity is used.
+     */
+    id?: string;
+} & DazzlerProps;
 
 /**
  * A radio button list where only a single value can be selected.
  */
-export default class RadioList extends React.Component {
+export default class RadioList extends React.Component<RadioListProps> {
     componentDidMount() {
         const {value, options} = this.props;
         if (value === undefined) {
@@ -60,63 +94,3 @@ export default class RadioList extends React.Component {
         );
     }
 }
-
-RadioList.defaultProps = {};
-
-RadioList.propTypes = {
-    /**
-     * Items in the radio list with labels, values and elements attributes.
-     */
-    options: PropTypes.arrayOf(
-        PropTypes.shape({
-            label: PropTypes.string,
-            value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-            title: PropTypes.string,
-            label_class_name: PropTypes.string,
-            input_class_name: PropTypes.string,
-        })
-    ).isRequired,
-
-    /**
-     * Selected radio button.
-     */
-    value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-
-    /**
-     * Style object of the container.
-     */
-    style: PropTypes.object,
-    /**
-     * Class name of the container.
-     */
-    class_name: PropTypes.string,
-    /**
-     * Global class name to give to labels.
-     */
-    labels_class_name: PropTypes.string,
-    /**
-     * Global labels style objects.
-     */
-    labels_style: PropTypes.object,
-    /**
-     * Global options class name.
-     */
-    options_class_name: PropTypes.string,
-    /**
-     * Global style object of options.
-     */
-    options_style: PropTypes.object,
-    /**
-     * Html id of the component, otherwise the identity is used.
-     */
-    id: PropTypes.string,
-    /**
-     *  Unique id for this component
-     */
-    identity: PropTypes.string,
-
-    /**
-     * Update aspects on the backend.
-     */
-    updateAspects: PropTypes.func,
-};
