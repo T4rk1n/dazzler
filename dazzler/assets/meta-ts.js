@@ -250,11 +250,16 @@ function walk(directory, components = {}) {
     };
 
     const getComment = symbol => {
-        // No needs for tags.
         const comment = symbol.getDocumentationComment();
+        const tags = symbol.getJsDocTags();
+        // FIXME @ char lose indent for examples eg: @page.bind(...)
         if (comment) {
             return R.join('\n')(
-                comment.filter(c => c.kind === 'text').map(c => c.text)
+                R.concat(
+                    comment.map(c => c.text),
+                    // Lose the indent grr. why not complete???
+                    tags.map(t => R.concat(['@', t.name], t.text.map(e => e.text)))
+                )
             );
         }
         return '';
