@@ -10,6 +10,7 @@ Full dazzler documentation
    commands
    component_list
    deployment
+   electron
    examples/index
    api/modules
 
