@@ -202,10 +202,6 @@ def setup(app):
 
     dazz = Dazzler('dazzler')
 
-    if os.getenv('READTHEDOCS'):
-        proc = subprocess.Popen(['npm', 'ci'])
-        proc.communicate()
-
     for args in (
             ('../src/core/js/components', '../dazzler/components/core'),
             ('../src/extra/js/components', '../dazzler/components/extra', '--ts'),
