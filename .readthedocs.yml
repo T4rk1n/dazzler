@@ -1,10 +1,9 @@
 version: 2
 
 python:
-   setup_py_install: true
-   pip_install: true
-
-build:
-   image: latest
-   apt_packages:
-      - node-typescript
+  version: "3.7"
+  install:
+    - requirements: requirements.txt
+    - requirements: requirements-dev.txt
+    - method: pip
+      path: .
