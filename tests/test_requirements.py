@@ -2,7 +2,9 @@
 import pytest
 
 from dazzler.errors import InvalidRequirementError, InvalidRequirementKindError
-from dazzler.system import Requirement, RequirementWarning
+from dazzler.system import (
+    Requirement, RequirementWarning, filter_dev_requirements
+)
 
 
 @pytest.mark.parametrize(
@@ -21,19 +23,6 @@ def test_requirement(filename, kind, uri_key, formatted_tag):
     assert requirement.kind == kind
     assert uri_key in prepared['attributes']
     assert tag == formatted_tag
-
-
-def test_dev_requirements():
-    # Assert dev requirements are handled the proper flag is set.
-    requirement = Requirement(
-        '/home/project/dist/requirements.js',
-        dev='/home/project/dev/dev-requirements.js'
-    )
-    prepared = requirement.prepare(dev=True)
-    assert prepared['url'] == '/dazzler/requirements/static/dev/dev-requirements.js'  # noqa: E501
-
-    tag = requirement.tag(dev=True)
-    assert 'src="/dazzler/requirements/static/dev/dev-requirements.js"' in tag
 
 
 def test_external_requirements():
@@ -74,3 +63,13 @@ def test_external_only_warning():
 
     assert len(record) == 1
     assert record[0].message.args[0] == 'No local file for requirement: external-only'  # noqa: E501
+
+
+def test_filter_dev_requirements():
+    requirements = [
+        Requirement('prod.css'),
+        Requirement('dev.css', dev=True)
+    ]
+
+    filtered = list(filter_dev_requirements(requirements, True))
+    assert len(filtered) == 1
