@@ -3,7 +3,7 @@ import typing
 
 from dazzler.errors import PackageConflictError
 
-from ._requirements import Requirement
+from ._requirements import Requirement, filter_dev_requirements
 from ._component import Component
 
 
@@ -37,10 +37,13 @@ class Package:
             'name': self.name,
             'components': list(self.components.keys()),
             'requirements': [
-                x.prepare(dev=dev, external=external)
-                for x in self.requirements
+                x.prepare(external=external)
+                for x in self.get_requirements(dev)
             ],
         }
+
+    def get_requirements(self, dev: bool):
+        return filter_dev_requirements(self.requirements, dev)
 
     def __str__(self):
         return self.name

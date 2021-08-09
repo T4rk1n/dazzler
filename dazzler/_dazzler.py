@@ -348,22 +348,6 @@ class Dazzler(precept.Precept):  # pylint: disable=too-many-instance-attributes
                 requirement.internal,
                 destination,
             ))
-            if requirement.dev:
-                destination = os.path.join(
-                    req_dir, requirement.dev_static
-                )
-                self.logger.debug(
-                    f'Copying {requirement.dev} '
-                    f'to {destination}'
-                )
-                os.makedirs(os.path.dirname(destination), exist_ok=True)
-                futures.append(
-                    self.executor.execute(
-                        shutil.copy,
-                        requirement.dev,
-                        destination,
-                    )
-                )
 
         # Copy the mount script.
         futures.append(
@@ -448,10 +432,10 @@ class Dazzler(precept.Precept):  # pylint: disable=too-many-instance-attributes
         if not hot:
             await self.copy_requirements()
         await self.server.send_reload(
-            [r.prepare(dev=self.config.debug) for r in files],
+            [r.prepare() for r in files],
             hot,
             refresh,
-            [r.prepare(dev=self.config.debug) for r in deleted_files]
+            [r.prepare() for r in deleted_files]
         )
         return hot
 
