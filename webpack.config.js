@@ -1,20 +1,20 @@
 const path = require('path');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const exec = require('child_process').exec;
-const Tracker = require('./webpack-asset-tracker');
+const tracker = require('./webpack-asset-tracker');
 
-module.exports = function(env, argv) {
-    const mode = argv && argv.mode || 'production';
+module.exports = function (env, argv) {
+    const mode = (argv && argv.mode) || 'production';
     const devMode = mode === 'development';
-    const devtool = mode === 'development' ? 'inline-source-map' :'source-map';
+    const devtool = mode === 'development' ? 'inline-source-map' : undefined;
 
     const output = {
         filename: 'dazzler_[name]_[contenthash].js',
-        sourceMapFilename: 'dazzler_[name]_[contenthash].[ext].map',
+        sourceMapFilename: 'dazzler_[name]_[contenthash][ext].map',
         library: 'dazzler_[name]',
         libraryTarget: 'umd',
-        devtoolModuleFilenameTemplate: 'webpack:///[id]/[resource]?[loaders]'
+        devtoolModuleFilenameTemplate: 'webpack:///[id]/[resource]?[loaders]',
     };
 
     if (devMode) {
@@ -28,20 +28,36 @@ module.exports = function(env, argv) {
             '@babel/polyfill',
             path.join(__dirname, 'src/commons/js/index.ts'),
         ],
-        renderer: [path.join(__dirname, 'src/renderer/js/index.tsx')],
-        test: [
-            path.join(
-                __dirname,
-                'src/internal/test_components/index.js'
-            ),
-        ],
+        renderer: {
+            import: [path.join(__dirname, 'src/renderer/js/index.tsx')],
+            dependOn: 'commons'
+        },
+        test: [path.join(__dirname, 'src/internal/test_components/index.js')],
         ts: [path.join(__dirname, 'src/internal/ts_components/index.ts')],
-        core: [path.join(__dirname, 'src/core/js/index.ts')],
-        extra: [path.join(__dirname, 'src/extra/js/index.ts')],
-        markdown: [path.join(__dirname, 'src/markdown/js/index.js')],
-        calendar: [path.join(__dirname, 'src/calendar/js/index.ts')],
-        auth: [path.join(__dirname, 'src/auth/js/index.ts')],
-        icons: [path.join(__dirname, 'src/icons/js/index.js')],
+        core: {
+            import: [path.join(__dirname, 'src/core/js/index.ts')],
+            dependOn: 'commons'
+        },
+        extra: {
+            import: [path.join(__dirname, 'src/extra/js/index.ts')],
+            dependOn: 'commons'
+        },
+        markdown: {
+            import: [path.join(__dirname, 'src/markdown/js/index.js')],
+            dependOn: 'commons'
+        },
+        calendar: {
+            import: [path.join(__dirname, 'src/calendar/js/index.ts')],
+            dependOn: 'commons'
+        },
+        auth: {
+            import: [path.join(__dirname, 'src/auth/js/index.ts')],
+            dependOn: 'commons'
+        },
+        icons: {
+            import: [path.join(__dirname, 'src/icons/js/index.js')],
+            dependOn: 'commons'
+        },
     };
 
     const externals = {
@@ -62,7 +78,11 @@ module.exports = function(env, argv) {
     };
 
     const plugins = [
-        Tracker({ path: output.path, filename: 'assets.json', integrity: !devMode }),
+        tracker({
+            path: output.path,
+            filename: 'assets.json',
+            integrity: !devMode,
+        }),
         new MiniCssExtractPlugin({
             filename: 'dazzler_[name]_[contenthash].css',
             chunkFilename: 'dazzler_[name]_[contenthash].css',
@@ -71,24 +91,26 @@ module.exports = function(env, argv) {
 
     if (devMode) {
         plugins.push({
-            apply: (compiler => {
+            apply: (compiler) => {
                 compiler.hooks.afterEmit.tap('BuildDazzlerPlugin', () => {
                     exec('npm run build:dazzler', (err, stdout, stderr) => {
                         if (stdout) process.stdout.write(stdout);
                         if (stderr) process.stderr.write(stderr);
-                    })
-                })
-            })
-        })
+                    });
+                });
+            },
+        });
     }
 
     // Check argv is defined first for IDE analyse.
-    if (argv && !argv.watch){
-        plugins.push(new CleanWebpackPlugin([output.path], {
-            verbose: true,
-            watch: true,
-            exclude: ['dazzler.js'],
-        }));
+    if (argv && !argv.watch) {
+        plugins.push(
+            new CleanWebpackPlugin([output.path], {
+                verbose: true,
+                watch: true,
+                exclude: ['dazzler.js'],
+            })
+        );
     }
 
     return {
@@ -100,11 +122,9 @@ module.exports = function(env, argv) {
 
         optimization: {
             splitChunks: {
-                cacheGroups: {
-                    commons: {
-                        minChunks: 2,
-                    },
-                },
+                // Chunks not working good with dev
+                // I think something with the proptypes lib.
+                chunks: devMode ? undefined : 'all',
             },
         },
 
@@ -117,7 +137,7 @@ module.exports = function(env, argv) {
         devtool,
         resolve: {
             alias: {
-                commons: path.resolve(__dirname, 'src/commons/js/')
+                commons: path.resolve(__dirname, 'src/commons/js/'),
             },
             extensions: ['.js', '.jsx', '.ts', '.tsx'],
         },
@@ -131,15 +151,19 @@ module.exports = function(env, argv) {
                 {
                     test: /\.s?css$/,
                     use: [
-                        'style-loader',
-                        MiniCssExtractPlugin.loader,
                         {
-                            loader: "css-loader",
+                            loader: MiniCssExtractPlugin.loader,
+                            options: {
+                                esModule: false,
+                            },
                         },
                         {
-                            loader: "sass-loader"
-                        }
-                    ]
+                            loader: 'css-loader',
+                        },
+                        {
+                            loader: 'sass-loader',
+                        },
+                    ],
                 },
                 {
                     test: /\.jsx?$/,
