@@ -9,7 +9,7 @@ import aiohttp
 
 from aiohttp import web, WSCloseCode
 
-from .system import Page, UNDEFINED, Route
+from .system import Page, UNDEFINED, Route, filter_dev_requirements
 
 from .tools import replace_all, format_tag, transform_dict_keys
 from ._renderer import package as renderer
@@ -217,23 +217,22 @@ class Server:
                     str(self.dazzler.config.renderer.ping_interval)
             })
 
+        scripts = []
+        css = []
+        for requirement in renderer.get_requirements(self.debug):
+            tag = requirement.tag(
+                external=self.dazzler.config.requirements.prefer_external
+            )
+            if requirement.kind == 'js':
+                scripts.append(tag)
+            elif requirement.kind == 'css':
+                css.append(tag)
+
         index = replace_all(
             self.index,
             page_title=page.title,
-            renderer_scripts='\n'.join(
-                x.tag(
-                    dev=self.debug,
-                    external=self.dazzler.config.requirements.prefer_external
-                )
-                for x in renderer.requirements if x.kind == 'js'
-            ),
-            css='\n'.join(
-                x.tag(
-                    dev=self.debug,
-                    external=self.dazzler.config.requirements.prefer_external
-                )
-                for x in renderer.requirements if x.kind == 'css'
-            ),
+            renderer_scripts='\n'.join(scripts),
+            css='\n'.join(css),
             dazzler_script=format_tag('script', script),
             meta='\n'.join(format_tag('meta', x) for x in page.meta_tags),
             favicon=format_tag(
@@ -266,9 +265,9 @@ class Server:
         # Add global requirements first.
         prepared['requirements'] = [
             x.prepare(
-                dev=self.debug,
                 external=self.dazzler.config.requirements.prefer_external
-            ) for x in self.dazzler.requirements
+            ) for x in filter_dev_requirements(
+                self.dazzler.requirements, self.debug)
         ] + prepared['requirements']
 
         if self.dazzler.config.development.reload:

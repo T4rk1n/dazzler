@@ -25,7 +25,7 @@ class Requirement:
             kind: str = None,
             name: str = None,
             package: str = None,
-            dev: str = None,
+            dev: bool = None,
             external: str = None,
             page: str = None,
             integrity: str = None
@@ -35,8 +35,8 @@ class Requirement:
         :param kind: The file extension.
         :param name: The file name.
         :param package: The package related to this requirement.
-        :param dev: Local path of the dev asset to serve instead of internal
-            when running in debug mode.
+        :param dev: If the requirement is a dev requirement to
+            serve only when in debug mode.
         :param external: URL to serve instead when running with
             ``prefer_external`` mode enable in the configs.
         :param page: The page related to this requirement.
@@ -66,17 +66,14 @@ class Requirement:
             paths.insert(0, page)
             url.insert(3, page)
 
-        self.internal_static = os.path.join(*paths)
-        self.internal_url = '/'.join(url)
-
         if dev:
             paths[paths.index('dist')] = 'dev'
-            dev_name = os.path.basename(dev)
-            paths[paths.index(self.name)] = dev_name
             self.dev_static = os.path.join(*paths)
             url[url.index('dist')] = 'dev'
-            url[url.index(self.name)] = dev_name
             self.dev_url = '/'.join(url)
+
+        self.internal_static = os.path.join(*paths)
+        self.internal_url = '/'.join(url)
 
         if self.external_only:
             warnings.warn(
@@ -84,7 +81,7 @@ class Requirement:
                 RequirementWarning
             )
 
-    def prepare(self, dev=False, external=False) -> dict:
+    def prepare(self, external=False) -> dict:
         attributes = {}
         if self.kind == 'js':
             uri_key = 'src'
@@ -96,8 +93,6 @@ class Requirement:
 
         if self.external_only:
             uri = self.external
-        elif dev and self.dev:
-            uri = self.dev_url
         elif external and self.external:
             uri = self.external
             attributes['crossorigin'] = ('{key}', 'crossorigin')
@@ -106,17 +101,18 @@ class Requirement:
 
         attributes[uri_key] = uri
 
-        if self.integrity and uri != self.dev_url:
+        if self.integrity and not self.dev:
             attributes['integrity'] = self.integrity
 
         return {
             'kind': self.kind,
             'url': uri,
-            'attributes': attributes
+            'attributes': attributes,
+            'key': self.name,
         }
 
-    def tag(self, dev=False, external=False):
-        prepared = self.prepare(dev, external)
+    def tag(self, external=False):
+        prepared = self.prepare(external)
         if self.kind == 'css':
             return format_tag(
                 'link', prepared['attributes'], opened=True, close=False
@@ -144,7 +140,7 @@ def assets_to_requirements(
         external: str = None
 ) -> typing.List[Requirement]:
     """
-    Turns the output of webpack-bundle-tracker into a list of Requirements
+    Turns the output of webpack-assets-tracker into a list of Requirements
 
     :param path: Path where production assets are located
     :param data: Bundle tracker data.'
@@ -154,18 +150,25 @@ def assets_to_requirements(
     :param external: External base path for the requirement.
     :return:
     """
-    dev_data = dev_data or data
+    dev_data = dev_data or {}
     dev_path = dev_path or path
 
     return [
         Requirement(
             internal=os.path.join(path, internal['name']),
-            dev=os.path.join(dev_path, dev['name']),
             package=package_name,
             external=f'{external}/{internal["name"]}' if external else None,
             integrity=internal.get('integrity')
         )
-        for internal, dev in zip(data, dev_data)
+        for internal in data
+    ] + [
+        Requirement(
+            internal=os.path.join(dev_path, dev['name']),
+            package=package_name,
+            dev=True,
+            external=f'{external}/{dev["name"]}' if external else None,
+        )
+        for dev in dev_data
     ]
 
 
@@ -199,3 +202,10 @@ def collect_requirements(directory: str, page: str = None):
                 )
             )
     return requirements
+
+
+def filter_dev_requirements(requirements, dev):
+    return (
+        x for x in requirements
+        if (x.dev and dev) or (not dev and not x.dev)
+    )

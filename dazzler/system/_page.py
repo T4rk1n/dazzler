@@ -111,7 +111,8 @@ class Page:
             layout = await layout(request)
 
         packages = [
-            Package.package_registry[x].prepare(dev=debug)
+            Package.package_registry[x].prepare(
+                dev=debug, external=external)
             for x in self.packages
         ] if self.packages is not None else [
             x.prepare(dev=debug, external=external)
@@ -127,7 +128,7 @@ class Page:
                 x['key']: x for y in self.bindings for x in y.prepare()
             },
             'requirements': [
-                x.prepare(dev=debug, external=external)
+                x.prepare(external=external)
                 for x in self.requirements
             ],
             'packages': packages,

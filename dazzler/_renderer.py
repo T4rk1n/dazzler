@@ -22,14 +22,20 @@ _vendors_requirements = [
     # React
     _Requirement(
         internal=os.path.join(_vendors, 'react-17-0-2.production.min.js'),
-        dev=os.path.join(_vendors, 'react-17-0-2.development.js'),
         external='https://unpkg.com/react@17.0.2/umd/react.production.min.js',
+    ),
+    _Requirement(
+        internal=os.path.join(_vendors, 'react-17-0-2.development.js'),
+        dev=True,
     ),
     # React-dom
     _Requirement(
         internal=os.path.join(_vendors, 'react-dom-17-0-2.production.min.js'),
-        dev=os.path.join(_vendors, 'react-dom-17-0-2.development.js'),
         external='https://unpkg.com/react-dom@17.0.2/umd/react-dom.production.min.js',  # noqa: E501
+    ),
+    _Requirement(
+        internal=os.path.join(_vendors, 'react-dom-17-0-2.development.js'),
+        dev=True,
     ),
     # Normalize
     _Requirement(

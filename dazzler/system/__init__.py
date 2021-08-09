@@ -15,6 +15,7 @@ from ._requirements import (  # noqa: F401
     RequirementWarning,
     assets_to_requirements,
     collect_requirements,
+    filter_dev_requirements,
 )
 from ._generator import generate_components, generate_meta  # noqa: F401
 from ._undefined import UNDEFINED, Undefined  # noqa: F401
@@ -36,6 +37,7 @@ __all__ = [  # noqa: F405
     'Requirement',
     'RequirementWarning',
     'assets_to_requirements',
+    'filter_dev_requirements',
     'collect_requirements',
     'generate_components',
     'generate_meta',
