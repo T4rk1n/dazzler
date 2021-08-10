@@ -4,7 +4,7 @@ import {drop} from 'ramda';
 
 export function loadRequirement(requirement: Requirement) {
     return new Promise<void>((resolve, reject) => {
-        const {url, kind, meta} = requirement;
+        const {url, kind} = requirement;
         let method;
         if (kind === 'js') {
             method = loadScript;
@@ -15,7 +15,7 @@ export function loadRequirement(requirement: Requirement) {
         } else {
             return reject({error: `Invalid requirement kind: ${kind}`});
         }
-        return method(url, meta).then(resolve).catch(reject);
+        return method(url).then(resolve).catch(reject);
     });
 }
 
