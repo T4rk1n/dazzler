@@ -10,6 +10,8 @@ install:
     pip install -e .
     npm install
 
+alias i := install
+
 # Build everything
 build:
     npm run build
@@ -56,12 +58,17 @@ alias d := docs
 diff-docs:
     ./docs/diff-docs.sh
 
-# Build and publish the package to pypi
-publish: build
+# Package using wheel
+package:
     rm -rf dist
-    python setup.py sdist
+    rm -rf build
+    python -m build --wheel
+
+# Build and publish the package to pypi
+publish: build package
     twine upload dist/*
 
+# Watch the js source with webpack.
 watch:
     npm run watch
 
@@ -74,11 +81,11 @@ electron:
     dazzler -c tests/electron/dazzler.toml electron tests/electron/electron_app.py
 
 # Build the sample electron app.
-electron-build TARGET="":
+electron-build TARGET="dir":
     dazzler -c tests/electron/dazzler.toml electron-build tests/electron/electron_app.py --target {{TARGET}}
 
 # Generate a component package:
-generate PACKAGE ARGS="":
+generate PACKAGE *ARGS:
     dazzler generate {{src}}/{{PACKAGE}}/js/components {{components}}/{{PACKAGE}} {{ARGS}}
 
 # Analyze the bundles sizes
@@ -87,13 +94,17 @@ analyze-bundle:
     mv stats.json {{assets}}/dist
     npx webpack-bundle-analyzer {{assets}}/dist/stats.json
 
+# View npm security audit.
 audit:
     npm audit
 
+# Fix security issues with npm packages.
 audit-fix:
     npm audit fix
 
+# Run bandit on python source code.
 bandit:
     bandit -r dazzler -s B107,B603,B404
 
+# Analyse npm deps & bandit
 analyze-security: audit bandit
