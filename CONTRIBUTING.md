@@ -2,25 +2,24 @@
 
 ## Getting Started
 
+- Install [just](https://github.com/casey/just)
 - Fork and clone the repo
 - Create, activate & install dependencies
 ```
 $ python -m venv venv
 $ . venv/bin/activate
-$ pip install -r requirements-dev.txt
+$ just install
 ```
-- Install the package locally (optional, to generate the components)
-`$ pip install -e .`
 
 ## Coding style
 
 #### Linters
 
-- [pylint](https://www.pylint.org/):
-`$ pylint dazzler`
-- [flake8](http://flake8.pycqa.org/en/latest/):
-`$ flake8 dazzler`
-- eslint: `$ npm run lint`
+- `$ just lint` to run them all.
+- [pylint](https://www.pylint.org/) &
+  [flake8](http://flake8.pycqa.org/en/latest/):
+  `$ just lint-python`
+- eslint: `$ just lint-js`
 
 #### Formatter
 
@@ -100,24 +99,22 @@ Prefix your commit messages with an emoji according to this list:
 
 - Create a new directory in `src` for the components.
 - Add webpack entrypoint.
-- Add a package in `dazzler/components/package_name/__init__.py` (Copy core and change `_name`)
-- Add a `build:meta` npm command.
-- Add a `build:dazzler` npm command.
+- Add a package in `dazzler/components/<package_name>/__init__.py` 
+  (Copy `dazzler/components/core/__init__.py` and change `_name`)
+- Add a `build:dazzler::<package_name>` npm command, add the comma
 
 ### Component creation
 
-- Build the components: `$ npm run build`.
-- Watch `$ npm run watch`.
+- Build the components: `$ just build`.
+- Watch `$ just watch`.
 - Components styles should be using css classes primarily.
 - SCSS for styling, scoped with `library-name-component-name`.
 - Spinal casing for css classes.
-- extension `.jsx` for react components `js` otherwise.
-- Include a docstring for every components/props.
+- extension `.(t|j)sx` for react components `.(t|j)s` otherwise.
+- Include a docstring for every component/props.
 - Include a test page in `tests/components/pages`.
 - Include an acceptance test in `tests/components/test_[package_name].py`
 
 ### Release
 
-- Build: `$ npm run build`.
-- Build Python package `$ python setup.py sdist`.
-- Upload `$ twine upload dist/dazzler.*`.
+- Run `$ just publish`
