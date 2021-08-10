@@ -11,7 +11,7 @@ export const timestampProp = (prop_name: string, value: any) => {
     return payload;
 };
 
-export function loadScript(uri: string, timeout = 3000) {
+export function loadScript(uri: string, timeout = 30000) {
     return new Promise((resolve, reject) => {
         /* eslint-disable prefer-const */
         let timeoutId;
@@ -47,7 +47,7 @@ export function disableCss(uri: string) {
     }
 }
 
-export function loadCss(uri: string, timeout = 3000) {
+export function loadCss(uri: string, timeout = 30000) {
     return new Promise((resolve, reject) => {
         /* eslint-disable prefer-const */
         let timeoutId;
