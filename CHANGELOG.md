@@ -5,9 +5,20 @@ Versions follow [Semantic Versioning](https://www.semver.org)
 ## [UNRELEASED]
 ### Added
 
-- :sparkles: Typescript component generation support for functional components.
-- :wrench: Add reload delay config, wait for a moment before starting the reload watch.
+- :sparkles: Typescript component generation support.
+- :wrench: Add `development.reload_delay` config, wait for a moment before starting reload watch.
 - :sparkles: Add `electron` & `electron-build` commands to create desktop applications.
+
+### Fixed
+
+- :racehorse: Bundles size optimized.
+- :construction: Set requirement load timeout to 30 seconds.
+- :construction: Decode generator error output.
+- :bug: Fix hot reload for css files.
+
+### Changed
+
+- :hammer: Refactor auth, calendar, core, extra to typescript.
 
 ## [0.6.1]
 ### Fixed
