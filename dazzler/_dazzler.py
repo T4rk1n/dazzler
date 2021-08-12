@@ -261,10 +261,7 @@ class Dazzler(precept.Precept):  # pylint: disable=too-many-instance-attributes
 
     def requirement_from_file(self, file) -> typing.Optional[Requirement]:
         for requirement in self.collect_requirements():
-            if any(
-                    file in r for r in (requirement.internal, requirement.dev)
-                    if r
-            ):
+            if file in requirement.internal:
                 return requirement
         return None
 
