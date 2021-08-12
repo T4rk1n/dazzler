@@ -42,9 +42,10 @@ export function loadScript(uri: string, timeout = 30000) {
 export function disableCss(uri: string) {
     const element = document.getElementById(`css-${uri}`);
     if (element) {
-        element.setAttribute('disabled', 'disabled');
-        element.id = null;
+        element.parentNode.removeChild(element);
+        return true;
     }
+    return false;
 }
 
 export function loadCss(uri: string, timeout = 30000) {
@@ -55,11 +56,14 @@ export function loadCss(uri: string, timeout = 30000) {
             clearTimeout(timeoutId);
             resolve(uri);
         };
-        disableCss(uri);
+        let href = uri;
+        if (disableCss(uri)) {
+            href = `${uri}?v=${new Date().getTime()}`
+        }
         const attributes = {
             rel: 'stylesheet',
             type: 'text/css',
-            href: uri,
+            href,
             media: 'all',
             id: `css-${uri}`,
         };
