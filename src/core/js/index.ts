@@ -22,6 +22,9 @@ import Grid from './components/Grid';
 import Form from './components/Form';
 import ListBox from './components/ListBox';
 import Dropdown from './components/Dropdown';
+import Box from './components/Box';
+import Text from './components/Text';
+import Checkbox from './components/Checkbox';
 
 export {
     Container,
@@ -46,4 +49,7 @@ export {
     Form,
     ListBox,
     Dropdown,
+    Text,
+    Box,
+    Checkbox,
 };

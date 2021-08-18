@@ -1,16 +1,5 @@
 import {AnyDict} from '../../commons/js/types';
 
-type Size =
-    | 'tiny'
-    | 'small'
-    | 'medium'
-    | 'large'
-    | 'larger'
-    | 'x-large'
-    | 'xx-large';
-
-type PresetColor = 'primary' | 'secondary' | 'danger' | 'warning' | 'success';
-
 type LabelValue<T> = {
     label: JSX.Element;
     value: T;
