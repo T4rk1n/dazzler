@@ -108,3 +108,9 @@ bandit:
 
 # Analyse npm deps & bandit
 analyze-security: audit bandit
+
+# Remove build & dist directories.
+clean:
+    rm -rf build
+    rm -rf dist
+    rm -rf dazzler.egg-info
