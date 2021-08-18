@@ -1,10 +1,24 @@
 @import 'colors';
-$names: primary primary-light danger danger-light warning warning-light success success-light;
-$colors: $primary $primary-light $danger $danger-light $warning $warning-light $success $success-light;
+$names: primary primary-light primary-dark secondary secondary-light
+    secondary-dark tertiary tertiary-light tertiary-dark danger danger-light
+    danger-dark warning warning-light warning-dark success success-light
+    success-dark neutral neutral-light neutral-dark dark dark-light dark-dark
+    darker darker-light darker-dark;
+$colors: $primary $primary-light $primary-dark $secondary $secondary-light
+    $secondary-dark $tertiary $tertiary-light $tertiary-dark $danger
+    $danger-light $danger-dark $warning $warning-light $warning-dark $success
+    $success-light $success-dark $neutral $neutral-light $neutral-dark $dark
+    $dark-light $dark-dark $darker $darker-light $darker-dark;
 
-@for $i from 1 to 9 {
+@for $i from 1 to 27 {
   .dazzler-renderer {
     .#{nth($names, $i)} {
+      background-color: nth($colors, $i);
+    }
+    .dazzler-preset-color-#{nth($names, $i)} {
+      color: nth($colors, $i);
+    }
+    .dazzler-preset-background-#{nth($names, $i)} {
       background-color: nth($colors, $i);
     }
   }

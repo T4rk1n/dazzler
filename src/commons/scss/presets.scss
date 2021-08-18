@@ -1,0 +1,45 @@
+.dazzler-rounded {
+  border-radius: 3px;
+}
+.dazzler-bordered {
+  border: 1px solid $neutral-dark;
+}
+.dazzler-centered {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.dazzler-scrollable {
+  overflow: auto;
+}
+.dazzler-hidden {
+  display: none;
+}
+.dazzler-unselectable {
+  user-select: none;
+}
+// Sizing, set font-size here, details in components scss
+.dazzler-preset-size-tiny {
+  font-size: smaller;
+}
+.dazzler-preset-size-small {
+  font-size: small;
+}
+.dazzler-preset-size-medium {
+  font-size: medium;
+}
+.dazzler-preset-size-large {
+  font-size: large;
+}
+.dazzler-preset-size-larger {
+  font-size: larger;
+}
+.dazzler-preset-size-x-large {
+  font-size: x-large;
+}
+.dazzler-preset-size-xx-large {
+  font-size: xx-large;
+}
+.dazzler-preset-size-xxx-large {
+  font-size: xxx-large;
+}
