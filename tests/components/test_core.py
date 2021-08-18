@@ -674,3 +674,28 @@ async def test_text(start_page, browser):
     await browser.wait_for_style_to_equal(
         '#foo-bar', 'font-family', 'courier'
     )
+
+
+@pytest.mark.async_test
+async def test_checkbox(browser, start_page):
+    from tests.components.pages.checkbox import page
+
+    await start_page(page)
+
+    indeterminate = await browser.wait_for_element_by_id('indeterminate')
+    ind_value = indeterminate.get_attribute('indeterminate')
+
+    assert ind_value
+
+    checkbox = await browser.wait_for_element_by_id('dynamic')
+    value = checkbox.is_selected()
+    assert value
+
+    await browser.click('#bind')
+
+    value = checkbox.is_selected()
+    assert not value
+
+    await browser.click('#transform')
+    value = checkbox.is_selected()
+    assert value
