@@ -654,3 +654,23 @@ async def test_dropdown_initial_value(start_page, browser):
         '.drop-selected-item:nth-child(2) > div:nth-child(1)',
         'Option 2'
     )
+
+
+@pytest.mark.async_test
+async def test_text(start_page, browser):
+    from tests.components.pages.text import page
+
+    await start_page(page)
+    await browser.wait_for_text_to_equal('#foo-bar', 'Foo Bar')
+    await browser.wait_for_style_to_equal(
+        '#bold', 'font-weight', '400'
+    )
+    await browser.wait_for_style_to_equal(
+        '#italic', 'font-style', 'italic'
+    )
+    await browser.wait_for_style_to_equal(
+        '#big', 'font-size', '32px'
+    )
+    await browser.wait_for_style_to_equal(
+        '#foo-bar', 'font-family', 'courier'
+    )
