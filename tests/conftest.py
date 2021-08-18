@@ -28,7 +28,8 @@ def pytest_pyfunc_call(pyfuncitem):
 
 @pytest.fixture(scope='session')
 def browser():
-    driver = AsyncDriver(webdriver.Chrome())
+    driver_name = os.getenv('SELENIUM_BROWSER', 'Chrome')
+    driver = AsyncDriver(getattr(webdriver, driver_name)())
     yield driver
     driver.driver.quit()
 
