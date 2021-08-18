@@ -11,6 +11,7 @@ type Requirement = {
     url: string;
     kind: string;
     meta: any;
+    key: string;
 };
 
 type Package = {
