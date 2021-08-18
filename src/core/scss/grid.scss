@@ -5,7 +5,10 @@
   .grid-row {
     display: flex;
     width: 100%;
-    justify-content: space-between;
-    .grid-cell {}
+    .grid-cell {
+      &.grow-cell {
+        flex-grow: 1;
+      }
+    }
   }
 }

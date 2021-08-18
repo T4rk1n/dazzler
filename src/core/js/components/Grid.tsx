@@ -1,17 +1,31 @@
-import React from 'react';
-import {chunk} from 'commons';
-import {DazzlerProps} from '../../../commons/js/types';
+import React, {useMemo} from 'react';
+import {chunk, getCommonStyles, getPresetsClassNames} from 'commons';
+import {
+    CommonPresetsProps,
+    CommonStyleProps,
+    DazzlerProps,
+} from '../../../commons/js/types';
 
 type GridProps = {
     /**
      * Children to render in a grid.
      */
-    children: JSX.Element[];
+    children: Array<JSX.Element>;
     /**
      * Number of columns
      */
     columns: number;
-} & DazzlerProps;
+    /**
+     * Set the cell to take up the space between them.
+     */
+    grow_cell?: boolean;
+    /**
+     * Each cell are equals in width for a total of 100% per row.
+     */
+    equal_cell_width?: boolean;
+} & CommonStyleProps &
+    CommonPresetsProps &
+    DazzlerProps;
 
 /**
  * Render a list in a grid with a number of ``columns``.
@@ -22,30 +36,52 @@ type GridProps = {
  *     - ``grid-row``
  *     - ``grid-cell``
  *
- * @example
+ * :Example:
  *
  *     from dazzler.components import core
  *
  *     grid = core.Grid([1, 2, 3, 4], 2)
  */
-export default class Grid extends React.Component<GridProps> {
-    render() {
-        const {identity, class_name, children, columns} = this.props;
-        return (
-            <div id={identity} className={class_name}>
-                {chunk(children, columns).map((row, y) => (
-                    <div key={`${identity}-row-${y}`} className={'grid-row'}>
-                        {row.map((cell, x) => (
-                            <div
-                                key={`${identity}-cell-${y}-${x}`}
-                                className={'grid-cell'}
-                            >
-                                {cell}
-                            </div>
-                        ))}
-                    </div>
-                ))}
-            </div>
-        );
-    }
-}
+const Grid = (props: GridProps) => {
+    const {
+        identity,
+        class_name,
+        style,
+        children,
+        columns,
+        grow_cell,
+        equal_cell_width,
+        ...rest
+    } = props;
+    const width = useMemo(
+        () => (equal_cell_width ? `${100 / columns}%` : undefined),
+        [equal_cell_width, columns]
+    );
+
+    const css = useMemo(
+        () => getPresetsClassNames(rest, class_name),
+        [rest, class_name]
+    );
+    const styling = useMemo(() => getCommonStyles(rest, style), [rest, style]);
+    return (
+        <div id={identity} className={css} style={styling}>
+            {chunk(children, columns).map((row, y) => (
+                <div key={`${identity}-row-${y}`} className={'grid-row'}>
+                    {row.map((cell, x) => (
+                        <div
+                            key={`${identity}-cell-${y}-${x}`}
+                            className={`grid-cell${
+                                grow_cell ? ' grow-cell' : ''
+                            }`}
+                            style={{width}}
+                        >
+                            {cell}
+                        </div>
+                    ))}
+                </div>
+            ))}
+        </div>
+    );
+};
+
+export default Grid;

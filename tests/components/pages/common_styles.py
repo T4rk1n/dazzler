@@ -53,7 +53,7 @@ page = Page(
                 preset_background=bg,
                 padding=3,
             ) for bg, fg in zip(PresetColor, reversed(PresetColor))
-        ], columns=5, even_width_cell=True)
+        ], columns=5, equal_cell_width=True)
     ], column=True)
 )
 
