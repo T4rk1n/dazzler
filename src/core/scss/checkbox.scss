@@ -1,0 +1,24 @@
+.dazzler-core-checkbox {
+  &.dazzler-preset-size-tiny {
+    transform: scale(0.75);
+  }
+  &.dazzler-preset-size-small {
+    transform: scale(0.9);
+  }
+  &.dazzler-preset-size-medium {}
+  &.dazzler-preset-size-large {
+    transform: scale(1.25);
+  }
+  &.dazzler-preset-size-larger {
+    transform: scale(1.5);
+  }
+  &.dazzler-preset-size-x-large {
+    transform: scale(1.75);
+  }
+  &.dazzler-preset-size-xx-large {
+    transform: scale(2);
+  }
+  &.dazzler-preset-size-xxx-large {
+    transform: scale(2.5);
+  }
+}
