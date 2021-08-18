@@ -1,6 +1,7 @@
 import functools
 import importlib
 import itertools
+import json
 import shutil
 import sys
 import asyncio
@@ -299,12 +300,21 @@ class Dazzler(precept.Precept):  # pylint: disable=too-many-instance-attributes
             help='Typescript support',
             action='store_true'
         ),
-        description='Generate dazzler components from react-docgen output'
+        precept.Argument(
+            '--meta',
+            help='Output the meta as json, no component is generated.',
+            action='store_true',
+        ),
+        description='Generate dazzler components output'
     )
-    async def generate(self, source_directory, output_dir, ts):
+    async def generate(self, source_directory, output_dir, ts, meta):
         os.makedirs(output_dir, exist_ok=True)
         metadata = await generate_meta(source_directory, ts)
-        await generate_components(metadata, output_dir, self.executor)
+        if meta:
+            with open(os.path.join(output_dir, 'meta.json'), 'w') as f:
+                json.dump(metadata, f)
+        else:
+            await generate_components(metadata, output_dir, self.executor)
 
     @precept.Command(
         precept.Argument('-p', '--packages', nargs='+'),
