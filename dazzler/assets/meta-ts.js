@@ -6,7 +6,7 @@ const R = require('ramda');
 const args = process.argv.slice(2);
 const src = args[0];
 
-const isOptional = prop => (prop.getFlags() & ts.SymbolFlags.Optional) !== 0;
+const isOptional = (prop) => (prop.getFlags() & ts.SymbolFlags.Optional) !== 0;
 
 const PRIMITIVES = [
     'string',
@@ -22,11 +22,11 @@ const unionSupport = R.concat(PRIMITIVES, ['boolean', 'Element']);
 
 const reArray = new RegExp(`(${R.join('|', unionSupport)})\\[\\]`);
 
-const isArray = rawType => reArray.test(rawType);
+const isArray = (rawType) => reArray.test(rawType);
 
-const isUnionlitteral = typeObj =>
+const isUnionlitteral = (typeObj) =>
     typeObj.types.every(
-        t =>
+        (t) =>
             t.getFlags() &
             (ts.TypeFlags.StringLiteral |
                 ts.TypeFlags.NumberLiteral |
@@ -43,7 +43,7 @@ if (fs.existsSync('tsconfig.json')) {
 function walk(directory, components = {}) {
     const names = [];
     const filepaths = [];
-    fs.readdirSync(src).forEach(f => {
+    fs.readdirSync(src).forEach((f) => {
         const filepath = path.join(directory, f);
         if (fs.lstatSync(filepath).isDirectory()) {
             walk(f, components);
@@ -63,7 +63,7 @@ function walk(directory, components = {}) {
     const program = ts.createProgram(filepaths, tsconfig);
     const checker = program.getTypeChecker();
 
-    const coerceValue = t => {
+    const coerceValue = (t) => {
         // May need to improve for shaped/list literals.
         if (t.isStringLiteral()) return `'${t.value}'`;
         return t.value;
@@ -71,7 +71,7 @@ function walk(directory, components = {}) {
 
     // Not sure this get used, but should get some type of components
     // we not using in the dazzler libraries for now.
-    const getComponentFromExp = exp => {
+    const getComponentFromExp = (exp) => {
         const decl = exp.valueDeclaration || exp.declarations[0];
         const type = checker.getTypeOfSymbolAtLocation(exp, decl);
         const typeSymbol = type.symbol || type.aliasSymbol;
@@ -98,9 +98,9 @@ function walk(directory, components = {}) {
         return exp;
     };
 
-    const getEnum = typeObj => ({
+    const getEnum = (typeObj) => ({
         name: 'enum',
-        value: typeObj.types.map(t => ({
+        value: typeObj.types.map((t) => ({
             value: coerceValue(t),
             computed: false,
         })),
@@ -111,11 +111,11 @@ function walk(directory, components = {}) {
             value;
         // Union only do base types
         value = typeObj.types
-            .filter(t => {
+            .filter((t) => {
                 const s = checker.typeToString(t);
                 return R.includes(s, unionSupport) || isArray(s);
             })
-            .map(t => getAspectType(t, propObj));
+            .map((t) => getAspectType(t, propObj));
         // empty union make the generator go wonky and create invalid
         // components types
         if (!value.length) {
@@ -127,6 +127,19 @@ function walk(directory, components = {}) {
             value,
         };
     };
+
+    const getAspectTypeName = (propName) => {
+        if (R.includes('=>', propName) || propName === 'Function') {
+            return 'func';
+        } else if (propName === 'boolean') {
+            return 'bool';
+        } else if (propName === '[]') {
+            return 'array';
+        } else if (propName === 'Element') {
+            return 'node';
+        }
+        return propName
+    }
 
     // Format the type output as required by the dazzler generator.
     const getAspectType = (propType, propObj) => {
@@ -142,15 +155,7 @@ function walk(directory, components = {}) {
             }
         }
 
-        if (R.includes('=>', name) || name === 'Function') {
-            name = 'func';
-        } else if (name === 'boolean') {
-            name = 'bool';
-        } else if (name === '[]') {
-            name = 'array';
-        } else if (name === 'Element') {
-            name = 'node';
-        }
+        name = getAspectTypeName(name);
 
         // Shapes & array support.
         if (
@@ -163,10 +168,10 @@ function walk(directory, components = {}) {
             ) {
                 name = 'arrayOf';
                 const replaced = R.replace('[]', '', raw);
-                if (R.includes(replaced, PRIMITIVES)) {
+                if (R.includes(replaced, unionSupport)) {
                     // Simple types are easier.
                     value = {
-                        name: replaced,
+                        name: getAspectTypeName(replaced),
                         raw: replaced,
                     };
                 } else {
@@ -174,11 +179,8 @@ function walk(directory, components = {}) {
                     const [nodeType] = checker.getTypeArguments(propType);
 
                     if (nodeType) {
-                        const props = checker.getPropertiesOfType(nodeType);
-                        value = {
-                            name: 'shape',
-                            value: getProps(props, propObj, [], {}, true),
-                        };
+                        // const props = checker.getPropertiesOfType(nodeType);
+                        value = getAspectType(nodeType, propObj);
                     } else {
                         // Not sure, might be unsupported here.
                         name = 'array';
@@ -213,15 +215,16 @@ function walk(directory, components = {}) {
 
     const getDefaultProps = (symbol, source) => {
         const statements = source.statements.filter(
-            stmt =>
+            (stmt) =>
                 (!!stmt.name &&
                     checker.getSymbolAtLocation(stmt.name) === symbol) ||
-                (ts.isExpressionStatement(stmt) || ts.isVariableStatement(stmt))
+                ts.isExpressionStatement(stmt) ||
+                ts.isVariableStatement(stmt)
         );
         return statements.reduce((acc, statement) => {
             let propMap = {};
 
-            statement.getChildren().forEach(child => {
+            statement.getChildren().forEach((child) => {
                 let {right} = child;
                 if (right && ts.isIdentifier(right)) {
                     const value = source.locals.get(right.escapedText);
@@ -249,23 +252,28 @@ function walk(directory, components = {}) {
         }, {});
     };
 
-    const getComment = symbol => {
+    const getComment = (symbol) => {
         const comment = symbol.getDocumentationComment();
         const tags = symbol.getJsDocTags();
         // FIXME @ char lose indent for examples eg: @page.bind(...)
         if (comment) {
             return R.join('\n')(
                 R.concat(
-                    comment.map(c => c.text),
+                    comment.map((c) => c.text),
                     // Lose the indent grr. why not complete???
-                    tags.map(t => R.concat(['@', t.name], t.text.map(e => e.text)))
+                    tags.map((t) =>
+                        R.concat(
+                            ['@', t.name],
+                            t.text.map((e) => e.text)
+                        )
+                    )
                 )
             );
         }
         return '';
     };
 
-    const getPropsForFunctionalComponent = type => {
+    const getPropsForFunctionalComponent = (type) => {
         const callSignatures = type.getCallSignatures();
 
         for (const sig of callSignatures) {
@@ -308,7 +316,7 @@ function walk(directory, components = {}) {
         }
     };
 
-    const getDefaultPropsValues = properties =>
+    const getDefaultPropsValues = (properties) =>
         properties.reduce((acc, p) => {
             if (!p.name || !p.initializer) {
                 return acc;
@@ -364,12 +372,12 @@ function walk(directory, components = {}) {
         // newChild with the proper props.
         const defaultProps = type.getProperty('defaultProps');
         if (!defaultProps) {
-            return {}
+            return {};
         }
         const decl = defaultProps.getDeclarations()[0];
         let propValues = {};
 
-        decl.getChildren().forEach(child => {
+        decl.getChildren().forEach((child) => {
             let newChild = child;
 
             if (ts.isIdentifier(child)) {
@@ -402,13 +410,13 @@ function walk(directory, components = {}) {
     ) => {
         const results = {};
 
-        properties.forEach(prop => {
+        properties.forEach((prop) => {
             const name = prop.getName();
             const propType = checker.getTypeOfSymbolAtLocation(
                 prop,
                 propsObj.valueDeclaration
             );
-            const baseProp = baseProps.find(p => p.getName() === name);
+            const baseProp = baseProps.find((p) => p.getName() === name);
             const defaultValue = defaultProps[name];
 
             const required =
@@ -472,7 +480,7 @@ function walk(directory, components = {}) {
         const moduleSymbol = checker.getSymbolAtLocation(source);
         const exports = checker.getExportsOfModule(moduleSymbol);
 
-        exports.forEach(exp => {
+        exports.forEach((exp) => {
             // From react-docgen-typescript mostly here
             let rootExp = getComponentFromExp(exp);
             const declaration =
