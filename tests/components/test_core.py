@@ -693,9 +693,11 @@ async def test_checkbox(browser, start_page):
 
     await browser.click('#bind')
 
+    checkbox = await browser.wait_for_element_by_id('dynamic')
     value = checkbox.is_selected()
     assert not value
 
     await browser.click('#transform')
+    checkbox = await browser.wait_for_element_by_id('dynamic')
     value = checkbox.is_selected()
     assert value
