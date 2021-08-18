@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ReactMarkdown from 'react-markdown';
 import {snakeToCamelCase, transformKeys} from 'commons';
-import {omit} from 'ramda';
+import {last, omit} from 'ramda';
 import CodeBlock from './CodeBlock';
 
 /**
@@ -28,8 +28,17 @@ export default class Markdown extends React.Component {
                         ),
                         snakeToCamelCase
                     )}
-                    renderers={{
-                        code: (props) => <CodeBlock {...props} />,
+                    components={{
+                        code: ({children, className, ...props}) => {
+                            const language = last(className.split('language-'));
+                            return (
+                                <CodeBlock
+                                    {...props}
+                                    value={children.toString()}
+                                    language={language}
+                                />
+                            );
+                        },
                     }}
                 >
                     {source}
