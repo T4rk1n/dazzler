@@ -14,10 +14,10 @@ async def test_common_styles(browser, start_page):
         '#padded-margin', 'margin-bottom', '5px'
     )
     await browser.wait_for_style_to_equal(
-        '#colored', 'color', 'rgb(255, 0, 0)'
+        '#colored', 'color', 'rgba(255, 0, 0, 1)'
     )
     await browser.wait_for_style_to_equal(
-        '#colored', 'background-color', 'rgb(0, 0, 255)'
+        '#colored', 'background-color', 'rgba(0, 0, 255, 1)'
     )
     await browser.wait_for_style_to_equal(
         '#preset-container', 'overflow', 'auto'
@@ -30,8 +30,8 @@ async def test_common_styles(browser, start_page):
         '#preset-color', 'font-size', '24px'
     )
     await browser.wait_for_style_to_equal(
-        '#preset-color', 'color', 'rgb(82, 148, 226)'
+        '#preset-color', 'color', 'rgba(82, 148, 226, 1)'
     )
     await browser.wait_for_style_to_equal(
-        '#preset-color', 'background-color', 'rgb(240, 173, 78)'
+        '#preset-color', 'background-color', 'rgba(240, 173, 78, 1)'
     )
