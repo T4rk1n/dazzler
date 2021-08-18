@@ -1,8 +1,7 @@
 import React from 'react';
 import {join, concat} from 'ramda';
 import {collectTruePropKeys} from 'commons';
-import {PresetColor, Size} from '../types';
-import {DazzlerProps} from '../../../commons/js/types';
+import {DazzlerProps, PresetColor, PresetSize} from '../../../commons/js/types';
 
 type ButtonProps = {
     /**
@@ -48,7 +47,7 @@ type ButtonProps = {
     /**
      * The size of the button.
      */
-    size?: Size;
+    size?: PresetSize;
 } & DazzlerProps;
 
 /**

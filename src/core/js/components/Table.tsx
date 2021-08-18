@@ -1,8 +1,7 @@
 import React from 'react';
 import {join} from 'ramda';
 
-import {DazzlerProps} from '../../../commons/js/types';
-import {Size} from '../types';
+import {DazzlerProps, PresetSize} from '../../../commons/js/types';
 
 type TableProps = {
     /**
@@ -53,7 +52,7 @@ type TableProps = {
     /**
      * The size of the table.
      */
-    size?: Size;
+    size?: PresetSize;
 } & DazzlerProps;
 
 /**
