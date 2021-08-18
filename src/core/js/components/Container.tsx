@@ -1,5 +1,10 @@
 import React from 'react';
-import {DazzlerProps} from '../../../commons/js/types';
+import {
+    CommonPresetsProps,
+    CommonStyleProps,
+    DazzlerProps,
+} from '../../../commons/js/types';
+import {getCommonStyles, getPresetsClassNames} from 'commons';
 
 type ContainerProps = {
     children?: JSX.Element;
@@ -15,7 +20,9 @@ type ContainerProps = {
      */
     clicks?: number;
     id?: string;
-} & DazzlerProps;
+} & DazzlerProps &
+    CommonStyleProps &
+    CommonPresetsProps;
 
 /**
  * Virtual div
@@ -32,27 +39,37 @@ type ContainerProps = {
  *     - ``hidden``
  */
 export default class Container extends React.Component<ContainerProps> {
+    constructor(props) {
+        super(props);
+        this.onClick = this.onClick.bind(this);
+    }
+
     shouldComponentUpdate(nextProps) {
-        // Ignore virtual n_clicks don't need a re-render of
+        // Ignore virtual clicks don't need a re-render of
         // the whole children.
         return !(this.props.clicks < nextProps.clicks);
+    }
+
+    onClick() {
+        this.props.updateAspects({
+            clicks: this.props.clicks + 1,
+        });
     }
 
     render() {
         const {id, class_name, style, children, title, identity, draggable} =
             this.props;
+        const css = getPresetsClassNames(this.props, class_name);
+        const styles = getCommonStyles(this.props, style);
+
         return (
             <div
                 id={id || identity}
-                className={class_name}
-                style={style}
+                className={css}
+                style={styles}
                 title={title}
                 draggable={draggable}
-                onClick={() => {
-                    this.props.updateAspects({
-                        clicks: this.props.clicks + 1,
-                    });
-                }}
+                onClick={this.onClick}
             >
                 {children}
             </div>
