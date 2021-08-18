@@ -16,6 +16,7 @@ import {
     snakeToCamelCase,
     transformKeys,
 } from './casing';
+import {getCommonStyles, getPresetsClassNames} from './styling';
 
 export {
     toTimestamp,
@@ -30,4 +31,6 @@ export {
     collectTruePropKeys,
     chunk,
     disableCss,
+    getCommonStyles,
+    getPresetsClassNames,
 };
