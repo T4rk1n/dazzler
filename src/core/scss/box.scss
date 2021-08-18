@@ -1,0 +1,13 @@
+.dazzler-core-box {
+  display: flex;
+
+  &.box-column {
+    flex-direction: column;
+    &.box-reverse {
+      flex-direction: column-reverse;
+    }
+  }
+  &.box-reverse {
+    flex-direction: row-reverse;
+  }
+}
