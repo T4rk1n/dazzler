@@ -27,3 +27,11 @@ dazzler.errors module
    :members:
    :undoc-members:
    :show-inheritance:
+
+dazzler.presets module
+----------------------
+
+.. automodule:: dazzler.presets
+   :members:
+   :undoc-members:
+   :show-inheritance:

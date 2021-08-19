@@ -207,7 +207,7 @@ def setup(app):
         proc.communicate()
 
     for args in (
-            ('../src/core/js/components', '../dazzler/components/core'),
+            ('../src/core/js/components', '../dazzler/components/core', '--ts'),
             ('../src/extra/js/components', '../dazzler/components/extra', '--ts'),
             ('../src/calendar/js/components', '../dazzler/components/calendar', '--ts'),
             ('../src/markdown/js/components', '../dazzler/components/markdown'),
