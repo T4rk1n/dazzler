@@ -72,19 +72,8 @@ type ButtonProps = {
  *
  * :example:
  *
- *     from dazzler.system import Page, Trigger
- *     from dazzler.components import core
- *
- *     button = core.Button('Click me', identity='btn')
- *
- *     page = Page(
- *         __name__,
- *         core.Container([button, core.Container(identity="output")])
- *     )
- *
- *     @page.binding(Trigger('btn', 'clicks'))
- *     async def on_click(ctx):
- *         await ctx.set_aspect('output', f'Clicked {ctx.trigger.value}')
+ * .. literalinclude:: ../../tests/components/pages/button.py
+ *     :lines: 5-19
  */
 export default class Button extends React.Component<ButtonProps> {
     shouldComponentUpdate(nextProps) {
