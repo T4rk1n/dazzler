@@ -1,5 +1,10 @@
-import React from 'react';
-import {DazzlerProps} from '../../../commons/js/types';
+import React, {useMemo} from 'react';
+import {
+    CommonPresetsProps,
+    CommonStyleProps,
+    DazzlerProps,
+} from '../../../commons/js/types';
+import {getCommonStyles, getPresetsClassNames} from 'commons';
 
 type LinkProps = {
     /**
@@ -23,33 +28,46 @@ type LinkProps = {
      * Name of the page to redirect to if the href is not set.
      */
     page_name?: string;
-} & DazzlerProps;
+} & CommonStyleProps &
+    CommonPresetsProps &
+    DazzlerProps;
 
 /**
  * Link to external url or other dazzler page by name.
  *
  * :CSS: ``dazzler-core-link``
  */
-export default class Link extends React.Component<LinkProps> {
-    render() {
-        const {id, class_name, href, children, style, page_name, identity} =
-            this.props;
-        let url = href;
-        if (page_name) {
-            url = `${
-                // @ts-ignore
-                window.dazzler_base_url
-            }/dazzler/link?page=${encodeURIComponent(page_name)}`;
-        }
-        return (
-            <a
-                id={id || identity}
-                href={url}
-                className={class_name}
-                style={style}
-            >
-                {children || page_name || url}
-            </a>
-        );
-    }
-}
+const Link = (props: LinkProps) => {
+    const {
+        id,
+        class_name,
+        href,
+        children,
+        style,
+        page_name,
+        identity,
+        ...rest
+    } = props;
+    const css = useMemo(
+        () => getPresetsClassNames(rest, class_name),
+        [rest, class_name]
+    );
+    const styling = useMemo(() => getCommonStyles(rest, style), [rest, style]);
+    const url = useMemo(
+        () =>
+            page_name
+                ? `${
+                      // @ts-ignore
+                      window.dazzler_base_url
+                  }/dazzler/link?page=${encodeURIComponent(page_name)}`
+                : href,
+        [href, page_name]
+    );
+    return (
+        <a id={id || identity} href={url} className={css} style={styling}>
+            {children || page_name || url}
+        </a>
+    );
+};
+
+export default Link;
