@@ -40,7 +40,7 @@ page = Page(
             ),
             Text(
                 'preset',
-                preset_size=PresetSize.x_large,
+                preset_size=PresetSize.X_LARGE,
                 preset_color='primary',
                 preset_background='warning',
                 identity='preset-color'
