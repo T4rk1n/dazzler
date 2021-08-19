@@ -1,7 +1,11 @@
 import React from 'react';
-import {join} from 'ramda';
 
-import {DazzlerProps} from '../../../commons/js/types';
+import {
+    CommonPresetsProps,
+    CommonStyleProps,
+    DazzlerProps,
+} from '../../../commons/js/types';
+import {getCommonStyles, getPresetsClassNames} from 'commons';
 
 type TextAreaProps = {
     /**
@@ -45,7 +49,9 @@ type TextAreaProps = {
      * Auto size the text area to the content value.
      */
     autosize?: boolean;
-} & DazzlerProps;
+} & CommonStyleProps &
+    CommonPresetsProps &
+    DazzlerProps;
 
 /**
  * Html Textarea wrapper.
@@ -57,12 +63,24 @@ type TextAreaProps = {
  */
 export default class TextArea extends React.Component<TextAreaProps> {
     elem: HTMLTextAreaElement;
+    constructor(props) {
+        super(props);
+        this.onChange = this.onChange.bind(this);
+    }
+
     resize() {
         this.elem.style.height = 'auto';
         this.elem.style.height = `${this.elem.scrollHeight}px`;
     }
 
     componentDidMount() {
+        if (this.props.autosize) {
+            this.resize();
+        }
+    }
+
+    onChange(e) {
+        this.props.updateAspects({value: e.target.value});
         if (this.props.autosize) {
             this.resize();
         }
@@ -79,6 +97,7 @@ export default class TextArea extends React.Component<TextAreaProps> {
             class_name,
             style,
             autosize,
+            ...rest
         } = this.props;
 
         const css = [class_name];
@@ -86,6 +105,8 @@ export default class TextArea extends React.Component<TextAreaProps> {
         if (autosize) {
             css.push('autosize');
         }
+        const className = getPresetsClassNames(rest, ...css);
+        const styling = getCommonStyles(rest, style);
 
         return (
             <textarea
@@ -96,14 +117,9 @@ export default class TextArea extends React.Component<TextAreaProps> {
                 value={value}
                 required={required}
                 ref={(r) => (this.elem = r)}
-                className={join(' ', css)}
-                style={{...style}}
-                onChange={(e) => {
-                    this.props.updateAspects({value: e.target.value});
-                    if (autosize) {
-                        this.resize();
-                    }
-                }}
+                className={className}
+                style={styling}
+                onChange={this.onChange}
             />
         );
     }
