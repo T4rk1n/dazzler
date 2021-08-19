@@ -1,5 +1,10 @@
-import React from 'react';
-import {DazzlerProps} from '../../../commons/js/types';
+import React, {useMemo} from 'react';
+import {
+    CommonPresetsProps,
+    CommonStyleProps,
+    DazzlerProps,
+} from '../../../commons/js/types';
+import {getCommonStyles, getPresetsClassNames} from 'commons';
 
 type ModalProps = {
     /**
@@ -26,7 +31,9 @@ type ModalProps = {
      * Include a close button in the top right corner of the header.
      */
     close_button?: boolean;
-} & DazzlerProps;
+} & CommonStyleProps &
+    CommonPresetsProps &
+    DazzlerProps;
 
 /**
  * A modal overlay the page with a darkened background.
@@ -41,55 +48,70 @@ type ModalProps = {
  *     - ``modal-closer``
  *     - ``modal-body``
  *     - ``modal-footer``
+ *
+ * :example:
+ *
+ * .. literalinclude:: ../../tests/components/pages/modal.py
+ *     :lines: 5-25
  */
-export default class Modal extends React.Component<ModalProps> {
-    render() {
-        const {
-            identity,
-            class_name,
-            style,
-            active,
-            body,
-            header,
-            footer,
-            close_button,
-        } = this.props;
-        return (
-            <div className={class_name} style={style} id={identity}>
+const Modal = (props: ModalProps) => {
+    const {
+        identity,
+        class_name,
+        style,
+        active,
+        body,
+        header,
+        footer,
+        close_button,
+        updateAspects,
+        ...rest
+    } = props;
+
+    const css = useMemo(
+        () => getPresetsClassNames(rest, class_name),
+        [rest, class_name]
+    );
+    const styling = useMemo(() => getCommonStyles(rest, style), [rest, style]);
+
+    return (
+        <div className={css} style={styling} id={identity}>
+            <div
+                className={`modal-overlay${active ? ' modal-active' : ''}`}
+                onClick={(e) => {
+                    updateAspects({active: false});
+                    e.stopPropagation();
+                }}
+            >
                 <div
-                    className={`modal-overlay${active ? ' modal-active' : ''}`}
-                    onClick={(e) => {
-                        this.props.updateAspects({active: false});
-                        e.stopPropagation();
-                    }}
+                    className="modal-content"
+                    onClick={(e) => e.stopPropagation()}
                 >
-                    <div
-                        className="modal-content"
-                        onClick={(e) => e.stopPropagation()}
-                    >
-                        <div className="modal-header">
-                            <div>{header}</div>
-                            {close_button && (
-                                <div
-                                    className="modal-closer"
-                                    onClick={() =>
-                                        this.props.updateAspects({
-                                            active: false,
-                                        })
-                                    }
-                                >
-                                    X
-                                </div>
-                            )}
-                        </div>
-                        <div className="modal-body">{body}</div>
-                        {footer && <div className="modal-footer">{footer}</div>}
+                    <div className="modal-header">
+                        <div>{header}</div>
+                        {close_button && (
+                            <div
+                                className="modal-closer"
+                                onClick={() =>
+                                    updateAspects({
+                                        active: false,
+                                    })
+                                }
+                            >
+                                ❌
+                            </div>
+                        )}
                     </div>
+                    <div className="modal-body">{body}</div>
+                    {footer && <div className="modal-footer">{footer}</div>}
                 </div>
             </div>
-        );
-    }
-    static defaultProps = {
-        close_button: true,
-    };
-}
+        </div>
+    );
+};
+
+Modal.defaultProps = {
+    close_button: true,
+};
+
+export default Modal;

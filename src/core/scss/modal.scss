@@ -65,4 +65,28 @@
     border-top: $neutral-dark 0.125rem solid;
     padding: 0.5rem;
   }
+
+  &.dazzler-preset-size-tiny {
+    width: calc(20%);
+  }
+  &.dazzler-preset-size-small {
+    width: calc(40%);
+  }
+  &.dazzler-preset-size-medium {
+  }
+  &.dazzler-preset-size-large {
+    width: calc(65%);
+  }
+  &.dazzler-preset-size-larger {
+    width: calc(75%);
+  }
+  &.dazzler-preset-size-x-large {
+    width: calc(85%);
+  }
+  &.dazzler-preset-size-xx-large {
+    width: calc(90%);
+  }
+  &.dazzler-preset-size-xxx-large {
+    width: calc(95%);
+  }
 }
