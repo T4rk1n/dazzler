@@ -1,7 +1,12 @@
 import React from 'react';
 import {join} from 'ramda';
 
-import {DazzlerProps, PresetSize} from '../../../commons/js/types';
+import {
+    CommonStyleProps,
+    DazzlerProps,
+    PresetSize,
+} from '../../../commons/js/types';
+import {getCommonStyles} from 'commons';
 
 type TableProps = {
     /**
@@ -53,7 +58,8 @@ type TableProps = {
      * The size of the table.
      */
     size?: PresetSize;
-} & DazzlerProps;
+} & CommonStyleProps &
+    DazzlerProps;
 
 /**
  * Display data in a tabular manner (Non interactive).
@@ -90,6 +96,7 @@ export default class Table extends React.Component<TableProps> {
             centered,
             bordered,
             size,
+            ...rest
         } = this.props;
         const c = [class_name];
         if (default_table) {
@@ -107,8 +114,9 @@ export default class Table extends React.Component<TableProps> {
         if (size) {
             c.push(size);
         }
+        const styling = getCommonStyles(rest, style);
         return (
-            <table className={join(' ', c)} id={identity} style={style}>
+            <table className={join(' ', c)} id={identity} style={styling}>
                 {caption && (
                     <caption className={'table-title'}>{caption}</caption>
                 )}
