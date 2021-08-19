@@ -2,54 +2,54 @@ import enum
 
 
 class PresetSize(str, enum.Enum):
-    tiny = 'tiny'
-    small = 'small'
-    medium = 'medium'
-    large = 'large'
-    larger = 'larger'
-    x_large = 'x-large'
-    xx_large = 'xx-large'
+    TINY = 'tiny'
+    SMALL = 'small'
+    MEDIUM = 'medium'
+    LARGE = 'large'
+    LARGER = 'larger'
+    X_LARGE = 'x-large'
+    XX_LARGE = 'xx-large'
 
     def __str__(self):
         return self.value
 
 
 class PresetColor(str, enum.Enum):
-    primary = 'primary'
-    primary_light = 'primary-light'
-    primary_dark = 'primary-dark'
+    PRIMARY = 'primary'
+    PRIMARY_LIGHT = 'primary-light'
+    PRIMARY_DARK = 'primary-dark'
 
-    secondary = 'secondary'
-    secondary_light = 'secondary-light'
-    secondary_dark = 'secondary-dark'
+    SECONDARY = 'secondary'
+    SECONDARY_LIGHT = 'secondary-light'
+    SECONDARY_DARK = 'secondary-dark'
 
-    tertiary = 'tertiary'
-    tertiary_light = 'tertiary-light'
-    tertiary_dark = 'tertiary-dark'
+    TERTIARY = 'tertiary'
+    TERTIARY_LIGHT = 'tertiary-light'
+    TERTIARY_DARK = 'tertiary-dark'
 
-    danger = 'danger'
-    danger_light = 'danger-light'
-    danger_dark = 'danger-dark'
+    DANGER = 'danger'
+    DANGER_LIGHT = 'danger-light'
+    DANGER_DARK = 'danger-dark'
 
-    warning = 'warning'
-    warning_light = 'warning-light'
-    warning_dark = 'warning-dark'
+    WARNING = 'warning'
+    WARNING_LIGHT = 'warning-light'
+    WARNING_DARK = 'warning-dark'
 
-    success = 'success'
-    success_light = 'success-light'
-    success_dark = 'success-dark'
+    SUCCESS = 'success'
+    SUCCESS_LIGHT = 'success-light'
+    SUCCESS_DARK = 'success-dark'
 
-    neutral = 'neutral'
-    neutral_light = 'neutral-light'
-    neutral_dark = 'neutral-dark'
+    NEUTRAL = 'neutral'
+    NEUTRAL_LIGHT = 'neutral-light'
+    NEUTRAL_DARK = 'neutral-dark'
 
-    dark = 'dark'
-    dark_light = 'dark-light'
-    dark_dark = 'dark-dark'
+    DARK = 'dark'
+    DARK_LIGHT = 'dark-light'
+    DARK_DARK = 'dark-dark'
 
-    darker = 'darker'
-    darker_light = 'darker-light'
-    darker_dark = 'darker-dark'
+    DARKER = 'darker'
+    DARKER_LIGHT = 'darker-light'
+    DARKER_DARK = 'darker-dark'
 
     def __str__(self):
         return self.value

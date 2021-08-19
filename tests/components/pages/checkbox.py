@@ -10,7 +10,7 @@ page = Page(
         Checkbox(checked=True, identity='checked'),
         Checkbox(indeterminate=True, identity='indeterminate'),
         Checkbox(checked=True, identity='dynamic'),
-        Checkbox(identity='preset-size', preset_size=PresetSize.larger),
+        Checkbox(identity='preset-size', preset_size=PresetSize.LARGER),
     ], column=True)
 )
 
