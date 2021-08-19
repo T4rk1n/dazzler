@@ -153,11 +153,13 @@ const SelectedItem = (props: SelectedItemProps) => {
  *
  * :example:
  *
+ * .. code-block:: python
+ *
  *      from dazzler.components.core import Dropdown
  *
  *      dropdown = Dropdown(
  *          {'label': 'Option 1', 'value': 1},
-            {'label': 'Option 2', 'value': 2}
+ *          {'label': 'Option 2', 'value': 2}
  *      )
  *
  */
