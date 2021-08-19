@@ -1,6 +1,7 @@
 import React from 'react';
-import {DazzlerProps} from '../../../commons/js/types';
+import {CommonStyleProps, DazzlerProps} from '../../../commons/js/types';
 import {StylableInputLabelValue} from '../types';
+import {getCommonStyles} from 'commons';
 
 type RadioListProps = {
     /**
@@ -33,7 +34,8 @@ type RadioListProps = {
      * Html id of the component, otherwise the identity is used.
      */
     id?: string;
-} & DazzlerProps;
+} & CommonStyleProps &
+    DazzlerProps;
 
 /**
  * A radio button list where only a single value can be selected.
@@ -52,14 +54,18 @@ export default class RadioList extends React.Component<RadioListProps> {
             id,
             options,
             class_name,
+            style,
             labels_class_name,
             labels_style,
             options_class_name,
             options_style,
+            ...rest
         } = this.props;
 
+        const styling = getCommonStyles(rest, style);
+
         return (
-            <div id={id || identity} className={class_name}>
+            <div id={id || identity} className={class_name} style={styling}>
                 {options.map(
                     ({
                         value,
