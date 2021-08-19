@@ -1,6 +1,11 @@
-import React from 'react';
-import {DazzlerProps} from '../../../commons/js/types';
+import React, {useCallback, useMemo} from 'react';
+import {
+    CommonPresetsProps,
+    CommonStyleProps,
+    DazzlerProps,
+} from '../../../commons/js/types';
 import {LabelValueAny} from '../types';
+import {getCommonStyles, getPresetsClassNames} from 'commons';
 
 type SelectProps = {
     /**
@@ -40,57 +45,74 @@ type SelectProps = {
      * Disable the component.
      */
     disabled?: boolean;
-} & DazzlerProps;
+} & CommonStyleProps &
+    CommonPresetsProps &
+    DazzlerProps;
 
 /**
  * A select
  */
-export default class Select extends React.Component<SelectProps> {
-    render() {
-        const {
-            options,
-            identity,
-            multi,
-            class_name,
-            placeholder,
-            name,
-            disabled,
-        } = this.props;
-        return (
-            <select
-                className={class_name}
-                id={identity}
-                name={name}
-                value={this.props.value}
-                multiple={multi}
-                disabled={disabled}
-                placeholder={placeholder}
-                onChange={(e) => {
-                    let value;
-                    if (multi) {
-                        const opts = e.target.options;
-                        value = [];
-                        for (let i = 0, l = opts.length; i < l; i++) {
-                            if (opts[i].selected) {
-                                value.push(options[i].value);
-                            }
-                        }
-                    } else {
-                        value = options[e.target.selectedIndex].value;
+const Select = (props: SelectProps) => {
+    const {
+        options,
+        identity,
+        multi,
+        class_name,
+        style,
+        placeholder,
+        name,
+        disabled,
+        updateAspects,
+        ...rest
+    } = props;
+
+    const onChange = useCallback(
+        (e) => {
+            let value;
+            if (multi) {
+                const opts = e.target.options;
+                value = [];
+                for (let i = 0, l = opts.length; i < l; i++) {
+                    if (opts[i].selected) {
+                        value.push(options[i].value);
                     }
-                    this.props.updateAspects({value});
-                }}
-            >
-                {options.map(({value, label}) => (
-                    <option
-                        key={`${identity}-option-${value}`}
-                        className={'.dazzler-core-option'}
-                        value={value}
-                    >
-                        {label}
-                    </option>
-                ))}
-            </select>
-        );
-    }
-}
+                }
+            } else {
+                value = options[e.target.selectedIndex].value;
+            }
+            updateAspects({value});
+        },
+        [options, updateAspects]
+    );
+    const css = useMemo(
+        () => getPresetsClassNames(rest, class_name),
+        [rest, class_name]
+    );
+    const styling = useMemo(() => getCommonStyles(rest, style), [rest, style]);
+
+    return (
+        <select
+            className={css}
+            id={identity}
+            name={name}
+            style={styling}
+            value={props.value}
+            multiple={multi}
+            disabled={disabled}
+            placeholder={placeholder}
+            onChange={onChange}
+        >
+            {options.map(({value, label}) => (
+                <option
+                    key={`${identity}-option-${value}`}
+                    className={'.dazzler-core-option'}
+                    value={value}
+                >
+                    {label}
+                </option>
+            ))}
+        </select>
+    );
+};
+
+export default Select;
