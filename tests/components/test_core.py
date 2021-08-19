@@ -701,3 +701,19 @@ async def test_checkbox(browser, start_page):
     checkbox = await browser.wait_for_element_by_id('dynamic')
     value = checkbox.is_selected()
     assert value
+
+
+@pytest.mark.async_test
+async def test_switch(start_page, browser):
+    from tests.components.pages.switch import page
+
+    await start_page(page)
+
+    await browser.wait_for_text_to_equal(
+        '#output', 'Value: true'
+    )
+    await browser.click('#switch .switch-caret')
+    await browser.wait_for_text_to_equal(
+        '#output', 'Value: false'
+    )
+
