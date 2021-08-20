@@ -2,23 +2,31 @@
 
 Versions follow [Semantic Versioning](https://www.semver.org)
 
-## [UNRELEASED]
+## [0.7.0]
 ### Added
 
-- :sparkles: Typescript component generation support.
-- :wrench: Add `development.reload_delay` config, wait for a moment before starting reload watch.
-- :sparkles: Add `electron` & `electron-build` commands to create desktop applications.
+- ✨ Add Typescript component generation support.
+- 🔧 Add `development.reload_delay` config, wait for a moment before starting reload watch.
+- ✨ Add `electron` & `electron-build` commands to create desktop applications.
+- 🍚 Add core.Text
+- 🍚 Add core.Box
+- 🍚 Add core.Checkbox
+- 🍚 Add core.Switch
 
 ### Fixed
 
-- :racehorse: Bundles size optimized.
-- :construction: Set requirement load timeout to 30 seconds.
-- :construction: Decode generator error output.
-- :bug: Fix hot reload for css files.
+- 🐛 Fix hot reload for css files.
+- 🐛 Fix code blocks in markdown.Markdown.
+- 🏇 Bundles size optimized.
+- 🚧 Set requirement load timeout to 30 seconds.
+- 🚧 Decode generator error output.
 
 ### Changed
 
-- :hammer: Refactor auth, calendar, core, extra to typescript.
+- 🔨 Refactor auth, calendar, core, extra to typescript.
+- 🔨 Add common style/presets to core.Container, core.Grid, core.Link,
+  core.TextArea, core.Table, core.Select, core.Modal, core.ListBox.
+- 🔨 Add `grow_cell`, `equal_cell_width` to  core.Grid.
 
 ## [0.6.1]
 ### Fixed
