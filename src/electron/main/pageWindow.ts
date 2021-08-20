@@ -26,7 +26,7 @@ export default async function (
         state.sync();
     }
 
-    if (!pageWindow?.window_options.menuBar) {
+    if (pageWindow?.window_options?.menuBar === false) {
         window.setMenu(null);
     }
 
