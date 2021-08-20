@@ -1,14 +1,18 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useMemo, useRef, useState} from 'react';
 import {
     concat as concatArray,
     isNil,
     insert as insertArray,
     slice,
     remove,
-    join,
-    mergeAll,
+    mergeRight,
 } from 'ramda';
-import {DazzlerProps} from '../../../commons/js/types';
+import {
+    CommonPresetsProps,
+    CommonStyleProps,
+    DazzlerProps,
+} from '../../../commons/js/types';
+import {getCommonStyles, getPresetsClassNames} from 'commons';
 
 type ListBoxProps = {
     /**
@@ -71,7 +75,9 @@ type ListBoxProps = {
      * Keep the last appended item in view if scrolling is enabled.
      */
     keep_scroll?: boolean;
-} & DazzlerProps;
+} & CommonStyleProps &
+    CommonPresetsProps &
+    DazzlerProps;
 
 /**
  * A component where you can ``add`` items to instead of rendering
@@ -104,6 +110,7 @@ const ListBox = ({
     style,
     identity,
     updateAspects,
+    ...rest
 }: ListBoxProps) => {
     const root = useRef(null);
     const [toScroll, setToScroll] = useState(false);
@@ -174,25 +181,31 @@ const ListBox = ({
         }
     }, [toScroll]);
 
-    // Render
+    const css = useMemo(
+        () =>
+            getPresetsClassNames(
+                rest,
+                class_name,
+                direction,
+                scrollable ? 'scrollable' : undefined
+            ),
+        [rest, class_name, direction, scrollable]
+    );
 
-    const internalStyle: any = {};
-    const css = [class_name, direction];
-    if (scrollable) {
-        css.push('scrollable');
-        if (direction === 'vertical') {
-            internalStyle.height = `${size}px`;
-        } else {
-            internalStyle.width = `${size}px`;
+    const styling = useMemo(() => {
+        const internalStyle: any = {};
+        if (scrollable) {
+            if (direction === 'vertical') {
+                internalStyle.height = `${size}px`;
+            } else {
+                internalStyle.width = `${size}px`;
+            }
         }
-    }
+        return getCommonStyles(rest, mergeRight(style, internalStyle));
+    }, [rest, style, scrollable, direction]);
+
     return (
-        <div
-            className={join(' ', css)}
-            style={mergeAll([style, internalStyle])}
-            id={identity}
-            ref={root}
-        >
+        <div className={css} style={styling} id={identity} ref={root}>
             {items}
         </div>
     );
