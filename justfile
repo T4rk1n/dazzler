@@ -59,9 +59,7 @@ diff-docs:
     ./docs/diff-docs.sh
 
 # Package using wheel
-package:
-    rm -rf dist
-    rm -rf build
+package: clean
     python -m build --wheel
 
 # Build and publish the package to pypi
@@ -113,4 +111,3 @@ analyze-security: audit bandit
 clean:
     rm -rf build
     rm -rf dist
-    rm -rf dazzler.egg-info
