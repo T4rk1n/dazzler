@@ -9,6 +9,7 @@ import {
     chunk,
     toTimestamp,
     disableCss,
+    throttle,
 } from './utils';
 import {
     camelToSnakeCase,
@@ -33,4 +34,5 @@ export {
     disableCss,
     getCommonStyles,
     getPresetsClassNames,
+    throttle,
 };
