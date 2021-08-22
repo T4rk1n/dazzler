@@ -9,6 +9,7 @@ import PopUp from './components/PopUp';
 import TreeView from './components/TreeView';
 import Toast from './components/Toast';
 import PageMap from './components/PageMap';
+import ColorPicker from './components/ColorPicker';
 
 export {
     Notice,
@@ -20,4 +21,5 @@ export {
     TreeView,
     Toast,
     PageMap,
+    ColorPicker,
 };
