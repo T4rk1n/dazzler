@@ -111,6 +111,7 @@ export default function (
     ...args
 ): Promise<ElectronConfig> {
     return new Promise((resolve, reject) => {
+        let started = false;
         if (isDevelopment) {
             serverProcess = child_process.spawn('python', [
                 applicationFile,
@@ -140,11 +141,16 @@ export default function (
             const d = `${data}`;
             console.log(d);
             if (/Started server/.test(d)) {
+                started = true;
                 requestConfigs(serverUrl).then(resolve).catch(reject);
             }
         });
         serverProcess.on('close', (code) => {
-            logger.server.info(`Server closed with code: ${code}`);
+            if (!started) {
+                reject(`Failed to start server, code: ${code}`);
+            } else {
+                logger.server.info(`Server closed with code: ${code}`);
+            }
         });
     });
 }

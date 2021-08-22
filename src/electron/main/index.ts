@@ -23,6 +23,8 @@ const serverUrl = `http://localhost:${port}`;
 
 const windows: {[key: string]: BrowserWindow} = {};
 
+let closed = false;
+
 async function setup() {
     let loadingWindow: BrowserWindow;
     if (loadingWindowFile) {
@@ -33,7 +35,15 @@ async function setup() {
         );
     }
 
-    const config = await createServer(!isInstalled, appFile, serverUrl);
+    let config;
+    try {
+        config = await createServer(!isInstalled, appFile, serverUrl);
+    } catch (err) {
+        logger.main.error(err);
+        closed = true;
+        app.quit();
+        return;
+    }
 
     for (const page of config.windows) {
         logger.main.info(`Create window : ${page.name}`);
@@ -49,8 +59,6 @@ async function setup() {
 
     values(windows).forEach((window) => window.show());
 }
-
-let closed = false;
 
 app.on('ready', setup);
 app.on('will-quit', async (event) => {
