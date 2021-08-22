@@ -136,7 +136,7 @@ class DazzlerConfig(Config):
         clean_directory = ConfigProperty(
             default=True,
             config_type=bool,
-            comment='Remove the requirements directory before copying'
+            comment='Remove the requirements directory before copying '
                     'the new requirements.'
         )
 
@@ -367,8 +367,8 @@ class DazzlerConfig(Config):
                 title_bar_style = ConfigProperty(
                     default='default',
                     config_type=str,
-                    comment='Options: default,hidden,'
-                            'hiddenInset,customButtonsOnHover'
+                    comment='Options: default, hidden, '
+                            'hiddenInset, customButtonsOnHover'
                 )
                 click_through = ConfigProperty(
                     default=True,
@@ -411,7 +411,7 @@ class DazzlerConfig(Config):
 
         class Builder(Nestable):
             app_id = ConfigProperty(
-                comment='The appId to use for the build,'
+                comment='The appId to use for the build, '
                         'it is recommended to change.'
             )
             product_name = ConfigProperty(
@@ -525,7 +525,7 @@ class DazzlerConfig(Config):
                 owner = ConfigProperty(config_type=str)
                 component = ConfigProperty(config_type=str)
                 distribution = ConfigProperty(config_type=str)
-                user = ConfigProperty(config_type=str)
+                user = ConfigProperty(config_type=str, auto_environ=False)
                 token = ConfigProperty(config_type=str)
 
             bintray: Bintray
