@@ -80,3 +80,18 @@ async def test_treeview(start_page, browser):
         '.tree-sub-items'
     )
     assert len(sub_containers) == 1
+
+
+@pytest.mark.async_test
+async def test_color_picker(browser, start_page):
+    from tests.components.pages.color_picker import page
+
+    await start_page(page)
+
+    await browser.wait_for_style_to_equal(
+        '#colored-toggle.dazzler-extra-color-picker '
+        '.dazzler-color-picker-toggle '
+        '.toggle-button-color',
+        'background-color',
+        'rgba(255, 0, 0, 1)'
+    )
