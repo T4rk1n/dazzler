@@ -288,10 +288,6 @@ class ElectronBuilder:
                 args.append(
                     f'--add-data={requirement.internal}'
                     f'{os.pathsep}{requirement.internal}')
-                if requirement.dev:
-                    args.append(
-                        f'--add-data={requirement.dev}'
-                        f'{os.pathsep}{requirement.dev}')
 
         if self.app.config_path:
             # Put the config file in the assets path, when
