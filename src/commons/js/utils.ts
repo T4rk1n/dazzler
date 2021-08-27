@@ -95,7 +95,6 @@ export function debounce(func: Function, wait: number, immediate?: boolean) {
             }
         }
         const later = () => {
-            console.log('later');
             timeout = null;
             /* eslint-disable no-invalid-this */
             lastCall = new Date();

@@ -140,17 +140,22 @@ class Page:
     def bind(
             self,
             trigger: typing.Union[Trigger, str],
-            *states: typing.Union[State, str]
+            *states: typing.Union[State, str],
+            once: bool = False,
     ):
         """
-        Attach a function to be called when the trigger update.
+        Attach a function to be called when the trigger update on the client.
 
-        :param trigger:
-        :param states:
+        :param trigger: Aspect to trigger the binding.
+        :param states: States to includes in the binding message.
+        :param once: Execute the binding only once
         :return:
         """
         trg = coerce_binding(trigger)
         sts = coerce_binding(list(states), State)
+
+        if trg.once is None:
+            trg.once = once
 
         def _wrapper(func):
             binding = Binding(trg, sts)(func)
@@ -202,7 +207,8 @@ class Page:
     def tie(
         self,
         trigger: typing.Union[Trigger, str],
-        *target: typing.Union[Target, str]
+        *target: typing.Union[Target, str],
+        once: bool = None
     ):
         """
         Update target(s) aspect on trigger from the frontend.
@@ -226,10 +232,14 @@ class Page:
 
         :param trigger: Aspect to set the target when the value change.
         :param target: Aspect to update from the trigger value.
+        :param once: Execute the tie only once.
         :return:
         """
         trig = coerce_binding(trigger, Trigger)
         targ = coerce_binding(list(target), Target)
+
+        if trig.once is None:
+            trig.once = once
 
         tied = TiedTransform(trig, targ)
         self._ties.append(tied)

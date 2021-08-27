@@ -55,20 +55,27 @@ type DryDazzlerComponent = {
     aspects: AnyDict;
 };
 
-type BindType = {
+type Aspect = {
     identity: string;
     aspect: string;
+}
+
+type BindType = Aspect & {
     regex: boolean;
 };
 
+type Trigger = BindType & {
+    once: boolean;
+}
+
 type Binding = {
-    trigger: BindType;
+    trigger: Trigger;
     states: BindType[];
     regex?: boolean;
     value?: any;
 };
 
-type EvolvedBindType = {
+type EvolvedBindType = Trigger & {
     identity: RegExp;
     aspect: RegExp;
 };
@@ -90,6 +97,17 @@ type BoundComponents = {
     [key: string]: BoundComponent;
 };
 
+type Transform = {
+    transform: string;
+    args: AnyDict;
+    next: Transform[];
+}
+
+type Tie = Binding & {
+    transforms: Transform[];
+    targets: Aspect[];
+}
+
 type UpdaterState = {
     layout?: DryDazzlerComponent;
     page: string;
@@ -97,7 +115,7 @@ type UpdaterState = {
     rebindings: EvolvedBinding[];
     packages: Package[];
     requirements: Requirement[];
-    ties: any;
+    ties: Tie[];
     reload: boolean;
     reloading: boolean;
     needRefresh: boolean;
@@ -108,11 +126,11 @@ type UpdaterProps = RenderOptions & {
     hotReload: () => void;
 };
 
-type TransformGetAspectFunc = (identity: string, aspect: string) => any;
+type TransformGetAspectFunc = <T>(identity: string, aspect: string) => T;
 type TransformFunc = (
     value: any,
-    args?: any,
-    getAspect?: TransformGetAspectFunc
+    args: any,
+    getAspect: TransformGetAspectFunc
 ) => any;
 
 type XhrRequestOptions = {
