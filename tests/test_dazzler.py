@@ -494,3 +494,27 @@ async def test_ties(start_page, browser):
     await browser.wait_for_text_to_equal('#output-1', text)
     await browser.wait_for_text_to_equal('#output-2', text)
     await browser.wait_for_text_to_equal('#regex-output', text)
+
+
+@pytest.mark.async_test
+async def test_once_triggers(browser, start_page):
+    from tests.apps.pages.once import page
+
+    await start_page(page)
+
+    for bind_type in ('binding', 'tie'):
+        initial = f'initial-{bind_type}'
+        changed = f'change-{bind_type}'
+        await browser.wait_for_text_to_equal(
+            f'#{bind_type}-output', initial)
+
+        element = await browser.wait_for_element_by_id(f'{bind_type}-input')
+        element.send_keys(Keys.BACKSPACE * len(initial))
+        element.send_keys(changed)
+
+        await browser.wait_for_text_to_equal(
+            f'#always-{bind_type}', changed
+        )
+        await browser.wait_for_text_to_equal(
+            f'#{bind_type}-output', initial
+        )
