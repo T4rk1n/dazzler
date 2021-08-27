@@ -89,6 +89,15 @@ class _Bind:
 # pylint: disable=too-few-public-methods
 class Trigger(_Bind):
     """Trigger the bound aspect callbacks."""
+    def __init__(self, identity: str, aspect: str, regex=False, once=None):
+        super().__init__(identity, aspect, regex)
+        self.once = once
+
+    def prepare(self) -> dict:
+        return {
+            **super(Trigger, self).prepare(),
+            'once': self.once
+        }
 
 
 TriggerList = typing.List[Trigger]

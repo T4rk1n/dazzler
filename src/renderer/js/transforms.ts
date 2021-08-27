@@ -1,39 +1,33 @@
 /* eslint-disable no-use-before-define */
 import {
-    is,
-    split,
-    has,
-    slice,
     concat,
-    pick,
-    pluck,
-    mergeLeft,
-    mergeRight,
+    drop,
+    equals,
+    find,
+    fromPairs,
+    includes,
+    is,
+    join,
     mergeDeepLeft,
     mergeDeepRight,
-    drop,
-    replace,
+    mergeLeft,
+    mergeRight,
+    pick,
+    pluck,
     reduce,
+    replace,
+    reverse,
+    slice,
+    sort,
+    split,
+    take,
     toPairs,
     trim,
-    take,
-    includes,
-    find,
-    join,
-    reverse,
     uniq,
     zip,
-    sort,
-    fromPairs,
-    equals,
 } from 'ramda';
-import {TransformFunc, TransformGetAspectFunc} from './types';
-
-const isAspect = (obj: any): boolean =>
-    is(Object, obj) && has('identity', obj) && has('aspect', obj);
-
-const coerceAspect = (obj: any, getAspect: TransformGetAspectFunc): any =>
-    isAspect(obj) ? getAspect(obj.identity, obj.aspect) : obj;
+import {Transform, TransformFunc, TransformGetAspectFunc} from './types';
+import {coerceAspect, isAspect} from './aspects';
 
 const transforms: {[key: string]: TransformFunc} = {
     /* String transforms */
@@ -335,7 +329,7 @@ export const executeTransform = (
     transform: string,
     value: any,
     args: any,
-    next: Array<any>,
+    next: Array<Transform>,
     getAspect: TransformGetAspectFunc
 ) => {
     const t = transforms[transform];

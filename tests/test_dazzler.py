@@ -512,6 +512,9 @@ async def test_once_triggers(browser, start_page):
         element.send_keys(Keys.BACKSPACE * len(initial))
         element.send_keys(changed)
 
+        # Bindings are 1 to many, ties many to many
+        # Assert that removing once doesn't remove the other tie with
+        # same trigger.
         await browser.wait_for_text_to_equal(
             f'#always-{bind_type}', changed
         )

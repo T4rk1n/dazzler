@@ -8,15 +8,27 @@ import {
 } from '../hydrator';
 import {loadRequirement, loadRequirements} from '../requirements';
 import {disableCss} from 'commons';
-import {pickBy, keys, map, evolve, concat, flatten} from 'ramda';
+import {
+    pickBy,
+    keys,
+    map,
+    evolve,
+    concat,
+    flatten,
+    dissoc,
+    zip,
+    all,
+} from 'ramda';
 import {executeTransform} from '../transforms';
 import {
     Binding,
     BoundComponents,
     EvolvedBinding,
+    Tie,
     UpdaterProps,
     UpdaterState,
 } from '../types';
+import {getAspectKey, isSameAspect} from '../aspects';
 
 export default class Updater extends React.Component<
     UpdaterProps,
@@ -39,7 +51,7 @@ export default class Updater extends React.Component<
             requirements: [],
             reloading: false,
             needRefresh: false,
-            ties: {},
+            ties: [],
         };
         // The api url for the page is the same but a post.
         // Fetch bindings, packages & requirements
@@ -54,12 +66,12 @@ export default class Updater extends React.Component<
         this.onMessage = this.onMessage.bind(this);
     }
 
-    updateAspects(identity, aspects) {
+    updateAspects(identity: string, aspects) {
         return new Promise((resolve) => {
-            const aspectKeys = keys(aspects);
+            const aspectKeys: string[] = keys<string>(aspects);
             let bindings: Binding[] | EvolvedBinding[] = aspectKeys
                 .map((key: string) => ({
-                    ...this.state.bindings[`${key}@${identity}`],
+                    ...this.state.bindings[getAspectKey(identity, key)],
                     value: aspects[key],
                 }))
                 .filter((e) => e.trigger);
@@ -86,30 +98,38 @@ export default class Updater extends React.Component<
                 }
             });
 
+            const removableTies = [];
+
             flatten(
-                aspectKeys.map((key) => {
+                aspectKeys.map((aspect) => {
                     const ties = [];
                     for (let i = 0; i < this.state.ties.length; i++) {
                         const tie = this.state.ties[i];
                         const {trigger} = tie;
                         if (
                             (trigger.regex &&
+                                // @ts-ignore
                                 trigger.identity.test(identity) &&
-                                trigger.aspect.test(key)) ||
-                            (trigger.identity === identity &&
-                                trigger.aspect === key)
+                                // @ts-ignore
+                                trigger.aspect.test(aspect)) ||
+                            isSameAspect(trigger, {identity, aspect})
                         ) {
                             ties.push({
                                 ...tie,
-                                value: aspects[key],
+                                value: aspects[aspect],
                             });
                         }
                     }
                     return ties;
                 })
-            ).forEach((tie) => {
+            ).forEach((tie: Tie) => {
                 const {transforms} = tie;
                 let value = tie.value;
+
+                if (tie.trigger.once) {
+                    removableTies.push(tie);
+                }
+
                 if (transforms) {
                     value = transforms.reduce((acc, e) => {
                         return executeTransform(
@@ -130,18 +150,55 @@ export default class Updater extends React.Component<
                 });
             });
 
+            if (removableTies.length) {
+                this.setState({
+                    ties: this.state.ties.filter(
+                        (t) =>
+                            !removableTies.reduce(
+                                (acc, tie) =>
+                                    acc ||
+                                    (isSameAspect(t.trigger, tie.trigger) &&
+                                        all(([t1, t2]) => isSameAspect(t1, t2))(
+                                            zip(t.targets, tie.targets)
+                                        )),
+                                false
+                            )
+                    ),
+                });
+            }
+
             if (!bindings) {
                 resolve(0);
             } else {
-                bindings.forEach((binding) =>
-                    this.sendBinding(binding, binding.value)
-                );
+                const removableBindings = [];
+                bindings.forEach((binding) => {
+                    this.sendBinding(binding, binding.value);
+                    if (binding.trigger.once) {
+                        removableBindings.push(binding);
+                    }
+                });
+                if (removableBindings.length) {
+                    this.setState({
+                        bindings: removableBindings.reduce(
+                            (acc, binding) =>
+                                dissoc(
+                                    getAspectKey(
+                                        binding.trigger.identity,
+                                        binding.trigger.aspect
+                                    ),
+                                    acc
+                                ),
+                            this.state.bindings
+                        ),
+                    });
+                }
+                // TODO investigate reasons/uses of promise
                 resolve(bindings.length);
             }
         });
     }
 
-    getAspect(identity, aspect): any | undefined {
+    getAspect<T>(identity: string, aspect: string): T | undefined {
         const c = this.boundComponents[identity];
         if (c) {
             return c.getAspect(aspect);
