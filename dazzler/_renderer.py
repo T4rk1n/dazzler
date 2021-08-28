@@ -41,6 +41,10 @@ _vendors_requirements = [
     _Requirement(
         internal=os.path.join(_vendors, 'normalize-8-0-1.min.css'),
         external='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css'  # noqa: E501
+    ),
+    _Requirement(
+        internal=os.path.join(_vendors, 'normalize-8-0-1.min.css'),
+        dev=True,
     )
 ]
 
