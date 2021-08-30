@@ -7,7 +7,7 @@ const tracker = require('./webpack-asset-tracker');
 module.exports = function (env, argv) {
     const mode = (argv && argv.mode) || 'production';
     const devMode = mode === 'development';
-    const devtool = mode === 'development' ? 'inline-source-map' : undefined;
+    const devtool = devMode ? 'inline-source-map' : undefined;
 
     const output = {
         filename: 'dazzler_[name]_[contenthash].js',
@@ -49,6 +49,7 @@ module.exports = function (env, argv) {
         calendar: {
             import: [path.join(__dirname, 'src/calendar/js/index.ts')],
             dependOn: 'commons'
+
         },
         auth: {
             import: [path.join(__dirname, 'src/auth/js/index.ts')],
