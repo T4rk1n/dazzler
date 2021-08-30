@@ -154,7 +154,10 @@ class Page:
         trg = coerce_binding(trigger)
         sts = coerce_binding(list(states), State)
 
-        if trg.once is None:
+        if isinstance(trg, list):
+            for t in trg:
+                t.once = once
+        elif trg.once is None:
             trg.once = once
 
         def _wrapper(func):
