@@ -58,7 +58,7 @@ type DryDazzlerComponent = {
 type Aspect = {
     identity: string;
     aspect: string;
-}
+};
 
 type BindType = Aspect & {
     regex: boolean;
@@ -66,7 +66,7 @@ type BindType = Aspect & {
 
 type Trigger = BindType & {
     once: boolean;
-}
+};
 
 type Binding = {
     trigger: Trigger;
@@ -101,12 +101,12 @@ type Transform = {
     transform: string;
     args: AnyDict;
     next: Transform[];
-}
+};
 
 type Tie = Binding & {
     transforms: Transform[];
     targets: Aspect[];
-}
+};
 
 type UpdaterState = {
     layout?: DryDazzlerComponent;

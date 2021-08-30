@@ -23,4 +23,3 @@ type StylableInputLabelValue = StylableLabelValue & {
 };
 
 type OnOff = 'on' | 'off';
-

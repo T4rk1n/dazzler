@@ -13,4 +13,4 @@ export const getAspectKey = (identity: string, aspect: string): string =>
     `${aspect}@${identity}`;
 
 export const isSameAspect = (a: Aspect, b: Aspect) =>
-    a.identity === b.identity && a.aspect === b.aspect
+    a.identity === b.identity && a.aspect === b.aspect;
