@@ -31,10 +31,10 @@ import {coerceAspect, isAspect} from './aspects';
 
 const transforms: {[key: string]: TransformFunc} = {
     /* String transforms */
-    ToUpper: value => {
+    ToUpper: (value) => {
         return value.toUpperCase();
     },
-    ToLower: value => {
+    ToLower: (value) => {
         return value.toLowerCase();
     },
     Format: (value, args) => {
@@ -54,7 +54,7 @@ const transforms: {[key: string]: TransformFunc} = {
         const {separator} = args;
         return split(separator, value);
     },
-    Trim: value => {
+    Trim: (value) => {
         return trim(value);
     },
     /* Number Transform */
@@ -101,7 +101,7 @@ const transforms: {[key: string]: TransformFunc} = {
     },
     Map: (value, args, getAspect) => {
         const {transform} = args;
-        return value.map(e =>
+        return value.map((e) =>
             executeTransform(
                 transform.transform,
                 e,
@@ -113,7 +113,7 @@ const transforms: {[key: string]: TransformFunc} = {
     },
     Filter: (value, args, getAspect) => {
         const {comparison} = args;
-        return value.filter(e =>
+        return value.filter((e) =>
             executeTransform(
                 comparison.transform,
                 e,
@@ -157,7 +157,7 @@ const transforms: {[key: string]: TransformFunc} = {
         const {n} = args;
         return take(coerceAspect(n, getAspect), value);
     },
-    Length: value => {
+    Length: (value) => {
         return value.length;
     },
     Range: (value, args, getAspect) => {
@@ -177,7 +177,7 @@ const transforms: {[key: string]: TransformFunc} = {
     },
     Find: (value, args, getAspect) => {
         const {comparison} = args;
-        return find(a =>
+        return find((a) =>
             executeTransform(
                 comparison.transform,
                 a,
@@ -204,10 +204,10 @@ const transforms: {[key: string]: TransformFunc} = {
             value
         );
     },
-    Reverse: value => {
+    Reverse: (value) => {
         return reverse(value);
     },
-    Unique: value => {
+    Unique: (value) => {
         return uniq(value);
     },
     Zip: (value, args, getAspect) => {
@@ -248,16 +248,16 @@ const transforms: {[key: string]: TransformFunc} = {
         }
         return mergeLeft(value, otherValue);
     },
-    ToJson: value => {
+    ToJson: (value) => {
         return JSON.stringify(value);
     },
-    FromJson: value => {
+    FromJson: (value) => {
         return JSON.parse(value);
     },
-    ToPairs: value => {
+    ToPairs: (value) => {
         return toPairs(value);
     },
-    FromPairs: value => {
+    FromPairs: (value) => {
         return fromPairs(value);
     },
     /* Conditionals */
@@ -313,7 +313,7 @@ const transforms: {[key: string]: TransformFunc} = {
     Or: (value, args, getAspect) => {
         return value || coerceAspect(args.other, getAspect);
     },
-    Not: value => {
+    Not: (value) => {
         return !value;
     },
     RawValue: (value, args) => {
