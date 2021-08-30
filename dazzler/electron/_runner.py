@@ -6,7 +6,7 @@ import sys
 import os
 import tempfile
 
-from dazzler._assets import electron_path
+from dazzler._assets import electron_path, electron_preload_path
 from ._loading import get_loading_options, build_loading_html
 from ._runtime import is_compiled
 
@@ -26,6 +26,7 @@ async def run_electron(app, app_path: str):
     env['DAZZLER_PORT'] = str(app.config.port)
     env['DAZZLER_APP'] = app_path
     env['DAZZLER_COMPILED'] = str(is_compiled())
+    env['DAZZLER_PRELOAD'] = electron_preload_path
     options_dir = tempfile.mkdtemp('dazzler')
 
     if app.config.electron.loading_window.enabled:

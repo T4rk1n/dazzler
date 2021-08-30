@@ -95,7 +95,7 @@ class Trigger(_Bind):
 
     def prepare(self) -> dict:
         return {
-            **super(Trigger, self).prepare(),
+            **super().prepare(),
             'once': self.once
         }
 
