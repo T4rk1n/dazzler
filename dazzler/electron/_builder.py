@@ -6,7 +6,9 @@ import pathlib
 import asyncio
 import importlib
 
-from dazzler._assets import electron_package_path, electron_path, assets_path
+from dazzler._assets import (
+    electron_package_path, electron_path, assets_path, electron_preload_path
+)
 from dazzler.electron._loading import get_loading_options, build_loading_html
 from dazzler.errors import ElectronBuildError
 from dazzler.tools import OrderedSet, transform_dict_keys
@@ -76,6 +78,7 @@ class ElectronBuilder:
     async def build(self):
         self.logger.debug(f'Workdir: {self._workdir}')
         shutil.copy(electron_path, str(self._workdir))
+        shutil.copy(electron_preload_path, str(self._workdir))
         self._freeze_app()
         self._create_environ()
         self._create_package_json()
@@ -133,6 +136,7 @@ class ElectronBuilder:
 
         package['build']['files'] = package['build']['files'] + [
             'electron-dazzler.js',
+            'preload-electron.js'
         ]
         package['build']['extraResources'] = \
             package['build']['extraResources'] + [
