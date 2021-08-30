@@ -1,8 +1,7 @@
 import {BrowserWindow} from 'electron';
-import installExtension, {
-    REACT_DEVELOPER_TOOLS,
-} from 'electron-devtools-installer';
-import {createWindowState} from './windowState';
+import {createWindowState} from './windowStateSync';
+import {CreatePageWindowOptions, PageWindow} from '../common/types';
+import path from 'path';
 
 export default async function (
     isDevelopment: boolean,
@@ -13,7 +12,11 @@ export default async function (
     const {save_window_size, window_size} = options;
     const window = new BrowserWindow({
         webPreferences: {
+            nodeIntegration: true,
             devTools: isDevelopment,
+            preload:
+                process.env.DAZZLER_PRELOAD ||
+                path.join(__dirname, 'preload-electron.js'),
         },
         title,
         ...window_size,
@@ -21,8 +24,9 @@ export default async function (
         show: false,
     });
 
+    const state = await createWindowState(name, window, save_window_size);
+
     if (save_window_size) {
-        const state = await createWindowState(name, window);
         state.sync();
     }
 
@@ -31,10 +35,6 @@ export default async function (
     }
 
     await window.loadURL(url);
-
-    if (isDevelopment) {
-        await installExtension(REACT_DEVELOPER_TOOLS);
-    }
 
     return window;
 }

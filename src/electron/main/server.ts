@@ -4,6 +4,7 @@ import {net} from 'electron';
 import path from 'path';
 import logger from './logger';
 import process from 'process';
+import {ElectronConfig} from '../common/types';
 let serverProcess;
 
 function requestConfigs(serverUrl: string): Promise<ElectronConfig> {

@@ -2,6 +2,7 @@ import {BrowserWindow} from 'electron';
 import {promises as fs} from 'fs';
 import path from 'path';
 import logger from './logger';
+import {LoadingWindowOptions} from '../common/types';
 
 export async function createLoadingWindow(
     windowFile: string,

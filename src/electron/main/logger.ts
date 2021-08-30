@@ -1,4 +1,4 @@
-class Logger {
+export class Logger {
     channel: string;
     constructor(channel: string) {
         this.channel = channel;
