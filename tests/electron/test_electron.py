@@ -5,6 +5,7 @@ import tempfile
 import pytest
 
 import stringcase
+from selenium.webdriver.common.keys import Keys
 
 from dazzler import Dazzler
 from dazzler.electron import ElectronBuilder
@@ -95,5 +96,21 @@ async def test_electron_builder(electron_driver):
         )
         await driver.click('#clicker')
         await driver.wait_for_text_to_equal('#output', 'Clicks 1')
+        await driver.wait_for_text_to_equal('#width-status', '1024')
+        await driver.wait_for_text_to_equal('#height-status', '800')
+        # Check width/height works for number states.
+        width_input = await driver.wait_for_element_by_id('width-input')
+        width_input.send_keys(Keys.BACKSPACE * 5)
+        width_input.send_keys('700')
+        await driver.wait_for_text_to_equal('#width-status', '700')
+        width_input = await driver.wait_for_element_by_id('height-input')
+        width_input.send_keys(Keys.BACKSPACE * 4)
+        width_input.send_keys('900')
+        await driver.wait_for_text_to_equal('#height-status', '900')
+        # Check fullscreen works for boolean states
+        await driver.click('#fullscreen-checkbox')
+        await driver.wait_for_text_to_equal('#fullscreen-status', 'true')
+        await driver.click('#fullscreen-checkbox')
+        await driver.wait_for_text_to_equal('#fullscreen-status', 'false')
     finally:
         shutil.rmtree(output_dir)
