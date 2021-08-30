@@ -1,3 +1,5 @@
+set dotenv-load := false
+
 dir := justfile_directory()
 src := dir + "/src"
 assets := dir + "/dazzler/assets"
