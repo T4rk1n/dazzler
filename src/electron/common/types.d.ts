@@ -1,31 +1,39 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-type WindowSize = {
+
+export type WindowSize = {
     height?: number;
     width?: number;
     fullscreen?: boolean;
 };
-type PageWindow = {
+export type WindowStatus = WindowSize & {
+    x?: number;
+    y?: number;
+    resizable?: boolean;
+    minimized?: boolean;
+    minimizable?: boolean;
+    maximized?: boolean;
+    maximizable?: boolean;
+    movable?: boolean;
+    closable?: boolean;
+    focus?: boolean;
+};
+export type PageWindow = {
     url: string;
     title: string;
     name: string;
     window_options?: WindowOptions;
 };
-type ElectronConfig = {
+export type ElectronConfig = {
     windows: PageWindow[];
     save_window_size: boolean;
     window_size: WindowSize;
 };
-
-type CreatePageWindowOptions = {
+export type CreatePageWindowOptions = {
     save_window_size: boolean;
     window_size: WindowSize;
 };
-
-type WindowOptions = WindowSize & {
+export type WindowOptions = WindowStatus & {
     center?: boolean;
-    resizable?: boolean;
-    minimizable?: boolean;
-    maximizable?: boolean;
     skipTaskbar?: boolean;
     frame?: boolean;
     opacity?: number;
@@ -37,7 +45,6 @@ type WindowOptions = WindowSize & {
         | 'customButtonsOnHover';
     menuBar?: boolean;
 };
-
-type LoadingWindowOptions = WindowOptions & {
+export type LoadingWindowOptions = WindowOptions & {
     click_through?: boolean;
 };
