@@ -353,12 +353,11 @@ class Server:
                 await self.site.start()
                 self.logger.info(f'Started server http://{host}:{port}/')
                 started = True
-            except Exception as err:
+            except OSError as err:
                 self.logger.error(err)
                 if not self.dazzler.config.port_range:
                     raise err
-                else:
-                    current_port += 1
+                current_port += 1
 
     async def _on_shutdown(self, _):
         # Close all websockets and stop the main loop
