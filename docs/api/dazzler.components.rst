@@ -15,6 +15,7 @@ Subpackages
    dazzler.components.auth
    dazzler.components.calendar
    dazzler.components.core
+   dazzler.components.electron
    dazzler.components.extra
    dazzler.components.icons
    dazzler.components.markdown
