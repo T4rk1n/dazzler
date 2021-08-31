@@ -96,8 +96,8 @@ async def test_electron_builder(electron_driver):
         )
         await driver.click('#clicker')
         await driver.wait_for_text_to_equal('#output', 'Clicks 1')
-        await driver.wait_for_text_to_equal('#width-status', '750')
-        await driver.wait_for_text_to_equal('#height-status', '550')
+        await driver.wait_for_text_to_equal('#width-status', '800')
+        await driver.wait_for_text_to_equal('#height-status', '600')
         # Check width/height works for number states.
         width_input = await driver.wait_for_element_by_id('width-input')
         width_input.send_keys(Keys.BACKSPACE * 5)

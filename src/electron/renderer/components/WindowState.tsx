@@ -16,6 +16,7 @@ import {
     WINDOW_SET_MOVABLE,
     WINDOW_SET_MINIMIZED,
     WINDOW_SET_MAXIMIZED,
+    WINDOW_CLOSE,
 } from '../../common/ipcEvents';
 import {WindowStatus} from '../../common/types';
 import ipc from '../ipc';
@@ -74,6 +75,7 @@ const WindowState = (props: WindowStateProps) => {
         set_minimizable,
         set_maximized,
         set_minimized,
+        close,
     } = props;
 
     useEffect(() => {
@@ -144,6 +146,7 @@ const WindowState = (props: WindowStateProps) => {
     useEffect(...ipcEffect(WINDOW_SET_MOVABLE, 'movable', set_movable, true));
     useEffect(...ipcEffect(WINDOW_SET_MINIMIZED, 'minimized', set_minimized));
     useEffect(...ipcEffect(WINDOW_SET_MAXIMIZED, 'maximized', set_maximized));
+    useEffect(...ipcEffect(WINDOW_CLOSE, 'close', close));
 
     return null;
 };
