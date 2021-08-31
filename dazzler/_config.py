@@ -21,6 +21,12 @@ class DazzlerConfig(Config):
         auto_global=True,
     )
 
+    port_range = ConfigProperty(
+        default=False,
+        comment='Try to open the server starting from port until success.',
+        config_type=bool,
+    )
+
     version = ConfigProperty(
         default='0.1.0',
         comment='App version'
