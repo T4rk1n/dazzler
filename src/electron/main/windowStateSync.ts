@@ -4,6 +4,7 @@ import * as path from 'path';
 import {debounce} from '../../commons/js/utils';
 import {omit, mergeAll, reduce, mergeRight} from 'ramda';
 import {
+    WINDOW_CLOSE,
     WINDOW_FOCUS,
     WINDOW_FULLSCREEN,
     WINDOW_MAXIMIZE,
@@ -229,6 +230,10 @@ export async function createWindowState(
         } else {
             window.unmaximize();
         }
+    });
+
+    ipcEvent(WINDOW_CLOSE, () => {
+        window.close();
     });
 
     return state;

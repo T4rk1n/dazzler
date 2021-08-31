@@ -38,10 +38,11 @@ page = Page(
                 core.Checkbox(identity=f'{x}-checkbox')]
             ) for x in boolean_states
         ]),
+        core.Button('close', identity='close-btn'),
     ]),
     electron_window=ElectronWindowSettings(
-        width=750,
-        height=550,
+        width=800,
+        height=600,
         fullscreen=False,
         menu_bar=True,
     )
@@ -59,6 +60,9 @@ for state in number_states + boolean_states:
 for state in boolean_states:
     page.tie(f'{state}@window-state', f'checked@{state}-checkbox', once=True)
     page.tie(f'checked@{state}-checkbox', f'set_{state}@window-state')
+
+
+page.tie('clicks@close-btn', 'close@window-state').t(t.RawValue(True))
 
 
 # Should assert that bindings works
