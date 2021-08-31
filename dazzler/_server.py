@@ -338,14 +338,27 @@ class Server:
         self.logger.debug('Starting server')
         self.runner = web.AppRunner(self.app)
         await self.runner.setup()
-        self.site = web.TCPSite(
-            self.runner, host, port,
-            shutdown_timeout=shutdown_timeout,
-            ssl_context=ssl_context, backlog=backlog,
-            reuse_address=reuse_address, reuse_port=reuse_port
-        )
-        await self.site.start()
-        self.logger.info(f'Started server http://{host}:{port}/')
+
+        started = False
+        current_port = port
+
+        while not started:
+            try:
+                self.site = web.TCPSite(
+                    self.runner, host, current_port,
+                    shutdown_timeout=shutdown_timeout,
+                    ssl_context=ssl_context, backlog=backlog,
+                    reuse_address=reuse_address, reuse_port=reuse_port
+                )
+                await self.site.start()
+                self.logger.info(f'Started server http://{host}:{port}/')
+                started = True
+            except Exception as err:
+                self.logger.error(err)
+                if not self.dazzler.config.port_range:
+                    raise err
+                else:
+                    current_port += 1
 
     async def _on_shutdown(self, _):
         # Close all websockets and stop the main loop
