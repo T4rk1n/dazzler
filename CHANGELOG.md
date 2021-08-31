@@ -2,6 +2,14 @@
 
 Versions follow [Semantic Versioning](https://www.semver.org)
 
+## [UNRELEASED]
+### Added
+
+- 🍚 Add extra.ColorPicker
+- 🍚 Add electron.WindowState
+- 🔧 Add `port_range` config
+- ✨ Add `once` parameter to bindings and ties.
+
 ## [0.7.0]
 ### Added
 
