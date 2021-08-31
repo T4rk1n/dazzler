@@ -40,8 +40,8 @@ page = Page(
         ]),
     ]),
     electron_window=ElectronWindowSettings(
-        width=1024,
-        height=800,
+        width=750,
+        height=550,
         fullscreen=False,
         menu_bar=True,
     )
