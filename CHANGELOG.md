@@ -2,7 +2,7 @@
 
 Versions follow [Semantic Versioning](https://www.semver.org)
 
-## [UNRELEASED]
+## [0.8.0]
 ### Added
 
 - 🍚 Add extra.ColorPicker
