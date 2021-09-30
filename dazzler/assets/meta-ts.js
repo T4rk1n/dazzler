@@ -1,3 +1,4 @@
+module.paths.push(process.env.MODULES_PATH)
 const ts = require('typescript');
 const fs = require('fs');
 const path = require('path');

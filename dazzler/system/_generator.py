@@ -315,6 +315,8 @@ def generate_imports(output_path, components):
 
 
 async def generate_meta(source_dir: str, ts: bool) -> dict:
+    env = os.environ.copy()
+    env['MODULES_PATH'] = os.path.abspath('./node_modules')
     cmd = shlex.split(
         f'node {meta_ts_path if ts else meta_path} {source_dir}',
         posix=sys.platform != 'win32'
@@ -323,6 +325,7 @@ async def generate_meta(source_dir: str, ts: bool) -> dict:
         ' '.join(cmd),
         stdout=asyncio.subprocess.PIPE,
         stderr=asyncio.subprocess.PIPE,
+        env=env,
     )
     out, err = await proc.communicate()
     if err:
