@@ -470,7 +470,7 @@ async def test_textarea(start_page, browser):
     autosizer = await browser.wait_for_element_by_id('autosizer')
     await browser.wait_for_style_to_equal('#autosizer', 'height', '40px')
     autosizer.send_keys('e' * 54)
-    await browser.wait_for_style_to_equal('#autosizer', 'height', '58px')
+    await browser.wait_for_style_to_equal('#autosizer', 'height', '59px')
 
 
 @pytest.mark.async_test
