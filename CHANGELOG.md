@@ -2,6 +2,11 @@
 
 Versions follow [Semantic Versioning](https://www.semver.org)
 
+## [0.8.1]
+### Fixed
+
+- 🐛 Fix external typescript component generation modules resolution.
+
 ## [0.8.0]
 ### Added
 
