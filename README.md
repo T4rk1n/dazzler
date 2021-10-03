@@ -25,6 +25,14 @@ Install with pip: `$ pip install dazzler`
 - Tie & Transform API to perform updates on the client side.
 - Build desktop applications with Electron.
 
+## Quickstart
+
+Quickstart with a GitHub template
+
+- [dazzler-app-template](https://github.com/T4rk1n/dazzler-app-template)
+- [dazzler-electron-template](https://github.com/T4rk1n/dazzler-electron-template)
+- [dazzler-component-template](https://github.com/T4rk1n/dazzler-component-template)
+
 ## Basic example
 
 Create a page with a layout and assign bindings to save & load a visitor name 
