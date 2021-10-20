@@ -2,7 +2,7 @@ from dazzler import Dazzler
 
 from tests.apps.pages import component_as_trigger, binding_return_trigger, \
     same_identity, component_as_aspect, storage, regex_bindings, ties, \
-    transformations, theme_transform, once
+    transformations, theme_transform, once, calls
 from tests.components.pages import checklist, store, html, interval, \
     input_output, radio, link, viewport, progress, select, button, slider, \
     modal, textarea, table, grid, form, markdown, calendar, pager, extras, \
@@ -60,6 +60,7 @@ pages = [
     switch.page,
     color_picker.page,
     once.page,
+    calls.page,
 ]
 
 app.add_page(*pages)
