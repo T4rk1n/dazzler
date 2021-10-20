@@ -521,3 +521,33 @@ async def test_once_triggers(browser, start_page):
         await browser.wait_for_text_to_equal(
             f'#{bind_type}-output', initial
         )
+
+
+@pytest.mark.async_test
+async def test_calls(browser, start_page):
+    from tests.apps.pages.calls import page
+
+    await start_page(page)
+    text = 'foo bar'
+
+    simple = await browser.wait_for_element_by_id('simple-input')
+    simple.send_keys(text)
+    await asyncio.sleep(1)
+
+    await browser.wait_for_text_to_equal('#simple-output', text)
+
+    circular = await browser.wait_for_element_by_id('circular-input')
+    circular.send_keys('k')
+
+    await browser.wait_for_text_to_equal('#circular-output', 'circular output')
+
+    # Asserts states & components can be set
+    firstname = await browser.wait_for_element_by_id('firstname')
+    firstname.send_keys('foo')
+    lastname = await browser.wait_for_element_by_id('lastname')
+    lastname.send_keys('bar')
+
+    await browser.click('#submit')
+    await browser.wait_for_text_to_equal(
+        '#output', 'Hello foo bar'
+    )
