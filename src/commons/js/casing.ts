@@ -1,4 +1,5 @@
 import {last, slice, toPairs} from 'ramda';
+import {AnyDict} from './types';
 
 export function camelToSnakeCase(s: string): string {
     return s
@@ -38,7 +39,10 @@ export function camelToSpinal(s: string): string {
         .reduce((p, n) => p + n);
 }
 
-export function transformKeys(obj: object, transform: Function): object {
+export function transformKeys(
+    obj: AnyDict,
+    transform: typeof camelToSnakeCase
+): AnyDict {
     // @ts-ignore
     return toPairs(obj).reduce((a, [k, v]) => {
         a[transform(k)] = v;

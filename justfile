@@ -15,7 +15,7 @@ install:
 alias i := install
 
 # Build everything
-build:
+build: html-generator
     npm run build
 
 alias b := build
@@ -83,6 +83,10 @@ electron:
 # Build the sample electron app.
 electron-build TARGET="dir":
     dazzler -c tests/electron/dazzler.toml electron-build tests/electron/electron_app.py --target {{TARGET}}
+
+# Build the html & svg components.
+html-generator:
+    node src/html/html-generator.js
 
 # Generate a component package:
 generate PACKAGE *ARGS:

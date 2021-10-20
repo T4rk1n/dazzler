@@ -18,6 +18,7 @@ import {
     transformKeys,
 } from './casing';
 import {getCommonStyles, getPresetsClassNames} from './styling';
+import {enhanceProps} from './enhancer';
 
 export {
     toTimestamp,
@@ -35,4 +36,5 @@ export {
     getCommonStyles,
     getPresetsClassNames,
     throttle,
+    enhanceProps,
 };

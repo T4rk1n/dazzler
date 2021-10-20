@@ -136,7 +136,11 @@ function walk(directory, components = {}) {
             return 'bool';
         } else if (propName === '[]') {
             return 'array';
-        } else if (propName === 'Element') {
+        } else if (
+            propName === 'Element'
+            || propName === 'ReactNode'
+            || propName === 'ReactElement'
+        ) {
             return 'node';
         }
         return propName
@@ -265,7 +269,7 @@ function walk(directory, components = {}) {
                     tags.map((t) =>
                         R.concat(
                             ['@', t.name],
-                            t.text.map((e) => e.text)
+                            (t.text || []).map((e) => e.text)
                         )
                     )
                 )
@@ -285,7 +289,9 @@ function walk(directory, components = {}) {
 
             // There is only one parameter for functional components: props
             const p = params[0];
-            if (p.name === 'props' || params.length === 1) return p;
+            if (p.name === 'props' || params.length === 1) {
+                return p;
+            }
         }
         return null;
     };

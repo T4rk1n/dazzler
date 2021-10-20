@@ -1,0 +1,9 @@
+import * as React from 'react';
+import {enhanceProps} from 'commons';
+import {HtmlOmittedProps, DazzlerHtmlProps} from '../../commons/js/types';
+
+type Props = Omit<React.SVGProps<SVGFEBlendElement>, HtmlOmittedProps> & DazzlerHtmlProps;
+
+const FeBlend = (props: Props) => <feBlend {...enhanceProps(props)} />
+
+export default React.memo(FeBlend);

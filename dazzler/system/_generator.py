@@ -341,6 +341,10 @@ async def generate_components(metadata, output_path, executor):
 
     for data in metadata.values():
         name = data['displayName']
+        props = data.get('props')
+        if not props:
+            print(f'Invalid component {name}')
+            continue
         names.append(name)
         futures.append(
             executor.execute(
