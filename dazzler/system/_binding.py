@@ -16,7 +16,7 @@ from ..errors import TriggerLoopError, GetAspectError, BindingError
 
 __all__ = [
     'Trigger', 'State', 'Target', 'BoundAspect', 'Binding', 'BindingContext',
-    'coerce_binding'
+    'CallContext', 'coerce_binding'
 ]
 
 
@@ -145,10 +145,12 @@ class BoundAspect:
             handler,
             trigger: typing.Union[TriggerList, Trigger],
             states: StateList = None,
+            call: bool = False,
     ):
         self.handler = handler
         self.trigger = trigger
         self.states = states or []
+        self.call = call
 
     def prepare(self) -> list:
         """
@@ -161,7 +163,8 @@ class BoundAspect:
                 'trigger': trigger.prepare(),
                 'states': [state.prepare() for state in self.states],
                 'key': str(trigger),
-                'regex': trigger.regex
+                'regex': trigger.regex,
+                'call': self.call,
             } for trigger in self.triggers
         ]
 
@@ -193,7 +196,25 @@ class BoundAspect:
         return hash(str(self))
 
 
-class BindingContext:
+class BaseContext:
+    def __init__(
+        self,
+        identity: str,
+        request: web.Request,
+        trigger: BoundValue,
+        states: typing.Dict[str, dict],
+    ):
+        self.identity = identity
+        self.request = request
+        self.trigger = trigger
+        self.states = states
+        self.dazzler = request.app['dazzler']
+        self.auth = self.dazzler.auth
+        self.user = request.get('user')
+        self.session: Session = request.get('session')
+
+
+class BindingContext(BaseContext):
     """
     The context in which the bound function execute.
 
@@ -210,16 +231,9 @@ class BindingContext:
             request_queue: asyncio.Queue,
             create_task: typing.Callable
     ):
-        self.identity = identity
-        self.request = request
-        self.trigger = trigger
-        self.states = states
+        super().__init__(identity, request, trigger, states)
         self.websocket = websocket
-        self.session: Session = request.get('session')
         self.create_task = create_task
-        self.dazzler = request.app['dazzler']
-        self.auth = self.dazzler.auth
-        self.user = request.get('user')
         self._request_queue = request_queue
         self._response_queue = asyncio.Queue()
 
@@ -323,9 +337,11 @@ class Binding:
             self,
             trigger: Trigger,
             states: StateList = None,
+            call: bool = False,
     ):
         self.trigger = trigger
         self.states = states or []
+        self.call = call
 
     def __call__(self, func):
 
@@ -343,18 +359,27 @@ class Binding:
                     state.get('value', UNDEFINED)
                 )
 
-            context = BindingContext(
-                trigger.identity,
-                request,
-                trigger,
-                states,
-                ws,
-                request_queue,
-                create_task
-            )
-            return await func(context)
+            if self.call:
+                context = CallContext(
+                    trigger.identity,
+                    request,
+                    trigger,
+                    states,
+                )
+            else:
+                context = BindingContext(
+                    trigger.identity,
+                    request,
+                    trigger,
+                    states,
+                    ws,
+                    request_queue,
+                    create_task
+                )
+            await func(context)
+            return context
 
-        return BoundAspect(bound, self.trigger, self.states)
+        return BoundAspect(bound, self.trigger, self.states, self.call)
 
 
 def coerce_binding(value, binding_type: typing.Type = Trigger):
@@ -374,3 +399,26 @@ def coerce_binding(value, binding_type: typing.Type = Trigger):
         return binding_type(identity=splat[1], aspect=splat[0])
 
     raise BindingError(f'Invalid {binding_type.__name__}: {value}')
+
+
+class CallContext(BaseContext):
+    def __init__(
+        self,
+        identity: str,
+        request: web.Request,
+        trigger: BoundValue,
+        states: typing.Dict[str, BoundValue],
+    ):
+        super().__init__(identity, request, trigger, states)
+        self._output = {}
+
+    def set_aspect(self, identity, **aspects):
+        self._output.setdefault(identity, {})
+
+        if identity == self.trigger.identity:
+            if self.trigger.aspect in set(aspects.keys()):
+                raise TriggerLoopError(
+                    'Setting the same aspect that triggered: '
+                    f'{self.trigger.aspect}@{identity}'
+                )
+        self._output[identity].update(aspects)

@@ -15,11 +15,11 @@ export const JSONHEADERS = {
     'Content-Type': 'application/json',
 };
 
-export function xhrRequest(
+export function xhrRequest<T>(
     url: string,
     options: XhrRequestOptions = defaultXhrOptions
 ) {
-    return new Promise<any>((resolve, reject) => {
+    return new Promise<T>((resolve, reject) => {
         const {method, headers, payload, json} = {
             ...defaultXhrOptions,
             ...options,
@@ -55,12 +55,9 @@ export function xhrRequest(
 }
 
 export function apiRequest(baseUrl: string) {
-    return function () {
-        const url = baseUrl + arguments[0];
-        const options = arguments[1] || {};
+    return function <T>(uri: string, options: XhrRequestOptions = undefined) {
+        const url = baseUrl + uri;
         options.headers = {...options.headers};
-        return new Promise((resolve) => {
-            xhrRequest(url, options).then(resolve);
-        });
+        return xhrRequest<T>(url, options);
     };
 }
