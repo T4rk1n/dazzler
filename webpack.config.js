@@ -55,6 +55,14 @@ module.exports = function (env, argv) {
             import: [path.join(__dirname, 'src/auth/js/index.ts')],
             dependOn: 'commons'
         },
+        html: {
+            import: [path.join(__dirname, 'src/html/index.ts')],
+            dependOn: 'commons'
+        },
+        svg: {
+            import: [path.join(__dirname, 'src/svg/index.ts')],
+            dependOn: 'commons'
+        },
         icons: {
             import: [path.join(__dirname, 'src/icons/js/index.js')],
             dependOn: 'commons'

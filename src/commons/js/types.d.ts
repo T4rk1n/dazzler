@@ -1,3 +1,5 @@
+import {AriaAttributes, DOMAttributes} from 'react';
+
 type Dict<T> = {[key: string]: T};
 type StringDict = {[key: string]: string};
 type AnyDict = Dict<any>;
@@ -196,3 +198,35 @@ export interface CommonPresetsProps {
      */
     preset_size?: PresetSize;
 }
+
+type DazzlerHtmlProps = {
+    id?: string;
+
+    handle_clicks?: boolean;
+    clicks?: number;
+    click_event?: any;
+
+    handle_hover?: boolean;
+    is_hovered?: boolean;
+
+    handle_load?: boolean;
+    is_loaded?: boolean;
+
+    handle_focus?: boolean;
+    is_focused?: boolean;
+} & DazzlerProps;
+
+type InvalidHtmlProps =
+    | 'dangerouslySetInnerHTML'
+    | 'defaultChecked'
+    | 'defaultValue'
+    | 'suppressContentEditableWarning'
+    | 'suppressHydrationWarning'
+    | 'className'
+    | 'ref'
+    | 'key'
+    | 'async';
+
+type EventsProps = keyof Omit<DOMAttributes<any>, 'children'>;
+type AriaProps = keyof AriaAttributes;
+type HtmlOmittedProps = InvalidHtmlProps | EventsProps | AriaProps;
