@@ -532,7 +532,6 @@ async def test_calls(browser, start_page):
 
     simple = await browser.wait_for_element_by_id('simple-input')
     simple.send_keys(text)
-    await asyncio.sleep(1)
 
     await browser.wait_for_text_to_equal('#simple-output', text)
 
