@@ -146,10 +146,18 @@ metadata.
 Bindings
 --------
 
-To update components after the initial layout, you can use page bindings. The
-:py:class:`~.dazzler.system.BindingContext` argument can be used to ``set`` and
-``get`` other component aspects from the backend and holds the trigger/states
-value. It can also be used to access the ``WebStorage`` of the browser.
+To update components after the initial layout, you can use page bindings.
+Bound functions takes a context argument that is used to ``set`` aspects
+and access to the session and user systems.
+
+- :py:meth:`~.dazzler.system.Page.bind` executes updates via websockets, it
+allows for two-ways communication and long running functions.
+The :py:class:`~.dazzler.system.BindingContext` can be used to ``get`` other
+component aspects in real time from the frontend.
+It can also be used to access the ``WebStorage`` of the browser.
+- :py:meth:`~.dazzler.system.Page.call` is a regular request update.
+:py:class:`~.dazzler.system.CallContext` can only ``set`` aspects, states can
+be used if other aspects are required.
 
 Examples
 ^^^^^^^^
@@ -180,6 +188,52 @@ Regex bindings can be used as trigger/states for identity and aspect.
 
 .. literalinclude:: ../tests/apps/pages/regex_bindings.py
     :lines: 5-42
+
+Calls can only ``set`` aspects synchronously once the bound function
+has finished.
+
+.. code-block:: python
+    :caption: pages.calls.py
+
+    from dazzler.system import Page, CallContext
+    from dazzler.components.core import Box, Button, Form, Text, Input
+
+    page = Page(
+        __name__,
+        Box([
+            Form(
+                fields=[
+                    {
+                        'label': 'First Name',
+                        'name': 'first-name',
+                        'component': Input(identity='firstname')
+                    },
+                    {
+                        'label': 'Last Name',
+                        'name': 'last_name',
+                        'component': Input(identity='lastname')
+                    }
+                ],
+                include_submit=False,
+                identity='form',
+            ),
+            Button('Submit', identity='submit'),
+            Box(identity='output')
+        ], column=True)
+    )
+
+
+    @page.call('clicks@submit', 'value@firstname', 'value@lastname')
+    async def on_submit_call(ctx: CallContext):
+        ctx.set_aspect(
+            'output',
+            children=Text(
+                f'Hello {ctx.states["firstname"]["value"]}'
+                f' {ctx.states["lastname"]["value"]}',
+                color='green'
+            )
+        )
+
 
 Ties & Transforms
 -----------------

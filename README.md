@@ -5,7 +5,7 @@
 [![Version](https://img.shields.io/pypi/v/dazzler)](https://pypi.org/project/dazzler/)
 [![License](https://img.shields.io/pypi/l/dazzler)](LICENSE)
 
-Dazzler is a Python async UI/Web framework built with [aiohttp](https://github.com/aio-libs/aiohttp) and react.
+Dazzler is a Python async UI/Web framework built with [Aiohttp](https://github.com/aio-libs/aiohttp) and React.
 Create dazzling fast pages with a layout of Python components and bindings to update from the backend.
 
 ## Install
@@ -33,7 +33,7 @@ Quickstart with a GitHub template
 - [dazzler-electron-template](https://github.com/T4rk1n/dazzler-electron-template)
 - [dazzler-component-template](https://github.com/T4rk1n/dazzler-component-template)
 
-## Basic example
+## Example
 
 Create a page with a layout and assign bindings to save & load a visitor name 
 with the session system. The button to save the visitor name is disabled if
@@ -41,7 +41,7 @@ no input value via tie & transform.
 
 ```python
 from dazzler import Dazzler
-from dazzler.system import Page, BindingContext, transforms as t
+from dazzler.system import Page, BindingContext, CallContext, transforms as t
 from dazzler.components import core
 
 app = Dazzler(__name__)
@@ -76,11 +76,12 @@ async def on_click(context: BindingContext):
 
 # Aspects defined on the layout trigger on initial render and
 # allows to insert initial data.
-@page.bind('id@layout')
-async def on_layout(context: BindingContext):
+# `call` executes via regular requests.
+@page.call('id@layout')
+async def on_layout(context: CallContext):
     visitor = await context.session.get('visitor')
     if visitor:
-        await context.set_aspect(
+        context.set_aspect(
             'visitor-name', children=f'Welcome back {visitor}!'
         )
 

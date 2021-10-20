@@ -197,6 +197,12 @@ class BoundAspect:
 
 
 class BaseContext:
+    """
+    The context in which the bound function execute.
+
+    :type auth: dazzler.system.auth.DazzlerAuth
+    :type user: dazzler.system.auth.User
+    """
     def __init__(
         self,
         identity: str,
@@ -216,10 +222,10 @@ class BaseContext:
 
 class BindingContext(BaseContext):
     """
-    The context in which the bound function execute.
+    Context used by websockets binding, ``@page.bind``).
 
-    :type auth: dazzler.system.auth.DazzlerAuth
-    :type user: dazzler.system.auth.User
+    Can request aspects from the frontend and interact with
+    the ``WebStorage`` api.
     """
     def __init__(
             self,
@@ -402,6 +408,9 @@ def coerce_binding(value, binding_type: typing.Type = Trigger):
 
 
 class CallContext(BaseContext):
+    """
+    Context of a call binding is used to set aspects on a request.
+    """
     def __init__(
         self,
         identity: str,
