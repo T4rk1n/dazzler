@@ -60,6 +60,11 @@ type Aspect = {
     aspect: string;
 };
 
+type RegAspect = {
+    identity: string | RegExp;
+    aspect: string | RegExp;
+};
+
 type BindType = Aspect & {
     regex: boolean;
 };
@@ -73,6 +78,7 @@ type Binding = {
     states: BindType[];
     regex?: boolean;
     value?: any;
+    call?: boolean;
 };
 
 type EvolvedBindType = Trigger & {
@@ -80,7 +86,7 @@ type EvolvedBindType = Trigger & {
     aspect: RegExp;
 };
 
-type EvolvedBinding = {
+type EvolvedBinding = Binding & {
     trigger: EvolvedBindType;
     states: BindType[];
     value?: any;
@@ -108,14 +114,20 @@ type Tie = Binding & {
     targets: Aspect[];
 };
 
+type EvolvedTie = Tie & {
+    trigger: EvolvedBindType;
+};
+
+type Ties = Tie | EvolvedTie;
+
 type UpdaterState = {
     layout?: DryDazzlerComponent;
     page: string;
     bindings: {[key: string]: Binding};
     rebindings: EvolvedBinding[];
-    packages: Package[];
+    packages: {[k: string]: Package};
     requirements: Requirement[];
-    ties: Tie[];
+    ties: Ties[];
     reload: boolean;
     reloading: boolean;
     needRefresh: boolean;
@@ -138,4 +150,20 @@ type XhrRequestOptions = {
     headers?: AnyDict;
     payload?: string | Blob | ArrayBuffer | object | Array<any>;
     json?: boolean;
+};
+
+type ApiFunc = <T>(path: string, options?: XhrRequestOptions) => Promise<T>;
+
+type PageApiResponse = {
+    page: string;
+    layout: any;
+    bindings: Binding[];
+    packages: Record<string, Package>;
+    requirements: Requirement[];
+    ties: Tie[];
+    reload?: boolean;
+};
+
+type CallOutput = {
+    output: {[k: string]: AnyDict};
 };

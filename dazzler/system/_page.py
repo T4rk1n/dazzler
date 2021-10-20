@@ -137,6 +137,31 @@ class Page:
             ]
         }
 
+    def _bind(
+        self,
+        trigger: typing.Union[Trigger, str],
+        *states: typing.Union[State, str],
+        once: bool = False,
+        call: bool = False,
+    ):
+        trg = coerce_binding(trigger)
+        sts = coerce_binding(list(states), State)
+
+        if isinstance(trg, list):
+            for t in trg:
+                t.once = once
+        elif trg.once is None:
+            trg.once = once
+
+        def _wrapper(func):
+            binding = Binding(trg, sts, call)(func)
+            self.bindings.append(binding)
+            for trig in binding.triggers:
+                self._bindings[str(trig)] = binding
+            return func
+
+        return _wrapper
+
     def bind(
             self,
             trigger: typing.Union[Trigger, str],
@@ -151,23 +176,7 @@ class Page:
         :param once: Execute the binding only once
         :return:
         """
-        trg = coerce_binding(trigger)
-        sts = coerce_binding(list(states), State)
-
-        if isinstance(trg, list):
-            for t in trg:
-                t.once = once
-        elif trg.once is None:
-            trg.once = once
-
-        def _wrapper(func):
-            binding = Binding(trg, sts)(func)
-            self.bindings.append(binding)
-            for trig in binding.triggers:
-                self._bindings[str(trig)] = binding
-            return func
-
-        return _wrapper
+        return self._bind(trigger, *states, once=once)
 
     def get_binding(self, key) -> BoundAspect:
         """
@@ -247,6 +256,17 @@ class Page:
         tied = TiedTransform(trig, targ)
         self._ties.append(tied)
         return tied
+
+    def call(
+        self,
+        trigger: typing.Union[Trigger, str],
+        *states: typing.Union[State, str],
+        once: bool = False,
+    ):
+        """
+        A binding that execute via traditional request.
+        """
+        return self._bind(trigger, *states, once=once, call=True)
 
     def __str__(self):
         return f'{self.name}@{self.url}'

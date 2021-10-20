@@ -10,6 +10,7 @@ import aiohttp
 from aiohttp import web, WSCloseCode
 
 from .system import Page, UNDEFINED, Route, filter_dev_requirements
+from .system._component import prepare_aspects
 
 from .tools import replace_all, format_tag, transform_dict_keys
 from ._renderer import package as renderer
@@ -74,7 +75,7 @@ class Server:
             web.get(
                 f'{prefix}/dazzler/electron-config',
                 self._apply_middleware(self.route_get_electron_config)
-            )
+            ),
         ] + [
             x.method.get_method()(
                 x.path, self._apply_middleware(x.handler), name=x.name
@@ -312,6 +313,14 @@ class Server:
                 for page in self.dazzler.pages.values()
                 if page.name in config.electron.windows
             ]
+        })
+
+    async def route_call(self, request: web.Request, page: Page):
+        data = await request.json()
+        binding = page.get_binding(data['key'])
+        ctx = await binding(request, data, None, None, None)
+        return web.json_response({
+            'output': prepare_aspects(ctx._output),
         })
 
     async def start(

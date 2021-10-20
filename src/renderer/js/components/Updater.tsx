@@ -18,15 +18,20 @@ import {
     dissoc,
     zip,
     all,
+    toPairs,
+    values as rValues,
 } from 'ramda';
 import {executeTransform} from '../transforms';
 import {
     Binding,
     BoundComponents,
+    CallOutput,
     EvolvedBinding,
+    ApiFunc,
     Tie,
     UpdaterProps,
     UpdaterState,
+    PageApiResponse,
 } from '../types';
 import {getAspectKey, isSameAspect} from '../aspects';
 
@@ -34,7 +39,7 @@ export default class Updater extends React.Component<
     UpdaterProps,
     UpdaterState
 > {
-    private pageApi: Function;
+    private pageApi: ApiFunc;
     private readonly boundComponents: BoundComponents;
     private ws: WebSocket;
 
@@ -45,7 +50,7 @@ export default class Updater extends React.Component<
             ready: false,
             page: null,
             bindings: {},
-            packages: [],
+            packages: {},
             reload: false,
             rebindings: [],
             requirements: [],
@@ -172,7 +177,7 @@ export default class Updater extends React.Component<
             } else {
                 const removableBindings = [];
                 bindings.forEach((binding) => {
-                    this.sendBinding(binding, binding.value);
+                    this.sendBinding(binding, binding.value, binding.call);
                     if (binding.trigger.once) {
                         removableBindings.push(binding);
                     }
@@ -312,7 +317,7 @@ export default class Updater extends React.Component<
         }
     }
 
-    sendBinding(binding, value) {
+    sendBinding(binding, value, call = false) {
         // Collect all values and send a binding payload
         const trigger = {
             ...binding.trigger,
@@ -363,7 +368,33 @@ export default class Updater extends React.Component<
             page: this.state.page,
             key: binding.key,
         };
-        this.ws.send(JSON.stringify(payload));
+        if (call) {
+            this.callBinding(payload);
+        } else {
+            this.ws.send(JSON.stringify(payload));
+        }
+    }
+
+    callBinding(payload) {
+        this.pageApi<CallOutput>('', {
+            method: 'PATCH',
+            payload,
+            json: true,
+        }).then((response) => {
+            toPairs(response.output).forEach(([identity, aspects]) => {
+                const component = this.boundComponents[identity];
+                if (component) {
+                    component.updateAspects(
+                        hydrateProps(
+                            aspects,
+                            this.updateAspects,
+                            this.connect,
+                            this.disconnect
+                        )
+                    );
+                }
+            });
+        });
     }
 
     _connectWS() {
@@ -407,7 +438,7 @@ export default class Updater extends React.Component<
     }
 
     componentDidMount() {
-        this.pageApi('', {method: 'POST'}).then((response) => {
+        this.pageApi<PageApiResponse>('', {method: 'POST'}).then((response) => {
             const toRegex = (x) => new RegExp(x);
             this.setState(
                 {
@@ -428,6 +459,7 @@ export default class Updater extends React.Component<
                     }, keys(pickBy((b) => b.regex, response.bindings))),
                     packages: response.packages,
                     requirements: response.requirements,
+                    // @ts-ignore
                     ties: map((tie) => {
                         if (tie.trigger.regex) {
                             return evolve(
@@ -448,7 +480,12 @@ export default class Updater extends React.Component<
                         response.requirements,
                         response.packages
                     ).then(() => {
-                        if (keys(response.bindings).length || response.reload) {
+                        if (
+                            response.reload ||
+                            rValues(response.bindings).filter(
+                                (binding: Binding) => !binding.call
+                            ).length
+                        ) {
                             this._connectWS();
                         } else {
                             this.setState({ready: true});
