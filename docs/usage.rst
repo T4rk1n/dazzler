@@ -151,13 +151,13 @@ Bound functions takes a context argument that is used to ``set`` aspects
 and access to the session and user systems.
 
 - :py:meth:`~.dazzler.system.Page.bind` executes updates via websockets, it
-allows for two-ways communication and long running functions.
-The :py:class:`~.dazzler.system.BindingContext` can be used to ``get`` other
-component aspects in real time from the frontend.
-It can also be used to access the ``WebStorage`` of the browser.
+  allows for two-ways communication and long running functions.
+  The :py:class:`~.dazzler.system.BindingContext` can be used to ``get`` other
+  component aspects in real time from the frontend.
+  It can also be used to access the ``WebStorage`` of the browser.
 - :py:meth:`~.dazzler.system.Page.call` is a regular request update.
-:py:class:`~.dazzler.system.CallContext` can only ``set`` aspects, states can
-be used if other aspects are required.
+  :py:class:`~.dazzler.system.CallContext` can only ``set`` aspects, states can
+  be used if other aspects are required.
 
 Examples
 ^^^^^^^^
@@ -298,17 +298,6 @@ Using transforms to apply styles conditionally
     - :py:mod:`dazzler.system.transforms` - API reference.
     - :ref:`transforms_example` - Example of most transforms usage.
 
-Configuration File
-==================
-
-Generate an empty configuration file at the root of the project:
-
-``$ dazzler dump-configs dazzler.toml``
-
-.. literalinclude:: ./dazzler.toml
-    :caption: dazzler.toml
-    :name: default-config
-
 Session
 =======
 
@@ -358,3 +347,14 @@ Also available via the request object for regular routes.
     @page.route('/my-route')
     async def my_route(request):
         my_value = await request['session'].get('my_value')
+
+Configuration File
+==================
+
+Generate an empty configuration file at the root of the project:
+
+``$ dazzler dump-configs dazzler.toml``
+
+.. literalinclude:: ./dazzler.toml
+    :caption: dazzler.toml
+    :name: default-config
