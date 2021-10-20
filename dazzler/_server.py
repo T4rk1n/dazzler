@@ -294,6 +294,10 @@ class Server:
 
     async def route_get_electron_config(self, request: web.Request):
         config = self.dazzler.config
+        pages = list(self.dazzler.pages.values())
+        windows = config.electron.windows
+        if not config.electron.windows and len(pages) == 1:
+            windows = [pages[0].name]
         return web.json_response({
             'window_size': {
                 'width': config.electron.window_size.width,
@@ -310,8 +314,7 @@ class Server:
                         page.electron_window
                     )
                 }
-                for page in self.dazzler.pages.values()
-                if page.name in config.electron.windows
+                for page in pages if page.name in windows
             ]
         })
 
