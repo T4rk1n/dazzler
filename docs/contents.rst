@@ -1,18 +1,21 @@
 .. _toc:
 
-Full dazzler documentation
-==========================
+Dazzler documentation
+=====================
 
 .. toctree::
    :maxdepth: 6
 
    usage
+   components
+   configuration
    commands
-   component_list
    deployment
    electron
    examples/index
    api/modules
+   contributing
+   changelog
 
 .. only:: html
 

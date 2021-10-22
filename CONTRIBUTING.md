@@ -1,4 +1,4 @@
-# Contributing to Dazzler
+# Contributing
 
 ## Getting Started
 

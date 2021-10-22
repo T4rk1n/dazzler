@@ -1,0 +1,3 @@
+:orphan:
+
+.. mdinclude:: ../CONTRIBUTING.md

@@ -1,5 +1,5 @@
-dazzler
-=======
+Reference
+=========
 
 .. toctree::
    :maxdepth: 6

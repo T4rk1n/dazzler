@@ -1,0 +1,38 @@
+{% extends '!layout.html' %}
+
+{% block site_nav %}
+  <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+    <div class="md-sidebar__scrollwrap">
+      <div class="md-sidebar__inner">
+        <nav class="md-nav md-nav--primary" data-md-level="0">
+          <label class="md-nav__title md-nav__title--site" for="__drawer">
+            <a href="{{ pathto('index')|e }}" title="{{ docstitle|striptags|e }}" class="md-nav__button md-logo">
+              {% if theme_logo_icon %}
+                <i class="md-icon">{{ theme_logo_icon }}</i>
+              {% else %}
+                <img src="{{ pathto('_static/' ~ logo, 1) }}" alt="{{ html_title }} logo" width="48" height="48">
+              {% endif %}
+            </a>
+            <a href="{{ pathto('index')|e }}"
+               title="{{ docstitle|striptags|e }}">{{ theme_nav_title or shorttitle }}</a>
+          </label>
+          {%- if theme_repo_url %}
+            <div class="md-nav__source">
+              {% include "repo.html" %}
+            </div>
+          {% endif %}
+          {% include "globaltoc.html" %}
+        </nav>
+      </div>
+    </div>
+  </div>
+  <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+    <div class="md-sidebar__scrollwrap">
+      <div class="md-sidebar__inner">
+        {% include "localtoc.html" %}
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+

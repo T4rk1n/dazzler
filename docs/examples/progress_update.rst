@@ -3,7 +3,7 @@
 Progress Update
 ===============
 
-Using :py:meth:`~.dazzler.BindingContext.create_task` and
+Using :py:meth:`~.dazzler.BindingContext.create_task`
 to send live updates in the background to update a
 :py:class:`~.dazzler.components.core.ProgressBar` value.
 
