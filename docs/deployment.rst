@@ -1,7 +1,7 @@
 .. _deployment:
 
-Deployment Guide
-================
+Deployment
+==========
 
 As dazzler is based on `aiohttp <https://docs.aiohttp.org/en/stable/>`_,
 it has the same deployments options found on the

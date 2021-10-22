@@ -48,8 +48,8 @@ class Dazzler(precept.Precept):  # pylint: disable=too-many-instance-attributes
 
     :Commands:
 
-        - ``dazzler --root application``, start an application.
-        - ``dazzler generate components_metadata.json output_dir``
+        - ``dazzler --application app``, start an application.
+        - ``dazzler generate path/to/components output_dir``
         - ``dazzler copy-requirements -p dazzler_core -p dazzler_extra``
     """
     config: DazzlerConfig
@@ -142,7 +142,7 @@ class Dazzler(precept.Precept):  # pylint: disable=too-many-instance-attributes
             # When running from the command line need to insert the path.
             # Otherwise it will never find it.
             sys.path.insert(0, '.')
-            module = importlib.import_module(application)
+            module = importlib.import_module(application or 'app')
 
             app: typing.Optional[Dazzler] = None
 

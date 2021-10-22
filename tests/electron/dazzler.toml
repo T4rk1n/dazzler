@@ -5,9 +5,6 @@ port_range = true
 enable = false
 
 [electron]
-windows = [
-    "main"
-]
 save_window_size = false
 
 [electron.metadata]

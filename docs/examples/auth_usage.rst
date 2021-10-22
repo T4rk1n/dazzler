@@ -3,8 +3,6 @@
 Auth Usage
 ==========
 
-.. contents::
-
 The auth system of dazzler provide components and routes to integrate
 with your authentication protocol. Pages marked as ``require_login`` will
 show a login page if not authenticated.

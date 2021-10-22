@@ -6,12 +6,19 @@ page = Page(
     core.Container([
         core.Container('Theme transform'),
         core.Container(identity='mode'),
-        core.Dropdown(
-            options=['light', 'dark'],
-            value='light',
-            identity='theme-dropdown',
-            style={'width': '300px'}
-        ),
+        core.Box([
+            core.Text(
+                'Choose theme: ',
+                font_weight='bold',
+                align_self='center'
+            ),
+            core.Dropdown(
+                options=['light', 'dark'],
+                value='light',
+                identity='theme-dropdown',
+                style={'width': '300px'}
+            ),
+        ]),
     ], identity='layout', style={'height': '100vh'})
 )
 

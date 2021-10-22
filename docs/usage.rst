@@ -2,8 +2,6 @@
 Usage
 *****
 
-.. contents::
-
 Install
 =======
 
@@ -14,24 +12,27 @@ Install with pip:
 Getting started
 ===============
 
-Start by creating the directory structure of the project, usually the main
+Create the directory structure of the project, usually the main
 application file will be on the root project and the code/pages will be
 in a package.
 
+Pages inside the  to the config ``page_directory``
+
 **Example project structure:**
 
-- ``application.py``
-- ``/my_package``
-    - ``__init__.py``
-    - ``/pages``
-        - ``__init__.py``
-        - ``/requirements``
-            - ``styles.css``
-        - ``my_page.py``
+.. code-block:: text
+
+    app.py
+    dazzler.toml
+    /pages
+        __init__.py
+        /requirements
+            styles.css
+        my_page.py
 
 
 .. code-block:: python
-    :caption: application.py
+    :caption: app.py
 
     from dazzler import Dazzler
 
@@ -43,6 +44,10 @@ in a package.
     if __name__ == '__main__':
         # Start the development server.
         app.start()
+
+.. tip::
+    Quickstart with a github template
+    https://github.com/T4rk1n/dazzler-app-template
 
 Pages
 -----
@@ -152,20 +157,34 @@ and access to the session and user systems.
 
 - :py:meth:`~.dazzler.system.Page.bind` executes updates via websockets, it
   allows for two-ways communication and long running functions.
-  The :py:class:`~.dazzler.system.BindingContext` can be used to ``get`` other
+  The :py:class:`~.dazzler.system.BindingContext` is used to ``get`` other
   component aspects in real time from the frontend.
   It can also be used to access the ``WebStorage`` of the browser.
 - :py:meth:`~.dazzler.system.Page.call` is a regular request update.
   :py:class:`~.dazzler.system.CallContext` can only ``set`` aspects, states can
   be used if other aspects are required.
 
+Short Identifier
+^^^^^^^^^^^^^^^^
+
+Components properties can be specified as a simple string to use as trigger or
+state for
+:py:meth:`~.dazzler.system.Page.bind`,
+:py:meth:`~.dazzler.system.Page.call` or
+:py:meth:`~.dazzler.system.Page.tie`.
+
+Syntax: ``<aspect>@<identity>`` -> ``clicks@btn``
+
 Examples
 ^^^^^^^^
+
+Binding
+"""""""
 
 Update a container on click of a button.
 
 .. code-block:: python
-    :caption: my_package.pages.bound_page.py
+    :caption: pages/bound_page.py
 
     from dazzler.system import Page, Trigger
     from dazzler.components import core
@@ -178,22 +197,19 @@ Update a container on click of a button.
 
     page = Page(__name__, layout)
 
-    @page.bind(Trigger('btn', 'clicks'))
+    @page.bind('clicks@btn')
     async def on_click(ctx):
         name = await ctx.get_aspect('input', 'value')
         await ctx.set_aspect('output', children=f'Hello {name}')
 
-
-Regex bindings can be used as trigger/states for identity and aspect.
-
-.. literalinclude:: ../tests/apps/pages/regex_bindings.py
-    :lines: 5-42
+Call
+""""
 
 Calls can only ``set`` aspects synchronously once the bound function
 has finished.
 
 .. code-block:: python
-    :caption: pages.calls.py
+    :caption: pages/calls.py
 
     from dazzler.system import Page, CallContext
     from dazzler.components.core import Box, Button, Form, Text, Input
@@ -234,6 +250,14 @@ has finished.
             )
         )
 
+Regex Identifier
+""""""""""""""""
+
+Regex bindings can be used as trigger/states for identity and aspect. Any
+trigger matching will be executed.
+
+.. literalinclude:: ../tests/apps/pages/regex_bindings.py
+    :lines: 5-42
 
 Ties & Transforms
 -----------------
@@ -289,8 +313,13 @@ from a :py:class:`~.dazzler.components.core.Dropdown` value.
     page.tie('value@dropdown', 'active@viewport')
 
 
-Using transforms to apply styles conditionally
-""""""""""""""""""""""""""""""""""""""""""""""
+Transform tied values
+"""""""""""""""""""""
+
+Use :py:class:`~.dazzler.system.transforms.Transform`'s to change the tied
+trigger value.
+
+Switch between a light and dark theme:
 
 .. literalinclude:: ../tests/apps/pages/theme_transform.py
 
@@ -316,9 +345,9 @@ Session Methods
 
 Three operation can be done on key value pairs:
 
-- get
-- set
-- delete
+- :py:meth:`~.dazzler.system.session.Session.get`
+- :py:meth:`~.dazzler.system.session.Session.set`
+- :py:meth:`~.dazzler.system.session.Session.delete`
 
 .. seealso::
 
@@ -347,14 +376,3 @@ Also available via the request object for regular routes.
     @page.route('/my-route')
     async def my_route(request):
         my_value = await request['session'].get('my_value')
-
-Configuration File
-==================
-
-Generate an empty configuration file at the root of the project:
-
-``$ dazzler dump-configs dazzler.toml``
-
-.. literalinclude:: ./dazzler.toml
-    :caption: dazzler.toml
-    :name: default-config

@@ -4,7 +4,7 @@ Examples
 ========
 
 .. toctree::
-    :maxdepth: 2
+    :maxdepth: 1
 
     click_output
     shared_bindings
@@ -12,3 +12,4 @@ Examples
     auth_usage
     chatroom
     transforms
+    electron_app

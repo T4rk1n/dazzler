@@ -5,8 +5,9 @@
 [![Version](https://img.shields.io/pypi/v/dazzler)](https://pypi.org/project/dazzler/)
 [![License](https://img.shields.io/pypi/l/dazzler)](LICENSE)
 
-Dazzler is a Python async UI/Web framework built with [Aiohttp](https://github.com/aio-libs/aiohttp) and React.
-Create dazzling fast pages with a layout of Python components and bindings to update from the backend.
+Dazzler is a hybrid UI framework for Python to create Desktop or Web Applications.
+
+Built with [Aiohttp](https://github.com/aio-libs/aiohttp), [React](https://github.com/facebook/react) and [Electron](https://github.com/electron/electron).
 
 ## Install
 
@@ -15,15 +16,10 @@ Install with pip: `$ pip install dazzler`
 ## Features
 
 - Fast WebSocket based communication, deliver updates in realtime to thousands of connected clients at once.
-- Lightweight bundles for fast initial page load.
+- Build desktop applications with Electron.
 - Support for third party integrations via middlewares.
 - Session & authentication systems.
-- No HTML/CSS/JS knowledge required, write everything with Python.
-- Multi-page based.
-- Hot reload.
-- Tons of components.
 - Tie & Transform API to perform updates on the client side.
-- Build desktop applications with Electron.
 
 ## Quickstart
 

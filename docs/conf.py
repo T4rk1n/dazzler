@@ -23,7 +23,7 @@ from dazzler._version import __version__ as version
 
 # -- Project information -----------------------------------------------------
 
-project = ''
+project = 'Dazzler'
 copyright = '2021, Philippe Duval'
 author = 'Philippe Duval'
 
@@ -80,13 +80,30 @@ pygments_style = 'friendly'
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = 'flask'
+html_theme = 'sphinx_material'
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
 # documentation.
 #
-html_theme_options = {'index_logo': None}
+
+html_title = project
+html_theme_options = {
+    'nav_title': project,
+    'color_primary': 'blue',
+    'color_accent': 'light-blue',
+
+    'repo_url': 'https://github.com/T4rk1n/dazzler',
+    'repo_name': project,
+
+    'logo_icon': '&#xe869',
+
+    # Visible levels of the global TOC; -1 means unlimited
+    'globaltoc_depth': 2,
+    # If False, expand all TOC entries
+    'globaltoc_collapse': True,
+    'master_doc': False,
+}
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
@@ -100,13 +117,10 @@ html_static_path = ['_static']
 # defined by theme itself.  Builtin themes are using these templates by
 # default: ``['localtoc.html', 'relations.html', 'sourcelink.html',
 # 'searchbox.html']``.
-#
+
 html_sidebars = {
     "**": [
-        "globaltoc.html",
-        "relations.html",
-        "links.html",
-        "searchbox.html",
+        "logo-text.html", "globaltoc.html", "localtoc.html", "searchbox.html"
     ]
 }
 
@@ -218,11 +232,12 @@ def setup(app):
 
     dazz.start(['dump-configs', 'dazzler.toml'])
 
-    results = '.. component_list:\n\nComponents\n==========\n\n'
+    results = '.. component_list:\n\nOfficial Components' \
+              '\n===================\n\n'
 
     # Generate a component list
     for package in [
-        'core', 'extra', 'calendar', 'markdown', 'auth', 'icons'
+        'core', 'extra', 'electron', 'calendar', 'markdown', 'auth', 'icons'
     ]:
         results += f'- :py:mod:`~.dazzler.components.{package}`\n\n'
 

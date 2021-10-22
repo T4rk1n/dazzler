@@ -4,7 +4,8 @@ Electron
 
 Create desktop applications with Dazzler and `Electron <https://www.electronjs.org/>`_.
 
-.. contents::
+.. tip::
+    Quickstart with a Github template: https://github.com/T4rk1n/dazzler-electron-template
 
 Requirements
 ============
@@ -46,6 +47,8 @@ Page Windows
 ------------
 
 To create a window, add a page to ``electron.windows`` with the page name.
+If the application contains only one page, it will automatically create
+a window for it.
 
 .. code-block:: toml
 
@@ -87,6 +90,29 @@ Defaults size for all windows can be set with configs:
     height = 600
     fullscreen = false
 
+Window state at runtime
+++++++++++++++++++++++++++++
+
+Use :py:class:`~.dazzler.electron.components.WindowState` to read and control
+the window state after the application has started.
+
+.. code-block:: python
+
+    from dazzler.system import Page
+    from dazzler.components.core import Text, Container
+    from dazzler.components.electron import WindowState
+
+    page = Page(
+        'dazzler_electron',
+        Container([
+            WindowState(identity='window'),
+            Box([Text('Width: '), Text(identity='width-output')])
+        ])
+    )
+
+    page.tie('width@window', 'text@width-output')
+
+
 Save window size
 ^^^^^^^^^^^^^^^^
 
@@ -96,6 +122,17 @@ Save the window size on quit and reload them when re-opening the application.
 
     [electron]
     save_window_size = true
+
+Multiple instances
+^^^^^^^^^^^^^^^^^^
+
+To allow multiple instances of the application, set the ``port_range`` config to
+true to have a new port assigned for each new instances.
+
+.. code-block:: toml
+
+    port = 62895
+    port_range = true
 
 Loading window
 --------------
@@ -186,3 +223,6 @@ If porting an existing web app:
   fetch from them.
 - If loading lot of data on startup, think of putting that inside a binding
   instead so the startup is faster.
+
+.. seealso::
+    - :doc:`../examples/electron_app` example.
