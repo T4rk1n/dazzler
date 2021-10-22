@@ -16,7 +16,7 @@ import precept
 from .system.auth import Authenticator, DazzlerAuth, AuthBackend
 from .tools import get_member
 from .system.session import (
-    SessionMiddleware, FileSessionBackEnd, RedisSessionBackend
+    SessionMiddleware, FileSessionBackEnd
 )
 from .system import (
     Package,
@@ -28,6 +28,7 @@ from .system import (
     Route,
     RouteMethod,
 )
+from .contrib import redis
 from .electron import (
     ElectronBuilder, run_electron, is_compiled, ELECTRON_TARGETS
 )
@@ -500,9 +501,33 @@ class Dazzler(precept.Precept):  # pylint: disable=too-many-instance-attributes
 
         self.auth = DazzlerAuth(self, authenticator, backend=backend)
 
+    async def _enable_session(self):
+        if self.config.session.backend == 'File':
+            backend = FileSessionBackEnd(self)
+        elif self.config.session.backend == 'Redis':
+            _redis = None
+            # Automatically add a middleware if missing.
+            if not any(
+                isinstance(x, redis.RedisMiddleware)
+                for x in self.middlewares
+            ):
+                _redis = await redis.get_redis_pool()
+                self.middlewares.append(
+                    redis.RedisMiddleware(self, _redis))
+            backend = redis.RedisSessionBackend(self, _redis)
+        else:
+            raise SessionError(
+                'No valid session backend defined.\n',
+                'Please choose from "File" or "Redis"'
+            )
+
+        self.middlewares.insert(
+            0, SessionMiddleware(self, backend=backend)
+        )
+
     async def _handle_configs(self):
         # Gather pages in the pages directory
-        # FIXME pages_directory support for
+        # FIXME pages_directory support for electron
         if os.path.exists(self.config.pages_directory) and not is_compiled():
             self.logger.debug(
                 f'Adding pages from : {self.config.pages_directory}'
@@ -544,20 +569,7 @@ class Dazzler(precept.Precept):  # pylint: disable=too-many-instance-attributes
             self.requirements.append(Requirement(internal=internal))
 
         if self.config.session.enable:
-
-            if self.config.session.backend == 'File':
-                backend = FileSessionBackEnd(self)
-            elif self.config.session.backend == 'Redis':
-                backend = RedisSessionBackend(self)
-            else:
-                raise SessionError(
-                    'No valid session backend defined.\n',
-                    'Please choose from "File" or "Redis"'
-                )
-
-            self.middlewares.insert(
-                0, SessionMiddleware(self, backend=backend)
-            )
+            await self._enable_session()
 
         if self.config.authentication.enable:
             await self._enable_auth()

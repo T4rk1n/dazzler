@@ -5,9 +5,10 @@ import pytest
 
 from dazzler import Dazzler
 from dazzler.components import core
+from dazzler.contrib.redis import RedisSessionBackend
 from dazzler.system import Page, Trigger, BindingContext
 from dazzler.system.session import (
-    SessionMiddleware, RedisSessionBackend, FileSessionBackEnd
+    SessionMiddleware, FileSessionBackEnd
 )
 
 
