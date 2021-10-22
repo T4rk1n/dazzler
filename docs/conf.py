@@ -226,7 +226,8 @@ def setup(app):
             ('../src/calendar/js/components', '../dazzler/components/calendar', '--ts'),
             ('../src/markdown/js/components', '../dazzler/components/markdown'),
             ('../src/auth/js/components', '../dazzler/components/auth', '--ts'),
-            ('../src/icons/js/components', '../dazzler/components/icons')
+            ('../src/icons/js/components', '../dazzler/components/icons'),
+            ('../src/electron/renderer/components', '../dazzler/components/electron', '--ts')
     ):
         dazz.start(('generate',) + args)
 
