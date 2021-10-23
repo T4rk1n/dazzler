@@ -187,6 +187,8 @@ async def run_reloaded(app, start_event):
     if not stopper.done():
         stopper.cancel()
 
+    return proc.returncode
+
 
 async def start_reloader(app, reloaded=False, start_event=None):
     """
