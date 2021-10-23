@@ -16,6 +16,7 @@ const commonStyles = [
     'font_family',
     'font_size',
     'font_style',
+    'font_weight',
     'text_align',
     'border',
     'border_radius',
