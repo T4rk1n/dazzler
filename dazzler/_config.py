@@ -73,7 +73,8 @@ class DazzlerConfig(Config):
             default=True
         )
         backend = ConfigProperty(
-            comment='Type of session backend to use. Choices: File, Redis',
+            comment='Type of session backend to use.'
+                    ' Choices: File, Redis, PostgreSQL',
             default='File',
             config_type=str,
         )

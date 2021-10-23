@@ -13,6 +13,7 @@ from concurrent.futures import ThreadPoolExecutor
 import appdirs
 import precept
 
+from .events import DAZZLER_START, DAZZLER_STOP, DAZZLER_SETUP
 from .system.auth import Authenticator, DazzlerAuth, AuthBackend
 from .tools import get_member
 from .system.session import (
@@ -28,7 +29,7 @@ from .system import (
     Route,
     RouteMethod,
 )
-from .contrib import redis
+from .contrib import redis, postgresql
 from .electron import (
     ElectronBuilder, run_electron, is_compiled, ELECTRON_TARGETS
 )
@@ -200,7 +201,7 @@ class Dazzler(precept.Precept):  # pylint: disable=too-many-instance-attributes
         # Copy all requirements to make sure all is latest.
         await self.copy_requirements()
 
-        await self.events.dispatch('dazzler_setup', application=self)
+        await self.events.dispatch(DAZZLER_SETUP, application=self)
 
         # Add package defined routes
         routes = [x.routes for x in Package.package_registry.values()]
@@ -456,11 +457,11 @@ class Dazzler(precept.Precept):  # pylint: disable=too-many-instance-attributes
         return hot
 
     async def _on_startup(self, _):
-        await self.events.dispatch('dazzler_start', application=self)
+        await self.events.dispatch(DAZZLER_START, application=self)
 
     async def _on_shutdown(self, _):
         self.stop_event.set()
-        await self.events.dispatch('dazzler_stop', application=self)
+        await self.events.dispatch(DAZZLER_STOP, application=self)
 
     async def _enable_auth(self):
         self.logger.debug('Enabling authentication system')
@@ -515,10 +516,26 @@ class Dazzler(precept.Precept):  # pylint: disable=too-many-instance-attributes
                 self.middlewares.append(
                     redis.RedisMiddleware(self, _redis))
             backend = redis.RedisSessionBackend(self, _redis)
+        elif self.config.session.backend == 'PostgreSQL':
+            pool = None
+            pg_config = postgresql.PostgresConfig()
+            if os.path.exists(self.config_path):
+                pg_config.read_file(self.config_path)
+
+            if not any(
+                isinstance(x, postgresql.PostgresMiddleware)
+                for x in self.middlewares
+            ):
+                pool = await postgresql.get_postgres_pool(pg_config)
+                self.middlewares.append(
+                    postgresql.PostgresMiddleware(self, pg_config, pool=pool))
+            backend = postgresql.PostgresSessionBackend(
+                self, pg_config, pool
+            )
         else:
             raise SessionError(
                 'No valid session backend defined.\n',
-                'Please choose from "File" or "Redis"'
+                'Please choose from "File", "Redis", "PostgreSQL"'
             )
 
         self.middlewares.insert(

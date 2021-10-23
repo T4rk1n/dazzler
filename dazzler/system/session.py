@@ -132,6 +132,9 @@ class SessionBackEnd:
         """
         raise NotImplementedError
 
+    async def on_new_session(self, session_id: str):
+        """Called when a new session is created. Override to handle."""
+
 
 class FileSessionBackEnd(SessionBackEnd):
     """
@@ -229,51 +232,6 @@ class FileSessionBackEnd(SessionBackEnd):
                 os.remove(path)
 
 
-class RedisSessionBackend(SessionBackEnd):
-    """
-    Backed by aioredis.
-
-    Values are serialized to json first to keep the types.
-
-    Install with ``pip install dazzler[redis]``
-
-    :seealso: https://aioredis.readthedocs.io/
-    """
-
-    def __init__(self, app):
-        super().__init__(app)
-        self.redis = None
-        app.events.subscribe('dazzler_setup', self._setup)
-
-    async def _setup(self, _):
-        import aioredis
-        self.redis = await aioredis.create_redis_pool(
-            os.getenv('REDIS_URL', 'redis://localhost:6379')
-        )
-
-    async def set(self, session_id: str, key: str, value: Any):
-        transaction = self.redis.multi_exec()
-        # Serialize to keep the type.
-        transaction.hset(session_id, key, json.dumps({'v': value}))
-        transaction.expire(
-            session_id, self.app.config.session.duration
-        )
-        await transaction.execute()
-
-    async def get(self, session_id: str, key: str):
-        if not await self.redis.hexists(session_id, key):
-            return UNDEFINED
-        data = await self.redis.hget(session_id, key)
-        await self.redis.expire(
-            session_id, self.app.config.session.duration
-        )
-        data = json.loads(data)
-        return data['v']
-
-    async def delete(self, session_id: str, key: str):
-        await self.redis.hdel(session_id, key)
-
-
 class SessionMiddleware(Middleware):
     """
     Insert session objects into requests.
@@ -325,11 +283,16 @@ class SessionMiddleware(Middleware):
                 await self._backend.delete(session_id, key)
 
     def _set_session(self, session_id: str = None):
-        session_id = session_id or uuid.uuid4().hex
+        new_session = False
+        if not session_id:
+            session_id = uuid.uuid4().hex
+            new_session = True
 
         created = base64.b64encode(str(int(time.time())).encode()).decode()
 
         async def set_cookie(response):
+            if new_session:
+                await self._backend.on_new_session(session_id)
             response.set_cookie(
                 self.app.config.session.cookie_name,
                 self.signer.sign(f'{session_id}#{created}').decode(),

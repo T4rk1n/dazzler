@@ -1,0 +1,14 @@
+secret_key = 'dazzler-secret-key'
+
+[session]
+backend = 'PostgreSQL'
+
+[postgres]
+dsn = 'host=localhost port=5432 dbname=t4rkdb'
+
+[postgres.session]
+schema_name = 'dazzler'
+
+[postgres.middleware]
+app_key = 'db'
+request_key = 'db'
