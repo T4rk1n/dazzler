@@ -663,7 +663,7 @@ async def test_text(start_page, browser):
     await start_page(page)
     await browser.wait_for_text_to_equal('#foo-bar', 'Foo Bar')
     await browser.wait_for_style_to_equal(
-        '#bold', 'font-weight', '400'
+        '#bold', 'font-weight', '700'
     )
     await browser.wait_for_style_to_equal(
         '#italic', 'font-style', 'italic'
