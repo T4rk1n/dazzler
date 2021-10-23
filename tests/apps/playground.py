@@ -7,11 +7,11 @@ from tests.components.pages import checklist, store, html, interval, \
     input_output, radio, link, viewport, progress, select, button, slider, \
     modal, textarea, table, grid, form, markdown, calendar, pager, extras, \
     login, list_box, treeview, dropdown, page_map, icons, ts, text,\
-    checkbox, common_styles, switch, color_picker
+    checkbox, common_styles, switch, color_picker, panel
 from tests.apps.samples import progress_update
 
 app = Dazzler(__name__)
-# app.config.session.backend = 'Redis'
+app.config.session.backend = 'Redis'
 app.config.development.reload_threshold = 5.0
 
 pages = [
@@ -61,6 +61,7 @@ pages = [
     color_picker.page,
     once.page,
     calls.page,
+    panel.page,
 ]
 
 app.add_page(*pages)

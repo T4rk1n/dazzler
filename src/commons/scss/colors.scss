@@ -33,3 +33,14 @@ $dark-dark: #393939;
 $darker: #2a2a2a;
 $darker-light: #333333;
 $darker-dark: #232323;
+
+$color_names: primary primary-light primary-dark secondary secondary-light
+    secondary-dark tertiary tertiary-light tertiary-dark danger danger-light
+    danger-dark warning warning-light warning-dark success success-light
+    success-dark neutral neutral-light neutral-dark dark dark-light dark-dark
+    darker darker-light darker-dark;
+$all_colors: $primary $primary-light $primary-dark $secondary $secondary-light
+    $secondary-dark $tertiary $tertiary-light $tertiary-dark $danger
+    $danger-light $danger-dark $warning $warning-light $warning-dark $success
+    $success-light $success-dark $neutral $neutral-light $neutral-dark $dark
+    $dark-light $dark-dark $darker $darker-light $darker-dark;

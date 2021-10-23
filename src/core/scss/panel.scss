@@ -1,0 +1,73 @@
+.dazzler-core-panel {
+  margin: 4px;
+  &.expandable {
+    box-sizing: border-box;
+    position: relative;
+    .panel-content {
+      position: absolute;
+      box-sizing: border-box;
+      width: 100%;
+      transition: transform 0.3s ease-out;
+      transform: scale(1, 0);
+      transform-origin: top;
+      z-index: 100;
+    }
+    &.expanded {
+      .panel-content {
+        transform: scale(1, 1);
+        position: static;
+      }
+    }
+    .panel-title {
+      display: flex;
+      justify-content: space-between;
+    }
+  }
+  .panel-title {
+    background-color: $neutral;
+    padding: 0.25rem;
+  }
+  .panel-content {
+    padding: 0.25rem;
+    border: 1px $neutral-dark solid;
+    border-top: none;
+    background: white;
+  }
+
+  .panel-toggle {
+    width: 1rem;
+    height: 1rem;
+    text-align: center;
+    user-select: none;
+    cursor: pointer;
+  }
+
+  &.dazzler-rounded {
+    .panel-content {
+      border-radius: 0 0 3px 3px;
+    }
+    .panel-title {
+      border-radius: 3px 3px 0 0;
+    }
+  }
+}
+
+@for $i from 1 to 28 {
+  .dazzler-core-panel {
+    &.panel-title-color-#{nth($color_names, $i)} {
+      div.panel-title {
+        color: nth($all_colors, $i);
+      }
+    }
+    &.panel-title-background-#{nth($color_names, $i)} {
+      div.panel-title {
+        background-color: nth($all_colors, $i);
+      }
+    }
+    &.dazzler-preset-background-#{nth($color_names, $i)} {
+      div.panel-content {
+        background-color: nth($all_colors, $i);
+      }
+    }
+  }
+}
