@@ -9,26 +9,24 @@ __all__ = [
 
 
 # noinspection PyProtectedMember
+def prepare_aspect(value):
+    if value is not UNDEFINED:
+        if isinstance(value, Component):
+            return value._prepare()
+        elif isinstance(value, (list, tuple)):
+            return [prepare_aspect(y) for y in value]
+        elif isinstance(value, dict):
+            return prepare_aspects(value)
+        else:
+            return value
+
+
+# noinspection PyProtectedMember
 def prepare_aspects(aspects: dict):
     data = {}
     for aspect, value in aspects.items():
         if value is not UNDEFINED:
-            if isinstance(value, Component):
-                data[aspect] = value._prepare()
-            elif isinstance(value, (list, tuple)):
-                new_value = []
-                for x in value:
-                    if isinstance(x, Component):
-                        new_value.append(x._prepare())
-                    elif isinstance(x, dict):
-                        new_value.append(prepare_aspects(x))
-                    else:
-                        new_value.append(x)
-                data[aspect] = new_value
-            elif isinstance(value, dict):
-                data[aspect] = prepare_aspects(value)
-            else:
-                data[aspect] = value
+            data[aspect] = prepare_aspect(value)
     return data
 
 
