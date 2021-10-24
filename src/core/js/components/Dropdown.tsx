@@ -1,5 +1,16 @@
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
-import {is, join, includes, concat, without, filter, any, values} from 'ramda';
+import {
+    is,
+    join,
+    includes,
+    concat,
+    without,
+    filter,
+    any,
+    values,
+    indexBy,
+    prop,
+} from 'ramda';
 import {LabelValueAny, LabelValueAnyList, StylableLabelValue} from '../types';
 import {AnyDict, DazzlerProps} from '../../../commons/js/types';
 
@@ -196,11 +207,22 @@ const Dropdown = (props: DDropdownProps) => {
     const [selectedItems, setSelectedItems] = useState<LabelValueAnyList>(
         (): any => {
             if (value) {
-                if (is(String, value)) {
-                    return [{value, label: value}];
+                const indexedOptions = indexBy(
+                    prop('value'),
+                    (options || []).map((e) =>
+                        is(Object, e) ? e : {value: e, label: e}
+                    )
+                );
+                if (is(String, value) || is(Number, value)) {
+                    // @ts-ignore
+                    return [{value, label: indexedOptions[value].label}];
                 }
                 if (is(Array, value)) {
-                    return value;
+                    return (value as Array<any>).map((v) =>
+                        !is(Object, v)
+                            ? {value: v, label: indexedOptions[v].label}
+                            : value
+                    );
                 }
                 if (is(Object, value)) {
                     return [value];
