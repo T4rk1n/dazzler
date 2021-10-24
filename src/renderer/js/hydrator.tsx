@@ -1,4 +1,4 @@
-import {map, omit, type} from 'ramda';
+import {map, omit, toPairs, type} from 'ramda';
 import React from 'react';
 import Wrapper from './components/Wrapper';
 import {AnyDict} from 'commons/js/types';
@@ -19,6 +19,59 @@ export function isComponent(c: any): boolean {
     );
 }
 
+function hydrateProp(
+    value: any,
+    updateAspects: WrapperUpdateAspectFunc,
+    connect: ConnectFunc,
+    disconnect: DisconnectFunc,
+    onContext?: Function
+) {
+    if (type(value) === 'Array') {
+        console.log(value);
+        return value.map((e) => {
+            if (isComponent(e)) {
+                if (!e.aspects.key) {
+                    e.aspects.key = e.identity;
+                }
+            }
+            return hydrateProp(
+                e,
+                updateAspects,
+                connect,
+                disconnect,
+                onContext
+            );
+        });
+    } else if (isComponent(value)) {
+        const newProps = hydrateProps(
+            value.aspects,
+            updateAspects,
+            connect,
+            disconnect,
+            onContext
+        );
+        return hydrateComponent(
+            value.name,
+            value.package,
+            value.identity,
+            newProps,
+            updateAspects,
+            connect,
+            disconnect,
+            onContext
+        );
+    } else if (type(value) === 'Object') {
+        return hydrateProps(
+            value,
+            updateAspects,
+            connect,
+            disconnect,
+            onContext
+        );
+    }
+    return value;
+}
+
 export function hydrateProps(
     props: AnyDict,
     updateAspects: WrapperUpdateAspectFunc,
@@ -26,74 +79,16 @@ export function hydrateProps(
     disconnect: DisconnectFunc,
     onContext?: Function
 ) {
-    const replace = {};
-    Object.entries(props).forEach(([k, v]) => {
-        if (type(v) === 'Array') {
-            replace[k] = v.map((c) => {
-                if (!isComponent(c)) {
-                    // Mixing components and primitives
-                    if (type(c) === 'Object') {
-                        // Not a component but maybe it contains some ?
-                        return hydrateProps(
-                            c,
-                            updateAspects,
-                            connect,
-                            disconnect,
-                            onContext
-                        );
-                    }
-                    return c;
-                }
-                const newProps: {[key: string]: any} = hydrateProps(
-                    c.aspects,
-                    updateAspects,
-                    connect,
-                    disconnect,
-                    onContext
-                );
-                if (!newProps.key) {
-                    newProps.key = c.identity;
-                }
-                return hydrateComponent(
-                    c.name,
-                    c.package,
-                    c.identity,
-                    newProps,
-                    updateAspects,
-                    connect,
-                    disconnect,
-                    onContext
-                );
-            });
-        } else if (isComponent(v)) {
-            const newProps = hydrateProps(
-                v.aspects,
-                updateAspects,
-                connect,
-                disconnect,
-                onContext
-            );
-            replace[k] = hydrateComponent(
-                v.name,
-                v.package,
-                v.identity,
-                newProps,
-                updateAspects,
-                connect,
-                disconnect,
-                onContext
-            );
-        } else if (type(v) === 'Object') {
-            replace[k] = hydrateProps(
-                v,
-                updateAspects,
-                connect,
-                disconnect,
-                onContext
-            );
-        }
-    });
-    return {...props, ...replace};
+    return toPairs(props).reduce((acc, [aspect, value]) => {
+        acc[aspect] = hydrateProp(
+            value,
+            updateAspects,
+            connect,
+            disconnect,
+            onContext
+        );
+        return acc;
+    }, {});
 }
 
 export function hydrateComponent(
