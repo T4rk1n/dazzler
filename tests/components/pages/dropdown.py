@@ -89,13 +89,13 @@ page = Page(
         ),
         core.Dropdown(
             options=basic_options,
-            value=basic_options[0],
+            value=basic_options[0]['value'],
             identity='initial-value-object-dropdown'
         ),
         core.Dropdown(
             options=basic_options,
             multi=True,
-            value=[basic_options[0], basic_options[1]],
+            value=[basic_options[0]['value'], basic_options[1]['value']],
             identity='initial-value-multi-dropdown'
         )
     ], style={'width': '300px', 'padding': '1rem'})
