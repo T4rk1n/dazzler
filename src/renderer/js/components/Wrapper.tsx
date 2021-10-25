@@ -16,11 +16,16 @@ export default class Wrapper extends React.Component<
             aspects: props.aspects || {},
             ready: false,
             initial: false,
+            error: null,
         };
         this.setAspects = this.setAspects.bind(this);
         this.getAspect = this.getAspect.bind(this);
         this.updateAspects = this.updateAspects.bind(this);
         this.matchAspects = this.matchAspects.bind(this);
+    }
+
+    static getDerivedStateFromError(error) {
+        return {error};
     }
 
     updateAspects(aspects) {
@@ -59,8 +64,18 @@ export default class Wrapper extends React.Component<
             this.updateAspects
         );
         if (!this.state.initial) {
-            this.updateAspects(this.state.aspects).then(() =>
-                this.setState({ready: true, initial: true})
+            // Need to set aspects first, not sure why but it
+            // sets them for the initial states and ties.
+            this.setAspects(this.state.aspects).then(() =>
+                this.props
+                    .updateAspects(
+                        this.props.identity,
+                        this.state.aspects,
+                        true
+                    )
+                    .then(() => {
+                        this.setState({ready: true, initial: true});
+                    })
             );
         }
     }
@@ -70,16 +85,23 @@ export default class Wrapper extends React.Component<
     }
 
     render() {
-        const {component, component_name, package_name} = this.props;
-        const {aspects, ready} = this.state;
+        const {component, component_name, package_name, identity} = this.props;
+        const {aspects, ready, error} = this.state;
         if (!ready) {
             return null;
+        }
+        if (error) {
+            return (
+                <div style={{color: 'red'}}>
+                    ⚠ Error with {package_name}.{component_name} #{identity}
+                </div>
+            );
         }
 
         return React.cloneElement(component, {
             ...aspects,
             updateAspects: this.updateAspects,
-            identity: this.props.identity,
+            identity,
             class_name: join(
                 ' ',
                 concat(

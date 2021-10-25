@@ -27,7 +27,6 @@ function hydrateProp(
     onContext?: Function
 ) {
     if (type(value) === 'Array') {
-        console.log(value);
         return value.map((e) => {
             if (isComponent(e)) {
                 if (!e.aspects.key) {
