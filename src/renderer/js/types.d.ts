@@ -21,7 +21,11 @@ type Package = {
 type DisconnectFunc = (identity: string) => void;
 type GetAspectFunc = (aspect: string) => any;
 type MatchAspectFunc = (aspect: RegExp) => Array<Array<string | any>>;
-type WrapperUpdateAspectFunc = (identity: string, aspects: AnyDict) => void;
+type WrapperUpdateAspectFunc = (
+    identity: string,
+    aspects: AnyDict,
+    initial?: boolean
+) => Promise<number>;
 
 type ConnectFunc = (
     identity: string,
@@ -46,6 +50,7 @@ type WrapperState = {
     aspects: AnyDict;
     ready: boolean;
     initial: boolean;
+    error?: any;
 };
 
 type DryDazzlerComponent = {
@@ -71,6 +76,7 @@ type BindType = Aspect & {
 
 type Trigger = BindType & {
     once: boolean;
+    skip_initial: boolean;
 };
 
 type Binding = {
@@ -79,6 +85,7 @@ type Binding = {
     regex?: boolean;
     value?: any;
     call?: boolean;
+    key: string;
 };
 
 type EvolvedBindType = Trigger & {

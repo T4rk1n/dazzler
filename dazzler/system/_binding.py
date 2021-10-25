@@ -83,20 +83,30 @@ class _Bind:
             'identity': self.identity,
             'aspect': self.aspect,
             'regex': self.regex,
+            'key': str(self)
         }
 
 
 # pylint: disable=too-few-public-methods
 class Trigger(_Bind):
     """Trigger the bound aspect callbacks."""
-    def __init__(self, identity: str, aspect: str, regex=False, once=None):
+    def __init__(
+        self,
+        identity: str,
+        aspect: str,
+        regex=False,
+        once=None,
+        skip_initial=False,
+    ):
         super().__init__(identity, aspect, regex)
         self.once = once
+        self.skip_initial = skip_initial
 
     def prepare(self) -> dict:
         return {
             **super().prepare(),
-            'once': self.once
+            'once': self.once,
+            'skip_initial': self.skip_initial,
         }
 
 

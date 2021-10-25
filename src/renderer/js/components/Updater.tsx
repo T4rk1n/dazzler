@@ -71,18 +71,23 @@ export default class Updater extends React.Component<
         this.onMessage = this.onMessage.bind(this);
     }
 
-    updateAspects(identity: string, aspects) {
-        return new Promise((resolve) => {
+    updateAspects(identity: string, aspects, initial = false) {
+        return new Promise<number>((resolve) => {
             const aspectKeys: string[] = keys<string>(aspects);
             let bindings: Binding[] | EvolvedBinding[] = aspectKeys
                 .map((key: string) => ({
                     ...this.state.bindings[getAspectKey(identity, key)],
                     value: aspects[key],
                 }))
-                .filter((e) => e.trigger);
+                .filter(
+                    (e) => e.trigger && !(e.trigger.skip_initial && initial)
+                );
 
             this.state.rebindings.forEach((binding) => {
-                if (binding.trigger.identity.test(identity)) {
+                if (
+                    binding.trigger.identity.test(identity) &&
+                    !(binding.trigger.skip_initial && initial)
+                ) {
                     // @ts-ignore
                     bindings = concat(
                         bindings,
@@ -112,12 +117,13 @@ export default class Updater extends React.Component<
                         const tie = this.state.ties[i];
                         const {trigger} = tie;
                         if (
-                            (trigger.regex &&
+                            !(trigger.skip_initial && initial) &&
+                            ((trigger.regex &&
                                 // @ts-ignore
                                 trigger.identity.test(identity) &&
                                 // @ts-ignore
                                 trigger.aspect.test(aspect)) ||
-                            isSameAspect(trigger, {identity, aspect})
+                                isSameAspect(trigger, {identity, aspect}))
                         ) {
                             ties.push({
                                 ...tie,
@@ -197,7 +203,8 @@ export default class Updater extends React.Component<
                         ),
                     });
                 }
-                // TODO investigate reasons/uses of promise
+                // Promise is for wrapper ready
+                // TODO investigate reasons/uses of length resolve?
                 resolve(bindings.length);
             }
         });
