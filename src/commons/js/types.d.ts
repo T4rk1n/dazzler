@@ -80,10 +80,18 @@ export interface CommonStyleProps {
      * Space around the content before the border
      */
     padding?: string | number;
+    padding_top?: string | number;
+    padding_bottom?: string | number;
+    padding_left?: string | number;
+    padding_right?: string | number;
     /**
      * Space after the element border
      */
     margin?: string | number;
+    margin_top?: string | number;
+    margin_bottom?: string | number;
+    margin_left?: string | number;
+    margin_right?: string | number;
     /**
      * Overflow the content and show a scrollbar.
      */
@@ -92,6 +100,7 @@ export interface CommonStyleProps {
      * Height of the component.
      */
     height?: string | number;
+    min_height?: string | number;
     /**
      * Maximum height before overflow.
      */
@@ -100,6 +109,7 @@ export interface CommonStyleProps {
      * Width of the component.
      */
     width?: string | number;
+    min_width?: string | number;
     /**
      * Maximum width before overflowing.
      */
