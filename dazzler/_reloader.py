@@ -229,6 +229,8 @@ async def start_reloader(app, reloaded=False, start_event=None):
                 for x in watch_directories
             )
         ]
+        if app.config_path:
+            extra_files.append(app.config_path)
         app.logger.debug('Starting reload watch.')
         await watch(
             watch_directories,
