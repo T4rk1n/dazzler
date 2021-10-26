@@ -1,6 +1,6 @@
 import asyncio
 import functools
-from typing import Optional, Callable, Awaitable
+from typing import Optional, Callable, Awaitable, List
 from urllib.parse import quote
 from aiohttp import web
 
@@ -9,12 +9,20 @@ from ._middleware import Middleware
 from ._page import Page
 
 
-def _default_page(default_redirect):
+def _default_page(
+    default_redirect,
+    page_title='Login',
+    form_header='Sign In',
+    page_url='/auth',
+) -> Page:
     from dazzler.components import core, auth
 
     async def layout(request: web.Request):
         next_url = request.query.get('next_url') or default_redirect
         error = request.query.get('err')
+
+        if request.get('user'):
+            return core.Text('Already signed on!')
 
         footer = core.Container(
             'Invalid credentials',
@@ -29,7 +37,7 @@ def _default_page(default_redirect):
                 identity='login-form',
                 next_url=next_url,
                 bordered=True,
-                header=core.Html('h2', 'Please sign in'),
+                header=core.Html('h2', form_header),
                 footer=footer,
                 style={
                     'padding': '2rem',
@@ -43,7 +51,118 @@ def _default_page(default_redirect):
             'marginTop': '4rem'
         })
 
-    page = Page(__name__, layout, packages=['dazzler_core', 'dazzler_auth'])
+    page = Page(
+        __name__, layout,
+        packages=['dazzler_core', 'dazzler_auth'],
+        title=page_title,
+        url=page_url,
+    )
+
+    return page
+
+
+def build_register_page(
+    register_handler,
+    title='New User',
+    include_email=False,
+    page_name='register',
+    page_url='/auth/register',
+    custom_fields=None,
+    submit_label='Register',
+    username_pattern=r'[\w\d\-_]+'
+) -> Page:
+    from dazzler.components import core, html
+    from dazzler.presets import PresetColor
+
+    fields = [
+        {
+            'name': 'username',
+            'label': 'Username',
+            'input_props': {
+                'required': True,
+                'minLength': 2,
+                'maxLength': 100,
+                'pattern': username_pattern,
+            }
+        },
+        {
+            'name': 'password',
+            'label': 'Password',
+            'type': 'password',
+            'input_props': {
+                'required': True,
+                'minLength': 8,
+                'maxLength': 256
+            }
+        }
+    ]
+    if include_email:
+        fields.append({
+            'name': 'email',
+            'label': 'Email',
+            'type': 'email',
+            'input_props': {
+                'required': True,
+            }
+        })
+    fields = fields + (custom_fields or [])
+
+    submit_url = f'{page_url}/submit'
+
+    async def layout(request: web.Request):
+        error = request.query.get('error')
+        if request.get('user'):
+            return core.Text(
+                'Already registered!', font_weight='bold'
+            )
+
+        if error:
+            footer = core.Panel(
+                content=core.Text(
+                    error,
+                    style={'color': 'red', 'padding': '0.5rem'}
+                ),
+                title_background=PresetColor.DANGER_DARK,
+                title_color='neutral',
+                title='Error',
+                preset_background='neutral-light'
+            )
+        else:
+            footer = UNDEFINED
+
+        return core.Box(core.Container(
+            [
+                core.Form(
+                    fields=fields,
+                    header=html.H2(title),
+                    submit_label=submit_label,
+                    footer=footer,
+                    action=submit_url,
+                    method='post',
+                    preset_background=PresetColor.NEUTRAL,
+                    bordered=True,
+                    rounded=True,
+                    stacked=True,
+                ),
+            ],
+            width='80%',
+            padding_top='4rem'
+        ),
+            justify='center',
+            # preset_background=PresetColor.NEUTRAL_DARK,
+            min_height='100vh',
+            height='100%'
+        )
+
+    page = Page(
+        page_name,
+        layout,
+        packages=['dazzler_core', 'dazzler_html'],
+        url=page_url,
+        title=title,
+    )
+
+    page.route('/submit', method='post')(register_handler)
 
     return page
 
@@ -53,9 +172,21 @@ class User:
     Base user of the dazzler auth system.
     """
     username: str
+    roles: Optional[List[str]]
+    email: Optional[str]
+    metadata: Optional[dict]
 
-    def __init__(self, username: str):
+    def __init__(
+        self,
+        username: str,
+        roles: List[str] = None,
+        email: str = None,
+        metadata: dict = None,
+    ):
         self.username = username
+        self.roles = roles or []
+        self.email = email
+        self.metadata = metadata
 
 
 class AuthBackend:
@@ -142,6 +273,9 @@ class Authenticator:
     """
     app = None
 
+    def __init__(self, app):
+        self.app = app
+
     async def authenticate(self, username: str, password: str) \
             -> Optional[User]:
         """
@@ -161,6 +295,28 @@ class Authenticator:
         :return:
         """
         raise NotImplementedError
+
+    async def authorize(self, user: User, page: Page) -> bool:
+        """
+        Implement to authorize on a page basis.
+
+        :param user:
+        :param page:
+        """
+        return len(set(user.roles).intersection(page.authorizations)) > 0
+
+    async def register_user(
+        self,
+        username: str,
+        password: str,
+        email: str = None,
+        fields: dict = None,
+    ) -> Optional[str]:
+        """
+        Register an user on form submit.
+
+        Return a string as an error, otherwise the operation is successful.
+        """
 
 
 class AuthMiddleware(Middleware):
@@ -203,6 +359,7 @@ class DazzlerAuth:
             backend: AuthBackend = None,
             login_page: Page = None,
             default_redirect: str = None,
+            register_page: Page = None
     ):
         """
         :param app:
@@ -214,7 +371,12 @@ class DazzlerAuth:
         self.authenticator = authenticator
         self.authenticator.app = app
         self.app.middlewares.append(AuthMiddleware(app, self))
-        self.login_page = login_page or _default_page(default_redirect)
+        self.login_page = login_page or _default_page(
+            default_redirect,
+            page_title=app.config.authentication.login.page_title,
+            page_url=app.config.authentication.login.page_url,
+            form_header=app.config.authentication.login.form_header,
+        )
         app.server.route_page = self.require_page_login(app.server.route_page)
         app.server.route_page_json = self.require_page_login(
             app.server.route_page_json, redirect=False,
@@ -222,17 +384,43 @@ class DazzlerAuth:
         app.server.route_update = self.require_page_login(
             app.server.route_update, redirect=False,
         )
+        app.server.route_call = self.require_page_login(
+            app.server.route_call, redirect=False,
+        )
+        # TODO wrap all routes defined by the pages in dazzler setup.
 
         self.login_page.route('/login', method='post')(self.login)
         self.login_page.route('/logout', method='post')(self.logout)
+        self.logout_url = f'{self.login_page.url}/logout'
         app.add_page(self.login_page)
+
+        if app.config.authentication.register.enable:
+            register = app.config.authentication.register
+            self.register_page = register_page or build_register_page(
+                self.register,
+                page_name=register.page_name,
+                page_url=register.page_url,
+                custom_fields=self._get_custom_fields(),
+                include_email=register.require_email,
+            )
+            app.add_page(self.register_page)
 
     async def login(self, request: web.Request):
         data = await request.post()
         next_url = data.get('next_url')
         username = data.get('username')
         password = data.get('password')
+        login_url = request.app.router[self.login_page.name].url_for()
+
+        if not next_url:
+            next_url = self.app.config.authentication.login.default_redirect
         response = web.HTTPSeeOther(location=next_url)
+
+        if not username or not password:
+            raise web.HTTPFound(
+                location=f'{login_url}?next_url={quote(next_url)}&err=1'
+            )
+
         user = await self.authenticator.authenticate(username, password)
         if user:
             await self.backend.login(user, request, response)
@@ -240,7 +428,7 @@ class DazzlerAuth:
 
         # Cheap throttling on failures.
         await asyncio.sleep(0.25)
-        login_url = request.app.router[self.login_page.name].url_for()
+
         if self.login_page:
             raise web.HTTPFound(
                 location=f'{login_url}?next_url={quote(next_url)}&err=1'
@@ -258,6 +446,50 @@ class DazzlerAuth:
         await self.backend.logout(user, request, response)
         raise response
 
+    async def register(self, request: web.Request):
+        data = await request.post()
+        username = data.get('username')
+        password = data.get('password')
+
+        if not username or not password:
+            raise web.HTTPSeeOther(
+                location=f'{self.register_page.url}?'
+                         f'error={quote("Please fill username and password")}',
+            )
+
+        email = data.get('email')
+
+        fields = {
+            field['name']: data.get(field['name'])
+            for field in self._get_custom_fields()
+        }
+        if username.lower() in \
+                self.app.config.authentication.register.reserved_usernames:
+            raise web.HTTPSeeOther(
+                location=f'{self.register_page.url}'
+                         f'?error={quote("Invalid username")}',
+            )
+        self.app.logger.debug(f'Register user: {username}')
+        error = await self.authenticator.register_user(
+            username, password, email, fields
+        )
+        if not error:
+            response = web.HTTPSeeOther(
+                location=self.app.config.authentication.register.next_url
+            )
+            # login on the backend after registering.
+            await self.backend.login(User(username), request, response)
+            raise response
+
+        error_message = 'Invalid user information'
+        if self.app.config.debug:
+            # Only show error info if not in production.
+            error_message = error
+
+        raise web.HTTPSeeOther(
+            location=f'{self.register_page.url}?error={quote(error_message)}',
+        )
+
     def require_page_login(self, func, redirect=True):
 
         @functools.wraps(func)
@@ -274,6 +506,20 @@ class DazzlerAuth:
                             location=f'{url}?next_url={quote(next_url)}'
                         )
                     raise web.HTTPUnauthorized()
+                elif page.authorizations:
+                    authorized = await self.authenticator.authorize(
+                        request['user'],
+                        page
+                    )
+                    if not authorized:
+                        raise web.HTTPForbidden
             return await func(request, page)
 
         return auth_page_wrapper
+
+    def _get_custom_fields(self):
+        return [
+            {'name': name, 'label': label, 'type': field_type}
+            for name, label, field_type
+            in self.app.config.authentication.register.custom_fields
+        ]
