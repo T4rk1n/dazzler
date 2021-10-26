@@ -1,6 +1,11 @@
-import React from 'react';
+import React, {useMemo} from 'react';
 import {OnOff} from '../types';
-import {DazzlerProps} from '../../../commons/js/types';
+import {
+    CommonPresetsProps,
+    CommonStyleProps,
+    DazzlerProps,
+} from '../../../commons/js/types';
+import {getCommonStyles, getPresetsClassNames} from 'commons';
 
 type FormProps = {
     /**
@@ -12,6 +17,7 @@ type FormProps = {
         type?: string;
         component?: JSX.Element;
         value?: any;
+        input_props?: any;
     }[];
 
     /**
@@ -84,7 +90,9 @@ type FormProps = {
      * Label of the submit button.
      */
     submit_label?: string;
-} & DazzlerProps;
+} & DazzlerProps &
+    CommonStyleProps &
+    CommonPresetsProps;
 
 /**
  * A form element with auto fields.
@@ -101,40 +109,53 @@ type FormProps = {
  *     - ``form-footer``
  *     - ``form-submit``
  */
-export default class Form extends React.Component<FormProps> {
-    render() {
-        const {
-            identity,
-            class_name,
-            style,
-            action,
-            method,
-            target,
-            auto_complete,
-            name,
-            header,
-            fields,
-            body,
-            footer,
-            errors,
-            include_submit,
-            submit_label,
-        } = this.props;
-        return (
-            <form
-                id={identity}
-                className={class_name}
-                style={style}
-                action={action}
-                method={method}
-                target={target}
-                autoComplete={auto_complete}
-                name={name}
-            >
-                {header && <div className="form-header">{header}</div>}
-                <div className="form-body">
-                    {fields &&
-                        fields.map(({label, type, name, component, value}) => {
+const Form = (props: FormProps) => {
+    const {
+        identity,
+        class_name,
+        style,
+        action,
+        method,
+        target,
+        auto_complete,
+        name,
+        header,
+        fields,
+        body,
+        footer,
+        errors,
+        include_submit,
+        submit_label,
+        ...rest
+    } = props;
+    const css = useMemo(
+        () => getPresetsClassNames(rest, class_name),
+        [rest, class_name]
+    );
+    const styling = useMemo(() => getCommonStyles(rest, style), [rest, style]);
+    return (
+        <form
+            id={identity}
+            className={css}
+            style={styling}
+            action={action}
+            method={method}
+            target={target}
+            autoComplete={auto_complete}
+            name={name}
+        >
+            {header && <div className="form-header">{header}</div>}
+            <div className="form-body">
+                {fields &&
+                    fields.map(
+                        ({
+                            label,
+                            type,
+                            name,
+                            component,
+                            value,
+                            input_props,
+                        }) => {
                             const error = errors[name];
                             return (
                                 <div
@@ -151,8 +172,9 @@ export default class Form extends React.Component<FormProps> {
                                         <input
                                             name={name}
                                             type={type}
-                                            className={'form-input'}
+                                            className="form-input"
                                             value={value}
+                                            {...input_props}
                                         />
                                     )}
 
@@ -163,21 +185,27 @@ export default class Form extends React.Component<FormProps> {
                                     )}
                                 </div>
                             );
-                        })}
-                    {body}
-                </div>
-                {footer && <div className="form-footer">{footer}</div>}
-                {include_submit && (
-                    <button type="submit" className="form-submit">
-                        {submit_label}
-                    </button>
-                )}
-            </form>
-        );
-    }
-    static defaultProps = {
-        include_submit: true,
-        submit_label: 'Submit',
-        errors: {},
-    };
-}
+                        }
+                    )}
+                {body}
+            </div>
+            {footer && <div className="form-footer">{footer}</div>}
+            {include_submit && (
+                <button
+                    type="submit"
+                    className="form-submit"
+                >
+                    {submit_label}
+                </button>
+            )}
+        </form>
+    );
+};
+
+Form.defaultProps = {
+    include_submit: true,
+    submit_label: 'Submit',
+    errors: {},
+};
+
+export default Form;
