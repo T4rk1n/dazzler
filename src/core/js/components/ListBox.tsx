@@ -56,6 +56,11 @@ type ListBoxProps = {
     delete_index?: number;
 
     /**
+     * Delete row item by component identity.
+     */
+    delete_identity?: string;
+
+    /**
      * Wether the list box container is scrollable.
      */
     scrollable?: boolean;
@@ -102,6 +107,7 @@ const ListBox = ({
     concat,
     insert,
     delete_index,
+    delete_identity,
     scrollable,
     direction,
     size,
@@ -167,6 +173,17 @@ const ListBox = ({
             });
         }
     }, [delete_index]);
+
+    useEffect(() => {
+        if (!isNil(delete_identity)) {
+            updateAspects({
+                delete_identity: null,
+                items: items.filter(
+                    (e) => e.props.identity !== delete_identity
+                ),
+            });
+        }
+    }, [delete_identity]);
 
     // Update scrolling.
 
