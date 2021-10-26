@@ -472,7 +472,7 @@ class Dazzler(precept.Precept):  # pylint: disable=too-many-instance-attributes
                 self.config.authentication.authenticator
             )
             if isinstance(authenticator, type):
-                authenticator = authenticator()
+                authenticator = authenticator(self)
 
             if not isinstance(authenticator, Authenticator):
                 raise AuthError(
@@ -500,7 +500,11 @@ class Dazzler(precept.Precept):  # pylint: disable=too-many-instance-attributes
                     f'`dazzler.system.auth.AuthBackend`'
                 )
 
-        self.auth = DazzlerAuth(self, authenticator, backend=backend)
+        self.auth = DazzlerAuth(
+            self, authenticator,
+            backend=backend,
+            default_redirect=self.config.authentication.login.default_redirect
+        )
 
     async def _enable_session(self):
         if self.config.session.backend == 'File':

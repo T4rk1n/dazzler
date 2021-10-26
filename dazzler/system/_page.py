@@ -35,7 +35,8 @@ class Page:
             meta_tags: typing.List[typing.Dict[str, str]] = None,
             packages: typing.List[str] = None,
             require_login: bool = False,
-            electron_window: ElectronWindowSettings = None
+            electron_window: ElectronWindowSettings = None,
+            authorizations: list = None
     ):
         """
         :param name: Unique name for the page, usually give __name__.
@@ -55,6 +56,7 @@ class Page:
             of the whole registry.
         :param require_login: Page requires that user is logged in.
         :param electron_window: Settings for the electron window like size.
+        :param authorizations: Rules for authorization.
         """
         self.name = name.split('.')[-1]
         self.base_name = name
@@ -91,6 +93,7 @@ class Page:
         self.require_login = require_login
         self._ties = []
         self.electron_window = electron_window
+        self.authorizations = authorizations
 
     async def prepare(
             self,

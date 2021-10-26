@@ -192,6 +192,72 @@ class DazzlerConfig(Config):
             default='',
         )
 
+        class Login(Nestable):
+            default_redirect = ConfigProperty(
+                default='/',
+                config_type=str,
+                comment='Url to use by default if no next_url is available.'
+            )
+            page_title = ConfigProperty(
+                default='Login',
+                config_type=str,
+                comment='Title of the login page'
+            )
+            page_url = ConfigProperty(
+                default='/auth',
+                comment='Url for the login page and related routes.'
+            )
+            form_header = ConfigProperty(
+                default='Sign In',
+                comment='Title of the login form.'
+            )
+
+        login: Login
+
+        class Register(Nestable):
+            enable = ConfigProperty(
+                config_type=bool,
+                default=True,
+                comment='Add a register page to the application'
+            )
+            require_email = ConfigProperty(
+                default=True,
+                config_type=bool,
+                comment='Require the user '
+            )
+            page_name = ConfigProperty(
+                default='register',
+                config_type=str,
+                comment='Name of the register page'
+            )
+            page_url = ConfigProperty(
+                default='/auth/register'
+            )
+            custom_fields = ConfigProperty(
+                default=[],
+                config_type=list
+            )
+            next_url = ConfigProperty(
+                default='/',
+                comment='Redirect to after successfully creating a new user.'
+            )
+            reserved_usernames = ConfigProperty(
+                config_type=list,
+                default=[
+                    'admin', 'administrator', 'staff',
+                    'user', 'superuser', 'moderator',
+                ],
+                comment='Prevent registering with those usernames,'
+                        ' case insensitive.'
+            )
+            username_pattern = ConfigProperty(
+                config_type=str,
+                default=r'[\w\d\-_]+',
+                comment='Pattern to match the username input.'
+            )
+
+        register: Register
+
     authentication: Authentication
 
     class Development(Nestable):
