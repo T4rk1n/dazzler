@@ -68,6 +68,7 @@ type Aspect = {
 type RegAspect = {
     identity: string | RegExp;
     aspect: string | RegExp;
+    regex?: boolean;
 };
 
 type BindType = Aspect & {
@@ -100,6 +101,7 @@ type EvolvedBinding = Binding & {
 };
 
 type BoundComponent = {
+    identity: string;
     matchAspects: MatchAspectFunc;
     getAspect: GetAspectFunc;
     updateAspects: UpdateAspectFunc;
@@ -119,6 +121,7 @@ type Transform = {
 type Tie = Binding & {
     transforms: Transform[];
     targets: Aspect[];
+    regexTargets: RegAspect[];
 };
 
 type EvolvedTie = Tie & {

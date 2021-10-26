@@ -130,7 +130,8 @@ class Target(_Bind):
     def __init__(self,
                  shorthand: str = None,
                  identity: str = None,
-                 aspect: str = None):
+                 aspect: str = None,
+                 regex: bool = False):
         if shorthand and '@' in shorthand:
             aspect, identity = shorthand.split('@')
         elif not identity or not aspect:
@@ -138,7 +139,7 @@ class Target(_Bind):
                 f'Invalid Target arguments provided:'
                 f' short={shorthand} identity={identity} aspect={aspect}'
             )
-        super().__init__(identity, aspect)
+        super().__init__(identity, aspect, regex)
 
 
 StateList = typing.List[State]

@@ -20,6 +20,11 @@ import {
     all,
     toPairs,
     values as rValues,
+    propSatisfies,
+    not,
+    assoc,
+    pipe,
+    propEq,
 } from 'ramda';
 import {executeTransform} from '../transforms';
 import {
@@ -32,6 +37,7 @@ import {
     UpdaterProps,
     UpdaterState,
     PageApiResponse,
+    Aspect,
 } from '../types';
 import {getAspectKey, isSameAspect} from '../aspects';
 
@@ -153,12 +159,24 @@ export default class Updater extends React.Component<
                     }, value);
                 }
 
-                tie.targets.forEach((t) => {
+                tie.targets.forEach((t: Aspect) => {
                     const component = this.boundComponents[t.identity];
                     if (component) {
                         component.updateAspects({[t.aspect]: value});
                     }
                 });
+
+                if (tie.regexTargets.length) {
+                    // FIXME probably a more efficient way to do this
+                    //  refactor later.
+                    rValues(this.boundComponents).forEach((c) => {
+                        tie.regexTargets.forEach((t) => {
+                            if ((t.identity as RegExp).test(c.identity)) {
+                                c.updateAspects({[t.aspect as string]: value});
+                            }
+                        });
+                    });
+                }
             });
 
             if (removableTies.length) {
@@ -220,6 +238,7 @@ export default class Updater extends React.Component<
 
     connect(identity, setAspects, getAspect, matchAspects, updateAspects) {
         this.boundComponents[identity] = {
+            identity,
             setAspects,
             getAspect,
             matchAspects,
@@ -468,6 +487,23 @@ export default class Updater extends React.Component<
                     requirements: response.requirements,
                     // @ts-ignore
                     ties: map((tie) => {
+                        const newTie = pipe(
+                            assoc(
+                                'targets',
+                                tie.targets.filter(propSatisfies(not, 'regex'))
+                            ),
+                            assoc(
+                                'regexTargets',
+                                // @ts-ignore
+                                tie.targets.filter(propEq('regex', true)).map(
+                                    evolve({
+                                        // Only match identity for targets.
+                                        identity: toRegex,
+                                    })
+                                )
+                            )
+                        )(tie);
+
                         if (tie.trigger.regex) {
                             return evolve(
                                 {
@@ -476,10 +512,10 @@ export default class Updater extends React.Component<
                                         aspect: toRegex,
                                     },
                                 },
-                                tie
+                                newTie
                             );
                         }
-                        return tie;
+                        return newTie;
                     }, response.ties),
                 },
                 () =>
