@@ -43,6 +43,9 @@
   }
   &.circle {
     border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 
   &.primary {
@@ -92,26 +95,36 @@
   }
   &.medium {
     font-size: medium;
-    border-width: 0.125rem;
+    &.bordered {
+      border-width: 0.125rem;
+    }
   }
   &.large {
     padding: 0.5rem;
     font-size: large;
-    border-width: 0.25rem;
+    &.bordered {
+      border-width: 0.25rem;
+    }
   }
   &.larger {
     padding: 0.75rem;
     font-size: larger;
-    border-width: 0.33rem;
+    &.bordered {
+      border-width: 0.33rem;
+    }
   }
   &.x-large {
     padding: 1rem;
     font-size: x-large;
-    border-width: 0.44rem;
+    &.bordered {
+      border-width: 0.44rem;
+    }
   }
   &.xx-large {
     padding: 1.25rem;
     font-size: xx-large;
-    border-width: 0.5rem;
+    &.bordered {
+      border-width: 0.5rem;
+    }
   }
 }
