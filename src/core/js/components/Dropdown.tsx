@@ -213,16 +213,15 @@ const Dropdown = (props: DDropdownProps) => {
                         is(Object, e) ? e : {value: e, label: e}
                     )
                 );
+                if (is(Array, value)) {
+                    return (value as Array<any>).map((v) => ({
+                        value: v,
+                        label: indexedOptions[v].label,
+                    }));
+                }
                 if (is(String, value) || is(Number, value)) {
                     // @ts-ignore
                     return [{value, label: indexedOptions[value].label}];
-                }
-                if (is(Array, value)) {
-                    return (value as Array<any>).map((v) =>
-                        !is(Object, v)
-                            ? {value: v, label: indexedOptions[v].label}
-                            : value
-                    );
                 }
                 if (is(Object, value)) {
                     return [value];
@@ -401,6 +400,28 @@ const Dropdown = (props: DDropdownProps) => {
         },
         [opened, inputRef]
     );
+
+    useEffect(() => {
+        if (!value) {
+            return;
+        }
+        const optionValues = options.map((o) => (is(Object, o) ? o.value : o));
+        if (multi && value) {
+            updateAspects({
+                value: (value as string[]).filter((v) =>
+                    optionValues.includes(v)
+                ),
+            });
+            setSelectedItems(
+                selectedItems.filter((e) => optionValues.includes(e.value))
+            );
+        } else {
+            if (!optionValues.includes(value)) {
+                updateAspects({value: null});
+                setSelectedItems([]);
+            }
+        }
+    }, [options]);
 
     const searchWidth = useMemo(() => {
         if (!searchContentRef.current) {
