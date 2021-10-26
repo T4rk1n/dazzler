@@ -90,6 +90,11 @@ type FormProps = {
      * Label of the submit button.
      */
     submit_label?: string;
+
+    /**
+     * Stack the form label and input.
+     */
+    stacked?: boolean;
 } & DazzlerProps &
     CommonStyleProps &
     CommonPresetsProps;
@@ -126,6 +131,7 @@ const Form = (props: FormProps) => {
         errors,
         include_submit,
         submit_label,
+        stacked,
         ...rest
     } = props;
     const css = useMemo(
@@ -161,7 +167,8 @@ const Form = (props: FormProps) => {
                                 <div
                                     className={
                                         'form-field' +
-                                        (error ? ' field-error' : '')
+                                        (error ? ' field-error' : '') +
+                                        (stacked ? ' form-field-stacked' : '')
                                     }
                                     key={`form-${identity}-${name}`}
                                 >
@@ -193,7 +200,7 @@ const Form = (props: FormProps) => {
             {include_submit && (
                 <button
                     type="submit"
-                    className="form-submit"
+                    className="form-submit dazzler-core-button"
                 >
                     {submit_label}
                 </button>
