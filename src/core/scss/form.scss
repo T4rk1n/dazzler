@@ -11,6 +11,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    padding: 0.25rem;
   }
   .form-field {
     width: 100%;
@@ -30,13 +31,56 @@
     .form-input {
       width: 50%;
     }
+    &.form-field-stacked {
+      flex-direction: column;
+      align-items: unset;
+      margin-bottom: 0.5rem;
+      .form-label, .form-input {
+        width: unset;
+      }
+      .form-label {
+        font-size: large;
+        font-weight: 500;
+        margin-bottom: 0.25rem;
+      }
+      .form-input {
+        font-size: large;
+        padding: 0.25rem;
+      }
+    }
+  }
+  .form-submit {
+    padding: 0.5rem;
+    background-color: $primary-dark;
+    color: white;
+    width: calc(100% - 0.25rem);
+    align-self: center;
+    border-radius: 3px;
+    font-weight: bold;
+    font-size: large;
+    &:hover, &:focus {
+      background-color: $primary-light;
+    }
   }
 
+  .form-submit-container {
+    display: flex;
+    justify-content: center;
+  }
   .form-error {
     color: $danger;
   }
-  .form-footer {
 
+  .form-footer {
+    padding: 0.25rem;
   }
 
+  &.dazzler-rounded {
+    .form-header {
+      border-radius: 3px 3px 0 0;
+    }
+    .form-footer {
+      border-radius: 0 0 3px 3px;
+    }
+  }
 }
