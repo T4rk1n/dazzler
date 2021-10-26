@@ -17,6 +17,7 @@ alias i := install
 # Build everything
 build: html-generator
     npm run build
+    npm run build:dazzler
 
 alias b := build
 

@@ -47,6 +47,7 @@ jobs:
             . venv/bin/activate
             pip install -e .
             npm run build
+            npm run build:dazzler
 
       - run:
           name: Test

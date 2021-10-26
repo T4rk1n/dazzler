@@ -30,42 +30,41 @@ module.exports = function (env, argv) {
         ],
         renderer: {
             import: [path.join(__dirname, 'src/renderer/js/index.tsx')],
-            dependOn: 'commons'
+            dependOn: 'commons',
         },
         test: [path.join(__dirname, 'src/internal/test_components/index.js')],
         ts: [path.join(__dirname, 'src/internal/ts_components/index.ts')],
         core: {
             import: [path.join(__dirname, 'src/core/js/index.ts')],
-            dependOn: 'commons'
+            dependOn: 'commons',
         },
         extra: {
             import: [path.join(__dirname, 'src/extra/js/index.ts')],
-            dependOn: 'commons'
+            dependOn: 'commons',
         },
         markdown: {
             import: [path.join(__dirname, 'src/markdown/js/index.js')],
-            dependOn: 'commons'
+            dependOn: 'commons',
         },
         calendar: {
             import: [path.join(__dirname, 'src/calendar/js/index.ts')],
-            dependOn: 'commons'
-
+            dependOn: 'commons',
         },
         auth: {
             import: [path.join(__dirname, 'src/auth/js/index.ts')],
-            dependOn: 'commons'
+            dependOn: 'commons',
         },
         html: {
             import: [path.join(__dirname, 'src/html/index.ts')],
-            dependOn: 'commons'
+            dependOn: 'commons',
         },
         svg: {
             import: [path.join(__dirname, 'src/svg/index.ts')],
-            dependOn: 'commons'
+            dependOn: 'commons',
         },
         icons: {
             import: [path.join(__dirname, 'src/icons/js/index.js')],
-            dependOn: 'commons'
+            dependOn: 'commons',
         },
     };
 
@@ -98,14 +97,21 @@ module.exports = function (env, argv) {
         }),
     ];
 
-    if (devMode) {
+    if (devMode && argv && !argv.watch) {
         plugins.push({
             apply: (compiler) => {
                 compiler.hooks.afterEmit.tap('BuildDazzlerPlugin', () => {
-                    exec('npm run build:dazzler', (err, stdout, stderr) => {
-                        if (stdout) process.stdout.write(stdout);
-                        if (stderr) process.stderr.write(stderr);
-                    });
+                    exec(
+                        'npm run build:dazzler::watch',
+                        (err, stdout, stderr) => {
+                            if (stdout) {
+                                process.stdout.write(stdout);
+                            }
+                            if (stderr) {
+                                process.stderr.write(stderr);
+                            }
+                        }
+                    );
                 });
             },
         });

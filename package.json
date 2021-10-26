@@ -23,6 +23,7 @@
     "build:dazzler::auth": "dazzler generate src/auth/js/components dazzler/components/auth --ts",
     "build:dazzler::icons": "dazzler generate src/icons/js/components dazzler/components/icons",
     "build:dazzler::electron": "dazzler generate src/electron/renderer/components dazzler/components/electron --ts",
+    "build:dazzler::watch": "run-p build:dazzler::core build:dazzler::extra build:dazzler::electron",
     "build:dazzler": "run-p build:dazzler::core build:dazzler::test build:dazzler::extra build:dazzler::calendar build:dazzler::markdown build:dazzler::auth build:dazzler::icons build:dazzler::ts build:dazzler::electron build:dazzler::html build:dazzler::svg",
     "build:docs": "docs/build.sh",
     "build": "run-s build:webpack build:dev build:electron build:electron:components build:electron:components::dev",
