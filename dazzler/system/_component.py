@@ -13,12 +13,11 @@ def prepare_aspect(value):
     if value is not UNDEFINED:
         if isinstance(value, Component):
             return value._prepare()
-        elif isinstance(value, (list, tuple)):
+        if isinstance(value, (list, tuple)):
             return [prepare_aspect(y) for y in value]
-        elif isinstance(value, dict):
+        if isinstance(value, dict):
             return prepare_aspects(value)
-        else:
-            return value
+    return value
 
 
 # noinspection PyProtectedMember

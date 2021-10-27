@@ -39,7 +39,7 @@ def auth_app():
     app.add_page(page)
     app.config.session.backend = 'Redis'
 
-    DazzlerAuth(app, DummyAuthenticator())
+    DazzlerAuth(app, DummyAuthenticator(app))
 
     return app
 

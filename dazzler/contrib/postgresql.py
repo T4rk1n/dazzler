@@ -566,7 +566,7 @@ class PostgresAuthenticator(Authenticator):
                             [role, username]
                         )
                     return None
-                except Exception as err:
+                except Exception as err:  # pylint: disable=broad-except
                     self.app.logger.exception(err)
                     return traceback.format_exc()
 
