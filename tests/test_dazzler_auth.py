@@ -1,6 +1,8 @@
 # pylint: disable=redefined-outer-name
+import sys
 from typing import Optional
 
+import secrets
 import pytest
 
 import aiohttp
@@ -58,6 +60,10 @@ def auth_app():
 
     app.add_page(page, admin_page, mod_page)
     app.config.session.backend = 'Redis'
+    app.config.authentication.register.require_email = False
+    app.config.secret_key = str(
+        secrets.randbits(128).to_bytes(16, sys.byteorder)
+    )
 
     DazzlerAuth(app, DummyAuthenticator(app))
 
@@ -165,3 +171,21 @@ async def test_page_authorizations(auth_app, start_visit, browser):
 
     await browser.get('http://localhost:8150/admin')
     await browser.wait_for_text_to_equal('body', '403: Forbidden')
+
+
+@pytest.mark.async_test
+async def test_register(auth_app, start_visit, browser):
+    await start_visit(auth_app)
+    await browser.get('http://localhost:8150/auth/register')
+
+    username_input = await browser.wait_for_element_by_css_selector(
+        'div.form-field:nth-child(1) > input:nth-child(2)'
+    )
+    username_input.send_keys('Neo')
+    password_input = await browser.wait_for_element_by_css_selector(
+        'div.form-field:nth-child(2) > input:nth-child(2)'
+    )
+    password_input.send_keys('secure_enough')
+
+    await browser.click('.form-submit')
+    await browser.wait_for_text_to_equal('#username-output', 'Neo')
