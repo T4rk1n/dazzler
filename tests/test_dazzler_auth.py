@@ -19,7 +19,7 @@ class DummyAuthenticator(Authenticator):
             return User(username,)
 
     async def get_user(self, username: str) -> User:
-        return User(username)
+        return User(username, roles=['user', 'mod'])
 
 
 @pytest.fixture
@@ -45,7 +45,18 @@ def auth_app():
             content_type='text/html'
         )
 
-    app.add_page(page)
+    admin_page = Page(
+        'admin', core.Box('admin', identity='content'),
+        url='/admin', authorizations=['admin'],
+        require_login=True,
+    )
+    mod_page = Page(
+        'mod', core.Box('mod', identity='content'),
+        url='/mod', authorizations=['mod'],
+        require_login=True,
+    )
+
+    app.add_page(page, admin_page, mod_page)
     app.config.session.backend = 'Redis'
 
     DazzlerAuth(app, DummyAuthenticator(app))
@@ -143,3 +154,14 @@ async def test_page_route_require_login(auth_app, start_visit, browser):
     await browser.get('http://localhost:8150/page-route')
     await proceed_login(browser, 'AgentSmith', 'SuperSecret1')
     await browser.wait_for_text_to_equal('#content', 'auth page route')
+
+
+@pytest.mark.async_test
+async def test_page_authorizations(auth_app, start_visit, browser):
+    await start_visit(auth_app)
+    await browser.get('http://localhost:8150/mod')
+    await proceed_login(browser, 'AgentSmith', 'SuperSecret1')
+    await browser.wait_for_text_to_equal('#content', 'mod')
+
+    await browser.get('http://localhost:8150/admin')
+    await browser.wait_for_text_to_equal('body', '403: Forbidden')
