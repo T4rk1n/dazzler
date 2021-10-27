@@ -23,6 +23,10 @@ type GridProps = {
      * Each cell are equals in width for a total of 100% per row.
      */
     equal_cell_width?: boolean;
+    /**
+     * Center the content of the cells.
+     */
+    center_cells?: boolean;
 } & CommonStyleProps &
     CommonPresetsProps &
     DazzlerProps;
@@ -51,6 +55,7 @@ const Grid = (props: GridProps) => {
         columns,
         grow_cell,
         equal_cell_width,
+        center_cells,
         ...rest
     } = props;
     const width = useMemo(
@@ -58,10 +63,13 @@ const Grid = (props: GridProps) => {
         [equal_cell_width, columns]
     );
 
-    const css = useMemo(
-        () => getPresetsClassNames(rest, class_name),
-        [rest, class_name]
-    );
+    const css = useMemo(() => {
+        const init = [class_name];
+        if (center_cells) {
+            init.push('center-cells');
+        }
+        return getPresetsClassNames(rest, ...init);
+    }, [rest, class_name]);
     const styling = useMemo(() => getCommonStyles(rest, style), [rest, style]);
     return (
         <div id={identity} className={css} style={styling}>
