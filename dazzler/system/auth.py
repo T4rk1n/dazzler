@@ -7,6 +7,7 @@ from aiohttp import web
 from ._undefined import UNDEFINED
 from ._middleware import Middleware
 from ._page import Page
+from ..events import DAZZLER_SETUP
 
 
 def _default_page(
@@ -387,7 +388,6 @@ class DazzlerAuth:
         app.server.route_call = self.require_page_login(
             app.server.route_call, redirect=False,
         )
-        # TODO wrap all routes defined by the pages in dazzler setup.
 
         self.login_page.route('/login', method='post')(self.login)
         self.login_page.route('/logout', method='post')(self.logout)
@@ -404,6 +404,8 @@ class DazzlerAuth:
                 include_email=register.require_email,
             )
             app.add_page(self.register_page)
+
+        app.events.subscribe(DAZZLER_SETUP, self._setup)
 
     async def login(self, request: web.Request):
         data = await request.post()
@@ -490,7 +492,7 @@ class DazzlerAuth:
             location=f'{self.register_page.url}?error={quote(error_message)}',
         )
 
-    def require_page_login(self, func, redirect=True):
+    def require_page_login(self, func, redirect=True, handle_page=True):
 
         @functools.wraps(func)
         async def auth_page_wrapper(request: web.Request, page: Page):
@@ -516,7 +518,9 @@ class DazzlerAuth:
                         )
                     if not authorized:
                         raise web.HTTPForbidden
-            return await func(request, page)
+            if handle_page:
+                return await func(request, page)
+            return await func(request)
 
         return auth_page_wrapper
 
@@ -526,3 +530,14 @@ class DazzlerAuth:
             for name, label, field_type
             in self.app.config.authentication.register.custom_fields
         ]
+
+    async def _setup(self, _):
+        # Wrap all pages routes with a login required.
+        for page in self.app.pages.values():
+            if not page.require_login:
+                continue
+            for route in page.routes:
+                route.handler = functools.partial(
+                    self.require_page_login(route.handler, handle_page=False),
+                    page=page,
+                )
