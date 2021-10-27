@@ -4,7 +4,7 @@ from typing import Optional
 import pytest
 
 import aiohttp
-from aiohttp import client
+from aiohttp import client, web
 
 from dazzler import Dazzler
 from dazzler.components import core, auth as _auth
@@ -35,6 +35,15 @@ def auth_app():
     async def on_username(ctx):
         user = ctx.request['user']
         await ctx.set_aspect('username-output', children=user.username)
+
+    @page.route('/page-route')
+    async def page_route(_):
+        return web.Response(
+            body='<html><head></head><body>'
+                 '<div id="content">auth page route</div>'
+                 '</body></html>',
+            content_type='text/html'
+        )
 
     app.add_page(page)
     app.config.session.backend = 'Redis'
@@ -126,3 +135,11 @@ async def test_auth_from_configs(start_visit, browser):
 
     await proceed_login(browser, 'AgentSmith', 'SuperSecret1')
     await browser.wait_for_text_to_equal('#content', 'my-page')
+
+
+@pytest.mark.async_test
+async def test_page_route_require_login(auth_app, start_visit, browser):
+    await start_visit(auth_app)
+    await browser.get('http://localhost:8150/page-route')
+    await proceed_login(browser, 'AgentSmith', 'SuperSecret1')
+    await browser.wait_for_text_to_equal('#content', 'auth page route')
