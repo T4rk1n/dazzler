@@ -67,7 +67,7 @@ async def test_login_logout(auth_app, start_visit, browser):
 
     await browser.click('#logout .logout-button')
     await browser.wait_for_text_to_equal(
-        '#login-form .login-header', 'Please sign in'
+        '#login-form .login-header', 'Sign In'
     )
 
 
