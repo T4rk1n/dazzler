@@ -506,11 +506,14 @@ class DazzlerAuth:
                             location=f'{url}?next_url={quote(next_url)}'
                         )
                     raise web.HTTPUnauthorized()
-                elif page.authorizations:
-                    authorized = await self.authenticator.authorize(
-                        request['user'],
-                        page
-                    )
+                if page.authorizations:
+                    authorized = False
+                    user = request.get('user')
+                    if user:
+                        authorized = await self.authenticator.authorize(
+                            user,
+                            page
+                        )
                     if not authorized:
                         raise web.HTTPForbidden
             return await func(request, page)
