@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {memo} from 'react';
 import {range, join} from 'ramda';
 import {PagerPageProps, PagerProps, PagerState} from '../types';
 
@@ -14,7 +14,7 @@ const endOffset = (start, itemPerPage, page, total, leftOver) =>
 
 const showList = (page, total, n) => {
     if (total > n) {
-        const middle = n / 2;
+        const middle = Math.floor(n / 2);
         const first =
             page >= total - middle
                 ? total - n + 1
@@ -27,10 +27,16 @@ const showList = (page, total, n) => {
     return range(1, total + 1);
 };
 
-const Page = ({style, class_name, on_change, text, page}: PagerPageProps) => (
-    <span style={style} className={class_name} onClick={() => on_change(page)}>
-        {text || page}
-    </span>
+const Page = memo(
+    ({style, class_name, on_change, text, page, current}: PagerPageProps) => (
+        <span
+            style={style}
+            className={`${class_name}${current ? ' current-page' : ''}`}
+            onClick={() => !current && on_change(page)}
+        >
+            {text || page}
+        </span>
+    )
 );
 
 /**
@@ -98,7 +104,15 @@ export default class Pager extends React.Component<PagerProps, PagerState> {
 
     render() {
         const {current_page, pages, total_pages} = this.state;
-        const {class_name, identity, page_style, page_class_name} = this.props;
+        const {
+            class_name,
+            identity,
+            page_style,
+            page_class_name,
+            pages_displayed,
+            next_label,
+            previous_label,
+        } = this.props;
 
         const css: string[] = ['page'];
         if (page_class_name) {
@@ -110,21 +124,29 @@ export default class Pager extends React.Component<PagerProps, PagerState> {
             <div className={class_name} id={identity}>
                 {current_page > 1 && (
                     <Page
-                        page={1}
-                        text={'first'}
+                        page={current_page - 1}
+                        text={previous_label}
                         style={page_style}
                         class_name={pageCss}
                         on_change={this.onChangePage}
                     />
                 )}
-                {current_page > 1 && (
-                    <Page
-                        page={current_page - 1}
-                        text={'previous'}
-                        style={page_style}
-                        class_name={pageCss}
-                        on_change={this.onChangePage}
-                    />
+                {current_page + 1 >= pages_displayed && (
+                    <>
+                        <Page
+                            page={1}
+                            text={'1'}
+                            style={page_style}
+                            class_name={pageCss}
+                            on_change={this.onChangePage}
+                        />
+                        <Page
+                            page={-1}
+                            text={'...'}
+                            on_change={() => null}
+                            class_name={`${pageCss} more-pages`}
+                        />
+                    </>
                 )}
                 {pages.map((e) => (
                     <Page
@@ -133,21 +155,30 @@ export default class Pager extends React.Component<PagerProps, PagerState> {
                         style={page_style}
                         class_name={pageCss}
                         on_change={this.onChangePage}
+                        current={e === current_page}
                     />
                 ))}
-                {current_page < total_pages && (
-                    <Page
-                        page={current_page + 1}
-                        text={'next'}
-                        style={page_style}
-                        class_name={pageCss}
-                        on_change={this.onChangePage}
-                    />
+                {total_pages - current_page >=
+                    Math.ceil(pages_displayed / 2) && (
+                    <>
+                        <Page
+                            page={-1}
+                            text={'...'}
+                            class_name={`${pageCss} more-pages`}
+                            on_change={() => null}
+                        />
+                        <Page
+                            page={total_pages}
+                            style={page_style}
+                            class_name={pageCss}
+                            on_change={this.onChangePage}
+                        />
+                    </>
                 )}
                 {current_page < total_pages && (
                     <Page
-                        page={total_pages}
-                        text={'last'}
+                        page={current_page + 1}
+                        text={next_label}
                         style={page_style}
                         class_name={pageCss}
                         on_change={this.onChangePage}
@@ -156,9 +187,12 @@ export default class Pager extends React.Component<PagerProps, PagerState> {
             </div>
         );
     }
+
     static defaultProps = {
         current_page: 1,
         items_per_page: 10,
         pages_displayed: 10,
+        next_label: 'next',
+        previous_label: 'previous',
     };
 }

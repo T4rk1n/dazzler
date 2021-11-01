@@ -120,6 +120,14 @@ type PagerProps = {
      * The end index of the current page.
      */
     end_offset?: number;
+    /**
+     * Label for the next button.
+     */
+    next_label?: JSX.Element;
+    /**
+     * Text or component to use for the previous button.
+     */
+    previous_label?: JSX.Element;
 } & DazzlerProps;
 
 type PagerState = {
@@ -134,8 +142,9 @@ type PagerPageProps = {
     style?: object;
     class_name?: string;
     on_change?: Function;
-    text?: string;
+    text?: JSX.Element | string;
     page: number;
+    current?: boolean;
 };
 
 type PopUpProps = {
