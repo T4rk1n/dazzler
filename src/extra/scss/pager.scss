@@ -3,15 +3,31 @@
 .dazzler-extra-pager {
   text-align: center;
   .page {
-    padding: 5px;
     background-color: $primary;
     margin: 3px;
-    display: inline-block;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
     cursor: pointer;
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+    color: white;
+    border-radius: 5px;
+    width: 1.6rem;
+    height: 1.6rem;
+    font-size: 18px;
+    &.current-page {
+      background-color: $primary-dark;
+      &:hover, &:focus {
+        background-color: $primary-dark;
+      }
+    }
+    &.more-pages:hover, &.more-pages:focus {
+      background-color: $primary;
+    }
+
     &:hover, &:focus {
       background-color: $primary-light;
     }
