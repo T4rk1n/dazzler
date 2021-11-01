@@ -437,6 +437,8 @@ class Dazzler(precept.Precept):  # pylint: disable=too-many-instance-attributes
                     requirement = Requirement(internal=filename)
                     files.add(requirement)
                     self.requirements.append(requirement)
+            elif filename.endswith('assets.json'):
+                refresh = True
 
         for removed in deleted:
             requirement = self.requirement_from_file(removed)
