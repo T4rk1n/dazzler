@@ -97,7 +97,7 @@ module.exports = function (env, argv) {
         }),
     ];
 
-    if (devMode && argv && !argv.watch) {
+    if (devMode && argv && argv.watch) {
         plugins.push({
             apply: (compiler) => {
                 compiler.hooks.afterEmit.tap('BuildDazzlerPlugin', () => {
