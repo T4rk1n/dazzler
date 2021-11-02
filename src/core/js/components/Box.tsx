@@ -124,6 +124,8 @@ const Box = (props: BoxProps) => {
     );
 };
 
-Box.defaultProps = {};
+Box.defaultProps = {
+    clicks: 0,
+};
 
 export default Box;
