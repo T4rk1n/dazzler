@@ -485,6 +485,8 @@ async def test_ties(start_page, browser):
     await browser.wait_for_text_to_equal('#chain', text)
     await browser.wait_for_text_to_equal('#binding-output', text)
     await browser.wait_for_text_to_equal('#regex-output', text)
+    await browser.wait_for_text_to_equal('#regex-target-1', text)
+    await browser.wait_for_text_to_equal('#regex-target-2', text)
 
     text = 'foo bar'
 
@@ -494,6 +496,8 @@ async def test_ties(start_page, browser):
     await browser.wait_for_text_to_equal('#output-1', text)
     await browser.wait_for_text_to_equal('#output-2', text)
     await browser.wait_for_text_to_equal('#regex-output', text)
+    await browser.wait_for_text_to_equal('#regex-target-1', text)
+    await browser.wait_for_text_to_equal('#regex-target-2', text)
 
 
 @pytest.mark.async_test
