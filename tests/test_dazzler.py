@@ -554,3 +554,20 @@ async def test_calls(browser, start_page):
     await browser.wait_for_text_to_equal(
         '#output', 'Hello foo bar'
     )
+
+
+@pytest.mark.async_test
+async def test_skip_initial_binding(browser, start_page):
+    from tests.apps.pages.skip_initial import page
+
+    await start_page(page)
+
+    await browser.wait_for_text_to_equal('#click-output', 'clicks')
+    await browser.click('#clicker')
+    await browser.wait_for_text_to_equal('#click-output', '1')
+    await browser.wait_for_text_to_equal('#output', 'output')
+
+    inp = await browser.wait_for_element_by_id('input')
+    inp.send_keys(' ok')
+
+    await browser.wait_for_text_to_equal('#output', 'initial ok')
