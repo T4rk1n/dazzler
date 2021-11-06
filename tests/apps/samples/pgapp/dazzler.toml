@@ -2,6 +2,29 @@ secret_key = 'dazzler-secret-key'
 
 [session]
 backend = 'PostgreSQL'
+cookie_name = '_sessionid_'
+
+[development]
+reload_threshold = 5
+
+[authentication]
+enable = true
+authenticator = 'dazzler.contrib.postgresql:PostgresAuthenticator'
+
+[authentication.login]
+default_redirect = '/info'
+
+[authentication.register]
+enable = true
+require_email = false
+custom_fields = [
+    ['firstname', 'First name', 'text'],
+    ['lastname', 'Last name', 'text'],
+]
+
+[authentication.admin]
+enable = true
+page_ref = 'dazzler.contrib.postgresql:PostgresUserAdminPage'
 
 [postgres]
 dsn = 'host=localhost port=5432 dbname=t4rkdb'
@@ -12,3 +35,6 @@ schema_name = 'dazzler'
 [postgres.middleware]
 app_key = 'db'
 request_key = 'db'
+
+[postgres.auth]
+schema_name = 'dazzler'

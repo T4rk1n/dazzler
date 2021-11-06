@@ -1,0 +1,52 @@
+#user-info .logout-button {
+    width: calc(100% - 0.25rem);
+}
+
+#session-info .dazzler-core-box,
+#user-info .dazzler-core-box {
+    justify-content: space-between;
+    padding: 0.5rem;
+}
+
+#user-info,
+#session-info {
+    padding: 0.5rem;
+    width: 50%;
+}
+
+#session-info .panel-title,
+#user-info .panel-title {
+    padding: 0.5rem;
+    font-size: large;
+    font-weight: bold;
+}
+
+.page-title {
+    width: calc(100% - 2rem);
+    padding: 1rem;
+    color: white;
+    background: #107bdb;
+    font-size: x-large;
+    font-weight: bold;
+    font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    margin-bottom: 1rem;
+}
+.table-heading {
+    text-align: left;
+}
+.admin-row {
+    width: 100%;
+    align-items: center;
+    background: #ebebeb;
+}
+.admin-row:nth-child(even) {
+    background-color: #dfdfdf;
+}
+.admin-row:hover {
+    background-color: #00b0ff;
+}
+#user-pager .page {
+    border-radius: 5px;
+    min-width: 24px;
+    color: white;
+}
