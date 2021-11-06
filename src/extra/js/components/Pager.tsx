@@ -100,6 +100,19 @@ export default class Pager extends React.Component<PagerProps, PagerState> {
         if (props.current_page !== this.state.current_page) {
             this.onChangePage(props.current_page);
         }
+        if (props.total_items !== this.props.total_items) {
+            const total_pages = Math.ceil(
+                props.total_items / props.items_per_page
+            );
+            this.setState({
+                total_pages,
+                pages: showList(
+                    props.current_page,
+                    total_pages,
+                    props.pages_displayed
+                ),
+            });
+        }
     }
 
     render() {
