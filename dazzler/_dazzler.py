@@ -502,6 +502,19 @@ class Dazzler(precept.Precept):  # pylint: disable=too-many-instance-attributes
                     f'`dazzler.system.auth.AuthBackend`'
                 )
 
+        if self.config.authentication.admin.enable:
+            admin_page_cls = get_member(
+                self.config.authentication.admin.page_ref
+            )
+            admin_page = admin_page_cls(
+                self,
+                name=self.config.authentication.admin.page_name,
+                url=self.config.authentication.admin.page_url,
+                title=self.config.authentication.admin.page_title,
+                authorizations=self.config.authentication.admin.authorizations,
+            )
+            self.add_page(admin_page)
+
         self.auth = DazzlerAuth(
             self, authenticator,
             backend=backend,

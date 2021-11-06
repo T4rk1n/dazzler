@@ -258,6 +258,39 @@ class DazzlerConfig(Config):
 
         register: Register
 
+        class Admin(Nestable):
+            enable = ConfigProperty(
+                config_type=bool,
+                default=False,
+                comment='Enable the user admin page to manage role & users.'
+            )
+            page_url = ConfigProperty(
+                config_type=str,
+                default='/auth/admin',
+                comment='Url for the admin page.'
+            )
+            page_ref = ConfigProperty(
+                config_type=str,
+                default='',
+                comment='Must be set if enabled, path to an subclass of '
+                        'UserAdminPage'
+            )
+            page_name = ConfigProperty(
+                config_type=str,
+                default='user_admin',
+            )
+            page_title = ConfigProperty(
+                config_type=str,
+                default='User Administration'
+            )
+            authorizations = ConfigProperty(
+                config_type=list,
+                default=['admin'],
+                comment='Authorizations required to access the user admin page'
+            )
+
+        admin: Admin
+
     authentication: Authentication
 
     class Development(Nestable):

@@ -40,10 +40,11 @@ def get_member(member_path: str):
     return getattr(module, instance_name, None)
 
 
-def replace_all(template, **kwargs):
+def replace_all(template, open_bracket='%(', end_bracket=')', **kwargs):
     t = template
     for k, v in kwargs.items():
-        t = t.replace(f'%({k})', str(v))
+        key = f'{open_bracket}{k}{end_bracket}'
+        t = t.replace(key, str(v))
     return t
 
 
