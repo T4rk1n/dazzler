@@ -407,14 +407,17 @@ const Dropdown = (props: DDropdownProps) => {
         }
         const optionValues = options.map((o) => (is(Object, o) ? o.value : o));
         if (multi && value) {
-            updateAspects({
-                value: (value as string[]).filter((v) =>
-                    optionValues.includes(v)
-                ),
-            });
-            setSelectedItems(
-                selectedItems.filter((e) => optionValues.includes(e.value))
+            const includedValues = (value as any[]).filter((v) =>
+                optionValues.includes(v)
             );
+            if (includedValues.length !== (value as any[]).length) {
+                updateAspects({
+                    value: includedValues,
+                });
+                setSelectedItems(
+                    selectedItems.filter((e) => optionValues.includes(e.value))
+                );
+            }
         } else {
             if (!optionValues.includes(value)) {
                 updateAspects({value: null});

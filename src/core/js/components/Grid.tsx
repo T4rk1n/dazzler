@@ -69,7 +69,7 @@ const Grid = (props: GridProps) => {
             init.push('center-cells');
         }
         return getPresetsClassNames(rest, ...init);
-    }, [rest, class_name]);
+    }, [rest, class_name, center_cells]);
     const styling = useMemo(() => getCommonStyles(rest, style), [rest, style]);
     return (
         <div id={identity} className={css} style={styling}>
