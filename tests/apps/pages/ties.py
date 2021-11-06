@@ -1,5 +1,5 @@
 from dazzler.components import core
-from dazzler.system import Page, BindingContext, Trigger
+from dazzler.system import Page, BindingContext, Trigger, Target
 
 page = Page(
     __name__,
@@ -11,7 +11,9 @@ page = Page(
         core.Container(identity='output-2'),
         core.Container(identity='chain'),
         core.Container(identity='binding-output'),
-        core.Container(identity='regex-output')
+        core.Container(identity='regex-output'),
+        core.Container(identity='regex-target-1'),
+        core.Container(identity='regex-target-2')
     ]),
     packages=['dazzler_core']
 )
@@ -24,7 +26,8 @@ page.tie('children@output', 'children@chain')
 
 page.tie(
     Trigger('(input|multi)', 'val', regex=True),
-    'children@regex-output'
+    'children@regex-output',
+    Target(aspect='children', identity='regex-target-', regex=True)
 )
 
 
