@@ -2,17 +2,30 @@ import json
 
 from dazzler.system import Page, BindingContext
 from dazzler.components.core import (
-    Panel, Box, Text, Button, Input, Interval, Dropdown
+    Panel, Box, Text, Button, Input, Interval, Dropdown, Container, Link
 )
-from dazzler.components import html
+from dazzler.components import html, auth, icons
+from dazzler.presets import PresetColor
+
 
 page = Page(
     __name__,
     html.Div([
-        html.H1('Dazzler PostgreSQL integrations'),
+        icons.IconLoader([]),
+        icons.FoundIconPack(),
+        Container(
+            [
+                icons.Icon('fi-book'),
+                Text(' Dazzler PostgreSQL integrations')
+            ],
+            class_name='page-title'
+        ),
         Box([
             Panel(
                 title='Session Info',
+                identity='session-info',
+                title_color=PresetColor.NEUTRAL_LIGHT,
+                title_background=PresetColor.PRIMARY_DARK,
                 content=html.Div([
                     Box([
                         Text(
@@ -40,6 +53,13 @@ page = Page(
                     ])
                 ]),
             ),
+            Panel(
+                title='User Info',
+                content='',
+                identity='user-info',
+                title_color=PresetColor.NEUTRAL_LIGHT,
+                title_background=PresetColor.PRIMARY_DARK,
+            )
         ]),
         Box([
             Button('Save clicks', identity='save-clicks'),
@@ -61,7 +81,7 @@ page = Page(
             )
         ]),
         Interval(identity='session-watch')
-    ]),
+    ], identity='layout'),
 )
 
 
@@ -121,3 +141,44 @@ async def session_watch(ctx: BindingContext):
         'session-object',
         text=json.dumps(obj_value) if obj_value else '{}'
     )
+
+
+@page.bind('title@user-info', once=True)
+async def on_user_info(ctx: BindingContext):
+    if ctx.user:
+        await ctx.set_aspect(
+            'user-info',
+            content=Container([
+                Box([
+                    Text('Username: ', font_weight='bold'),
+                    Text(ctx.user.username)
+                ]),
+                Box([
+                    Text('Roles: ', font_weight='bold'),
+                    Text(json.dumps(ctx.user.roles))
+                ]),
+                Box([
+                    Text('First name: ', font_weight='bold'),
+                    Text(ctx.user.metadata['firstname'])
+                ]),
+                Box([
+                    Text('Last name: ', font_weight='bold'),
+                    Text(ctx.user.metadata.get('lastname'))
+                ]),
+                auth.Logout(ctx.auth.logout_url, style={'width': '100%'})
+            ])
+        )
+    else:
+        await ctx.set_aspect(
+            'user-info',
+            content=Container([
+                Box(Link(
+                    children='Login',
+                    page_name=ctx.auth.login_page.name
+                )),
+                Box(Link(
+                    children='Register',
+                    page_name=ctx.auth.register_page.name,
+                )),
+            ])
+        )
