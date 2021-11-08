@@ -9,10 +9,10 @@ dazzler.contrib package
 Submodules
 ----------
 
-dazzler.contrib.postgres module
--------------------------------
+dazzler.contrib.postgresql module
+---------------------------------
 
-.. automodule:: dazzler.contrib.postgres
+.. automodule:: dazzler.contrib.postgresql
    :members:
    :undoc-members:
    :show-inheritance:

@@ -8,10 +8,11 @@ Dazzler documentation
 
    usage
    components
+   systems/index
    configuration
-   commands
    deployment
    electron
+   commands
    examples/index
    api/modules
    contributing

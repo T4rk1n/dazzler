@@ -15,6 +15,7 @@ Subpackages
    dazzler.components
    dazzler.contrib
    dazzler.electron
+   dazzler.pages
    dazzler.system
    dazzler.tools
 
@@ -25,6 +26,14 @@ dazzler.errors module
 ---------------------
 
 .. automodule:: dazzler.errors
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+dazzler.events module
+---------------------
+
+.. automodule:: dazzler.events
    :members:
    :undoc-members:
    :show-inheritance:

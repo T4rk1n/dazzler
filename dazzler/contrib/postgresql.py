@@ -362,14 +362,13 @@ class PostgresSessionBackend(SessionBackEnd):
     Session backend for PostgreSQL.
 
     :Tables:
-
-    - ``session``
+        - ``session``
 
     :Configuration:
-    .. code-block:: toml
+        .. code-block:: toml
 
-        [session]
-        backend = 'PostgreSQL'
+            [session]
+            backend = 'PostgreSQL'
 
     :type pool: aiopg.Pool
     """
@@ -504,23 +503,22 @@ class PostgresAuthenticator(Authenticator):
     Encryption of user passwords with scrypt.
 
     :Tables:
-
-    - ``users``
-    - ``role``
-    - ``user_roles``
+        - ``users``
+        - ``role``
+        - ``user_roles``
 
     :Configuration:
-    .. code-block:: toml
+        .. code-block:: toml
 
-        [authentication]
-        authenticator = 'dazzler.contrib.postgresql:PostgresAuthenticator'
+            [authentication]
+            authenticator = 'dazzler.contrib.postgresql:PostgresAuthenticator'
 
-        [postgres]
-        dsn = 'host=localhost port=5432 dbname=mydb'
+            [postgres]
+            dsn = 'host=localhost port=5432 dbname=mydb'
 
-        [postgres.auth]
-        schema_name = 'public'
-        user_table_name = 'users'
+            [postgres.auth]
+            schema_name = 'public'
+            user_table_name = 'users'
 
     :type pool: aiopg.Pool
     """
@@ -721,11 +719,11 @@ class PostgresUserAdminPage(UserAdminPage):
     Implementation of UserAdminPage for PostgreSQL.
 
     :Configuration:
-    .. code-block:: toml
+        .. code-block:: toml
 
-        [authentication.admin]
-        enable = true
-        page_ref = 'dazzler.contrib.postgresql:PostgresUserAdminPage'
+            [authentication.admin]
+            enable = true
+            page_ref = 'dazzler.contrib.postgresql:PostgresUserAdminPage'
 
     :type pool: aiopg.Pool
     """
