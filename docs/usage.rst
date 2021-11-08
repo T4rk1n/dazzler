@@ -327,37 +327,57 @@ Switch between a light and dark theme:
     - :py:mod:`dazzler.system.transforms` - API reference.
     - :ref:`transforms_example` - Example of most transforms usage.
 
+Integrated systems
+==================
+
+Authentication and session systems are available to use with databases.
+
+Backends
+--------
+
+:PostgreSQL:
+
+    PostgreSQL is available for both session and authentication.
+
+    :Install:
+        ``pip install dazzler[postgresql]``
+    :Configure:
+        .. code-block:: toml
+
+            [postgres]
+            # Also set by environ: POSTGRES_DSN
+            dsn = 'host=localhost port=5432 dbname=dbname user=user password=pw'
+
+            [session]
+            backend = 'PostgreSQL'
+
+            [authentication]
+            authenticator = 'dazzler.contrib.postgresql:PostgresAuthenticator'
+
+:Redis:
+
+    Redis can be used as a Session backend.
+
+    :Install:
+        ``pip install dazzler[redis]``
+    :Configure:
+        Set the ``REDIS_URL`` environ variable,
+        default: ``redis://localhost:6379``.
+
+        .. code-block:: toml
+
+            [session]
+            backend = 'Redis'
+
 Session
-=======
+-------
 
-The session system is activated by default with a default backend using json
-files stored locally on the server. It is a key/value system associated
-with each client connected.
+The session system is used to associate data to users of the application
+when using bindings. It is enabled by default and interacted with the
+:py:class:`~.dazzler.system.BindingContext`` ``session`` attribute,
+automatically scoped to the current user.
 
-Another backend option is `Redis`, you need to install the dependency with:
-
-.. code-block:: sh
-
-    pip install dazzler[redis]
-
-Session Methods
----------------
-
-Three operation can be done on key value pairs:
-
-- :py:meth:`~.dazzler.system.session.Session.get`
-- :py:meth:`~.dazzler.system.session.Session.set`
-- :py:meth:`~.dazzler.system.session.Session.delete`
-
-.. seealso::
-
-    :py:class:`~.dazzler.system.session.Session`
-
-Usage via binding
------------------
-
-A session object is available via the
-:py:class:`~.dazzler.system.BindingContext``
+**Basic usage:**
 
 .. code-block:: python
 
@@ -365,14 +385,37 @@ A session object is available via the
     async def on_click(ctx: BindingContext):
         my_value = await ctx.session.get('my_value')
 
+.. seealso::
+    :ref:`Session documentation <session>`
 
-Usage via route
----------------
+.. warning::
+    The session system should not be used with Electron applications.
 
-Also available via the request object for regular routes.
+    Disable the session system:
 
-.. code-block:: python
+    .. code-block:: toml
 
-    @page.route('/my-route')
-    async def my_route(request):
-        my_value = await request['session'].get('my_value')
+        [session]
+        enable = false
+
+Authentication
+--------------
+
+This system provide pages and routes for authentication like login, logout,
+register and a user administration page. Pages can ``require_login`` before the user
+can access it and additional authorizations can be necessary with the
+``authorizations`` keyword of the :py:class:`~.dazzler.system.Page`.
+
+Enable with configuration:
+
+.. code-block:: toml
+
+    [authentication]
+    enable = true
+
+.. seealso::
+    :ref:`Session documentation <session>`
+
+.. warning::
+    The authentication system is currently not suited for use with
+    Electron applications.
