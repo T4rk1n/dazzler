@@ -218,12 +218,12 @@ class DazzlerConfig(Config):
             enable = ConfigProperty(
                 config_type=bool,
                 default=True,
-                comment='Add a register page to the application'
             )
             require_email = ConfigProperty(
                 default=True,
                 config_type=bool,
-                comment='Require the user '
+                comment='Require the user to provide an email '
+                        'on the register page.'
             )
             page_name = ConfigProperty(
                 default='register',
