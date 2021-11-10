@@ -6,6 +6,7 @@ import pytest
 from dazzler import Dazzler
 from dazzler.components import core
 from dazzler.contrib.redis import RedisSessionBackend
+from dazzler.contrib.postgresql import PostgresSessionBackend
 from dazzler.system import Page, Trigger, BindingContext
 from dazzler.system.session import (
     SessionMiddleware, FileSessionBackEnd
@@ -38,12 +39,14 @@ def session_app():
 @pytest.mark.async_test
 @pytest.mark.parametrize('backend', [
     FileSessionBackEnd,
-    RedisSessionBackend
+    RedisSessionBackend,
+    PostgresSessionBackend,
 ])
 async def test_session(start_visit, browser, backend):
     app = Dazzler(__name__)
     app.config.session.enable = False
     app.config.session.duration = 3
+    app.config.secret_key = uuid.uuid4().hex
     app.middlewares.append(SessionMiddleware(app, backend=backend(app)))
 
     page = Page(

@@ -372,8 +372,12 @@ class PostgresSessionBackend(SessionBackEnd):
 
     :type pool: aiopg.Pool
     """
-    def __init__(self, app, config: PostgresConfig, pool=None):
+    def __init__(self, app, config: PostgresConfig = None, pool=None):
         super().__init__(app)
+        if not config:
+            config = PostgresConfig()
+            if app.config_path:
+                config.read_file(app.config_path)
         self.config = config
         self.pool = pool
         from psycopg2.extras import Json
