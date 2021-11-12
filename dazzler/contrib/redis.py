@@ -4,6 +4,7 @@ from typing import Any
 
 from aiohttp import web
 
+from dazzler.events import DAZZLER_SETUP, DAZZLER_STOP
 from dazzler.system import Middleware, UNDEFINED
 from dazzler.system.session import SessionBackEnd
 
@@ -51,7 +52,12 @@ class RedisSessionBackend(SessionBackEnd):
     def __init__(self, app, redis=None):
         super().__init__(app)
         self.redis = redis
-        app.events.subscribe('dazzler_setup', self._setup)
+        app.events.subscribe(DAZZLER_SETUP, self._setup)
+        app.events.subscribe(DAZZLER_STOP, self._cleanup)
+
+    async def _cleanup(self, _):
+        self.redis.close()
+        await self.redis.wait_closed()
 
     async def _setup(self, _):
         if not self.redis and 'redis' in self.app.server.app:

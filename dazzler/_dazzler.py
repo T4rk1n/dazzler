@@ -480,12 +480,14 @@ class Dazzler(precept.Precept):  # pylint: disable=too-many-instance-attributes
                 raise AuthError(
                     f'{self.config.authentication.authenticator} '
                     f'is not an instance of '
-                    f'`dazzler.system.auth.Authenticator`'
+                    f'`dazzler.system.auth:Authenticator` '
                     f'{repr(authenticator)}'
                 )
         else:
             raise AuthError(
-                'No authenticator provided in config'
+                'Set config.authentication.authenticator to a subclass of'
+                'dazzler.system.auth:Authenticator, '
+                'eg: dazzler.contrib.postgresql.PostgresAuthenticator'
             )
 
         if self.config.authentication.backend:
@@ -503,6 +505,11 @@ class Dazzler(precept.Precept):  # pylint: disable=too-many-instance-attributes
                 )
 
         if self.config.authentication.admin.enable:
+            if not self.config.authentication.admin.page_ref:
+                raise AuthError(
+                    'authentication.admin.page_ref must be set '
+                    'to use the admin page!'
+                )
             admin_page_cls = get_member(
                 self.config.authentication.admin.page_ref
             )

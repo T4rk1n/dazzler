@@ -32,7 +32,9 @@ const IconLoader = (props) => {
     );
 };
 
-IconLoader.defaultProps = {};
+IconLoader.defaultProps = {
+    packs: [],
+};
 
 IconLoader.propTypes = {
     /**
