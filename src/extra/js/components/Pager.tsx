@@ -144,23 +144,24 @@ export default class Pager extends React.Component<PagerProps, PagerState> {
                         on_change={this.onChangePage}
                     />
                 )}
-                {current_page + 1 >= pages_displayed && (
-                    <>
-                        <Page
-                            page={1}
-                            text={'1'}
-                            style={page_style}
-                            class_name={pageCss}
-                            on_change={this.onChangePage}
-                        />
-                        <Page
-                            page={-1}
-                            text={'...'}
-                            on_change={() => null}
-                            class_name={`${pageCss} more-pages`}
-                        />
-                    </>
-                )}
+                {current_page + 1 >= pages_displayed &&
+                    total_pages > pages_displayed && (
+                        <>
+                            <Page
+                                page={1}
+                                text={'1'}
+                                style={page_style}
+                                class_name={pageCss}
+                                on_change={this.onChangePage}
+                            />
+                            <Page
+                                page={-1}
+                                text={'...'}
+                                on_change={() => null}
+                                class_name={`${pageCss} more-pages`}
+                            />
+                        </>
+                    )}
                 {pages.map((e) => (
                     <Page
                         page={e}
