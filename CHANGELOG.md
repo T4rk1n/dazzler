@@ -2,6 +2,37 @@
 
 Versions follow [Semantic Versioning](https://www.semver.org)
 
+## [0.9.0]
+### Added
+
+- 🍚 Add html & svg components.
+- 🍚 Add `core.Panel`.
+- ✨ Add `@page.call` request binding.
+- ✨ Authentication improvements:
+  - Add register page.
+  - Add user administration page.
+  - Add page specific authorizations.
+- ✨ Add `dazzler.contrib.postgresql` integrations:
+  - `PostgresSessionBackend`
+  - `PostgresAuthenticator`
+  - `PostgresMiddleware`
+  - `PostgresUserAdminPage`
+- ✨ Add regex tie targets.
+- ✨ Add `skip_initial` to Trigger to only bind after the initial render.
+- 🍚 Add `delete_identity` aspect to core.ListBox
+
+### Changed
+
+- 🔌 Electron automatically create a window if the application contains only one page.
+- 👣 Move redis session to `dazzler.contrib`.
+
+### Fixed
+
+- 🐛 Fix core.Dropdown multi with initial value.
+- 🐛 Fix rendering of matrices of components.
+- 🐛 Fix core.Box clicks.
+- 🐛 Fix extra.Pager total_items changes and styling improvements.
+
 ## [0.8.1]
 ### Fixed
 
