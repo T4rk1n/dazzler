@@ -1,18 +1,18 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import IconPack from './IconPack';
+import {DazzlerProps} from '../../../commons/js/types';
 
 /**
  * Icon pack from https://useiconic.com/
  *
- * :Pack: ``fi``
+ * :Pack: ``oi``
  *
  * @example
  *
  *     icons.OpenIconicPack(),
  *     icons.Icon('oi-bug')
  */
-const OpenIconicPack = () => {
+const OpenIconicPack = (_: DazzlerProps) => {
     return (
         <IconPack
             name="oi"
@@ -22,12 +22,5 @@ const OpenIconicPack = () => {
 };
 
 OpenIconicPack.defaultProps = {};
-
-OpenIconicPack.propTypes = {
-    class_name: PropTypes.string,
-    style: PropTypes.object,
-    identity: PropTypes.string,
-    updateAspects: PropTypes.func,
-};
 
 export default OpenIconicPack;

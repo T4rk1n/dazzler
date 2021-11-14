@@ -63,7 +63,7 @@ module.exports = function (env, argv) {
             dependOn: 'commons',
         },
         icons: {
-            import: [path.join(__dirname, 'src/icons/js/index.js')],
+            import: [path.join(__dirname, 'src/icons/ts/index.ts')],
             dependOn: 'commons',
         },
     };

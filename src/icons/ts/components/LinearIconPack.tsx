@@ -1,6 +1,6 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import IconPack from './IconPack';
+import {DazzlerProps} from '../../../commons/js/types';
 
 /**
  * Free Icon pack from "https://linearicons.com/free"
@@ -12,7 +12,7 @@ import IconPack from './IconPack';
  *     icons.LinearIconPack(),
  *     icons.Icon('lnr-home')
  */
-const LinearIconPack = () => {
+const LinearIconPack = (_: DazzlerProps) => {
     return (
         <IconPack
             name="lnr"
@@ -22,12 +22,5 @@ const LinearIconPack = () => {
 };
 
 LinearIconPack.defaultProps = {};
-
-LinearIconPack.propTypes = {
-    class_name: PropTypes.string,
-    style: PropTypes.object,
-    identity: PropTypes.string,
-    updateAspects: PropTypes.func,
-};
 
 export default LinearIconPack;
