@@ -744,3 +744,28 @@ async def test_script(start_visit, browser):
         '#script-error-output',
         'Failed to load script: /error'
     )
+
+
+@pytest.mark.async_test
+async def test_stylesheet(start_visit, browser):
+    from tests.components.pages.statics import page
+
+    app = Dazzler(__name__)
+    app.config.static_folder = os.path.join(
+        get_package_path(__name__), '..', 'apps', 'static')
+    page.url = '/'
+    app.add_page(page)
+
+    await start_visit(app)
+
+    await browser.wait_for_text_to_equal(
+        '#stylesheet-loaded-output',
+        'loaded-output'
+    )
+    await browser.wait_for_text_to_equal(
+        '#stylesheet-error-output',
+        'Failed to load stylesheet: /error'
+    )
+    await browser.wait_for_style_to_equal(
+        '#styled', 'background-color', 'rgba(255, 0, 0, 0.8)'
+    )
