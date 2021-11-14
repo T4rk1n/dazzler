@@ -3,6 +3,7 @@ import asyncio
 import itertools
 import functools
 import json
+import os
 
 import pytest
 from selenium.webdriver import ActionChains
@@ -12,6 +13,7 @@ from selenium.webdriver.support.select import Select
 from dazzler import Dazzler
 from dazzler.components import core
 from dazzler.system import Page
+from dazzler.tools import get_package_path
 
 
 @pytest.mark.async_test
@@ -717,3 +719,28 @@ async def test_switch(start_page, browser):
         '#output', 'Value: false'
     )
 
+
+@pytest.mark.async_test
+async def test_script(start_visit, browser):
+    from tests.components.pages.statics import page
+
+    app = Dazzler(__name__)
+    app.config.static_folder = os.path.join(
+        get_package_path(__name__), '..', 'apps', 'static')
+    page.url = '/'
+    app.add_page(page)
+
+    await start_visit(app)
+
+    await browser.wait_for_text_to_equal(
+        '#script-loaded',
+        'loaded'
+    )
+    await browser.wait_for_text_to_equal(
+        '#script-loaded-output',
+        'loaded-output'
+    )
+    await browser.wait_for_text_to_equal(
+        '#script-error-output',
+        'Failed to load script: /error'
+    )
