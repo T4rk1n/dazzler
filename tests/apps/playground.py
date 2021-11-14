@@ -1,4 +1,7 @@
+import os
+
 from dazzler import Dazzler
+from dazzler.tools import get_package_path
 
 from tests.apps.pages import component_as_trigger, binding_return_trigger, \
     same_identity, component_as_aspect, storage, regex_bindings, ties, \
@@ -7,12 +10,13 @@ from tests.components.pages import checklist, store, html, interval, \
     input_output, radio, link, viewport, progress, select, button, slider, \
     modal, textarea, table, grid, form, markdown, calendar, pager, extras, \
     login, list_box, treeview, dropdown, page_map, icons, ts, text,\
-    checkbox, common_styles, switch, color_picker, panel
+    checkbox, common_styles, switch, color_picker, panel, statics
 from tests.apps.samples import progress_update
 
 app = Dazzler(__name__)
 app.config.session.backend = 'Redis'
 app.config.development.reload_threshold = 5.0
+app.config.static_folder = os.path.join(get_package_path(__name__), 'static')
 
 pages = [
     component_as_trigger.page,
@@ -62,6 +66,7 @@ pages = [
     once.page,
     calls.page,
     panel.page,
+    statics.page,
 ]
 
 app.add_page(*pages)

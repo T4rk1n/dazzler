@@ -78,6 +78,7 @@ def start_page(start_visit):  # pylint: disable=redefined-outer-name
         page.url = '/'
         app.add_page(page)
         await start_visit(app, debug=debug)
+        return app
 
     return _start_page
 
