@@ -1,7 +1,11 @@
 import React, {useContext, useMemo} from 'react';
-import {join} from 'ramda';
 import IconContext from '../IconContext';
-import {DazzlerProps} from '../../../commons/js/types';
+import {
+    CommonPresetsProps,
+    CommonStyleProps,
+    DazzlerProps,
+} from '../../../commons/js/types';
+import {getCommonStyles, getPresetsClassNames} from 'commons';
 
 type Props = {
     /**
@@ -17,7 +21,9 @@ type Props = {
      * icon pack name.
      */
     icon_pack?: string;
-} & DazzlerProps;
+} & DazzlerProps &
+    CommonPresetsProps &
+    CommonStyleProps;
 
 /**
  * Icon from a pack, prefix the name with the pack name.
@@ -27,7 +33,7 @@ type Props = {
  *     icon = Icon('fi-home')
  */
 const Icon = (props: Props) => {
-    const {name, class_name, style, identity, icon_pack} = props;
+    const {name, class_name, style, identity, icon_pack, ...rest} = props;
     const context = useContext(IconContext);
 
     const pack = useMemo(() => {
@@ -45,17 +51,17 @@ const Icon = (props: Props) => {
         return name;
     }, [icon_pack, name]);
 
+    const css = useMemo(
+        () => getPresetsClassNames(rest, class_name, name, pack),
+        [rest, class_name, name, pack]
+    );
+    const styling = useMemo(() => getCommonStyles(rest, style), [rest, style]);
+
     if (!context.isLoaded(pack)) {
         return null;
     }
 
-    return (
-        <i
-            className={join(' ', [name, class_name, pack])}
-            style={style}
-            id={identity}
-        />
-    );
+    return <i className={css} style={styling} id={identity} />;
 };
 
 Icon.defaultProps = {};
