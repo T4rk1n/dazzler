@@ -13,7 +13,7 @@ export function loadRequirement(requirement: Requirement) {
         } else if (kind === 'map') {
             return resolve();
         } else {
-            return reject({error: `Invalid requirement kind: ${kind}`});
+            return reject(`Invalid requirement kind: ${kind}`);
         }
         return method(url).then(resolve).catch(reject);
     });

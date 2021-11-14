@@ -27,6 +27,7 @@ import Text from './components/Text';
 import Checkbox from './components/Checkbox';
 import Switch from './components/Switch';
 import Panel from './components/Panel';
+import Script from './components/Script';
 
 export {
     Container,
@@ -56,4 +57,5 @@ export {
     Checkbox,
     Switch,
     Panel,
+    Script,
 };
