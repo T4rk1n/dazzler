@@ -1,4 +1,4 @@
-module.paths.push(process.env.MODULES_PATH)
+module.paths.push(process.env.MODULES_PATH);
 const ts = require('typescript');
 const fs = require('fs');
 const path = require('path');
@@ -137,14 +137,14 @@ function walk(directory, components = {}) {
         } else if (propName === '[]') {
             return 'array';
         } else if (
-            propName === 'Element'
-            || propName === 'ReactNode'
-            || propName === 'ReactElement'
+            propName === 'Element' ||
+            propName === 'ReactNode' ||
+            propName === 'ReactElement'
         ) {
             return 'node';
         }
-        return propName
-    }
+        return propName;
+    };
 
     // Format the type output as required by the dazzler generator.
     const getAspectType = (propType, propObj) => {
@@ -539,11 +539,12 @@ function walk(directory, components = {}) {
                     ts.isPropertyDeclaration(declaration))
             ) {
                 commentSource = type.symbol;
-            } else {
             }
 
             let defaultProps = getDefaultProps(typeSymbol, source);
-            let propsType = getPropsForFunctionalComponent(type);
+            const propsType = getPropsForFunctionalComponent(type);
+            const isContext = !!type.getProperty('isContext');
+
             let props;
 
             if (propsType) {
@@ -561,6 +562,7 @@ function walk(directory, components = {}) {
                 displayName: name,
                 description: getComment(commentSource),
                 props,
+                isContext,
             };
         });
     });
