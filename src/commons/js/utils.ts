@@ -29,10 +29,14 @@ export function loadScript(uri: string, timeout = 30000) {
             element.setAttribute(k, attributes[k])
         );
         element.onload = onload;
+        element.onerror = () => {
+            clearTimeout(timeoutId);
+            reject(`Failed to load script: ${uri}`);
+        };
 
         timeoutId = setTimeout(() => {
             element.src = '';
-            reject({error: `${uri} did not load after ${timeout}ms`});
+            reject(`${uri} did not load after ${timeout}ms`);
         }, timeout);
 
         document.querySelector('body').appendChild(element);
