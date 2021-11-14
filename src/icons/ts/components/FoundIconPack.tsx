@@ -1,6 +1,6 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import IconPack from './IconPack';
+import {DazzlerProps} from '../../../commons/js/types';
 
 /**
  * Free icon pack from https://zurb.com/playground/foundation-icon-fonts-3
@@ -12,7 +12,7 @@ import IconPack from './IconPack';
  *     icons.FoundIconPack(),
  *     icons.Icon('fi-home')
  */
-const FoundIconPack = () => {
+const FoundIconPack = (_: DazzlerProps) => {
     return (
         <IconPack
             name="fi"
@@ -22,12 +22,5 @@ const FoundIconPack = () => {
 };
 
 FoundIconPack.defaultProps = {};
-
-FoundIconPack.propTypes = {
-    class_name: PropTypes.string,
-    style: PropTypes.object,
-    identity: PropTypes.string,
-    updateAspects: PropTypes.func,
-};
 
 export default FoundIconPack;
