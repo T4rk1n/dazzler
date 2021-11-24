@@ -66,6 +66,10 @@ module.exports = function (env, argv) {
             import: [path.join(__dirname, 'src/icons/ts/index.ts')],
             dependOn: 'commons',
         },
+        charts: {
+            import: [path.join(__dirname, 'src/charts/ts/index.ts')],
+            dependOn: 'commons'
+        },
     };
 
     const externals = {

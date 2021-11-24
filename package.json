@@ -22,9 +22,10 @@
     "build:dazzler::markdown": "dazzler generate src/markdown/js/components dazzler/components/markdown",
     "build:dazzler::auth": "dazzler generate src/auth/js/components dazzler/components/auth --ts",
     "build:dazzler::icons": "dazzler generate src/icons/ts/components dazzler/components/icons --ts",
+    "build:dazzler::charts": "dazzler generate src/charts/ts/components dazzler/components/charts --ts",
     "build:dazzler::electron": "dazzler generate src/electron/renderer/components dazzler/components/electron --ts",
-    "build:dazzler::watch": "run-p build:dazzler::core build:dazzler::extra build:dazzler::electron",
-    "build:dazzler": "run-p build:dazzler::core build:dazzler::test build:dazzler::extra build:dazzler::calendar build:dazzler::markdown build:dazzler::auth build:dazzler::icons build:dazzler::ts build:dazzler::electron build:dazzler::html build:dazzler::svg",
+    "build:dazzler::watch": "run-p build:dazzler::charts",
+    "build:dazzler": "run-p build:dazzler::core build:dazzler::test build:dazzler::extra build:dazzler::calendar build:dazzler::markdown build:dazzler::auth build:dazzler::icons build:dazzler::ts build:dazzler::electron build:dazzler::html build:dazzler::svg build:dazzler::charts",
     "build:docs": "docs/build.sh",
     "build": "run-s build:webpack build:dev build:electron build:electron:components build:electron:components::dev",
     "watch": "npm run build:dev -- --watch",
@@ -80,7 +81,8 @@
     "react": "^17.0.2",
     "react-colorful": "^5.3.0",
     "react-dom": "^17.0.2",
-    "react-markdown": "^6.0.2"
+    "react-markdown": "^6.0.2",
+    "recharts": "^2.1.5"
   },
   "peerDependencies": {
     "react": "^17.0.2",
