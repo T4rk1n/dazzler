@@ -13,9 +13,11 @@ page = Page(
         icons.FoundIconPack(),
         icons.OpenIconicPack(),
         icons.TypiconsPack(),
+        icons.FlagIconPack(),
         core.Container(icons.Icon('lnr-home'),),
         core.Container(icons.Icon('fi-home')),
         core.Container(icons.Icon('oi-bug')),
         core.Container(icons.Icon('typcn-globe')),
+        core.Container(icons.Icon('flag-icon-gr', icon_pack='flag-icon'))
     ])
 )

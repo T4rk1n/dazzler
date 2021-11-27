@@ -5,6 +5,7 @@ import LinearIconPack from './components/LinearIconPack';
 import FoundIconPack from './components/FoundIconPack';
 import OpenIconicPack from './components/OpenIconicPack';
 import TypiconsPack from './components/TypiconsPack';
+import FlagIconPack from './components/FlagIconPack';
 
 export {
     Icon,
@@ -14,4 +15,5 @@ export {
     FoundIconPack,
     OpenIconicPack,
     TypiconsPack,
+    FlagIconPack,
 };
