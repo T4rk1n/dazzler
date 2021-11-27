@@ -38,7 +38,7 @@ const Icon = (props: Props) => {
 
     const pack = useMemo(() => {
         if (icon_pack) {
-            return pack;
+            return icon_pack;
         }
         const split1 = name.split(' ');
         if (split1.length > 1) {
