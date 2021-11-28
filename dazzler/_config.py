@@ -529,7 +529,7 @@ class DazzlerConfig(Config):
                 comment='Copyright line to use in the installer.'
             )
             electron_version = ConfigProperty(
-                default='^13.1.7',
+                default='^16.0.2',
                 comment='Electron version to use for the build.'
             )
             electron_builder_version = ConfigProperty(

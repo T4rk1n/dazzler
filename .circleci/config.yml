@@ -11,7 +11,7 @@ jobs:
     environment:
       PYTHONPATH: ~/repo
       ELECTRON_DRIVER: electron-driver
-      ELECTRON_CHROME_VERSION: 91.0.4472.101
+      ELECTRON_CHROME_VERSION: 96.0.4664.45
       POSTGRES_DSN: host=localhost port=5432 dbname=circle_test user=root password=test
 
     working_directory: ~/repo
