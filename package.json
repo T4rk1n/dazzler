@@ -41,7 +41,7 @@
     "@babel/cli": "^7.14.8",
     "@babel/core": "^7.14.8",
     "@babel/plugin-proposal-object-rest-spread": "^7.14.7",
-    "@babel/plugin-transform-runtime": "^7.14.5",
+    "@babel/plugin-transform-runtime": "^7.16.4",
     "@babel/polyfill": "^7.12.1",
     "@babel/preset-env": "^7.15.0",
     "@babel/preset-react": "^7.14.5",
@@ -60,7 +60,7 @@
     "eslint-plugin-import": "^2.23.4",
     "eslint-plugin-react": "^7.24.0",
     "extract-text-webpack-plugin": "^4.0.0-beta.0",
-    "mini-css-extract-plugin": "^1.6.0",
+    "mini-css-extract-plugin": "^2.4.5",
     "node-sass": "^6.0.0",
     "npm-run-all": "^4.1.5",
     "prettier": "^2.3.2",
@@ -76,12 +76,12 @@
   "dependencies": {
     "date-fns": "^1.30.1",
     "dotenv": "^10.0.0",
-    "prism-react-renderer": "^0.1.7",
+    "prism-react-renderer": "^1.2.1",
     "ramda": "^0.27.1",
     "react": "^17.0.2",
     "react-colorful": "^5.3.0",
     "react-dom": "^17.0.2",
-    "react-markdown": "^6.0.2",
+    "react-markdown": "^7.1.0",
     "recharts": "^2.1.5"
   },
   "peerDependencies": {
