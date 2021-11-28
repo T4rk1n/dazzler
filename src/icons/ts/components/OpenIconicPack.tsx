@@ -7,10 +7,11 @@ import {DazzlerProps} from '../../../commons/js/types';
  *
  * :Pack: ``oi``
  *
- * @example
+ * :Example:
+ *     .. code-block:: python
  *
- *     icons.OpenIconicPack(),
- *     icons.Icon('oi-bug')
+ *         icons.OpenIconicPack()
+ *         icons.Icon('oi-bug')
  */
 const OpenIconicPack = (_: DazzlerProps) => {
     return (

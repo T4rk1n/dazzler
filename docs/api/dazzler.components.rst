@@ -14,6 +14,7 @@ Subpackages
 
    dazzler.components.auth
    dazzler.components.calendar
+   dazzler.components.charts
    dazzler.components.core
    dazzler.components.electron
    dazzler.components.extra

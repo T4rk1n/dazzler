@@ -7,10 +7,11 @@ import {DazzlerProps} from '../../../commons/js/types';
  *
  * :Pack: ``typcn``
  *
- * @example
+ * :Example:
+ *     .. code-block:: python
  *
- *     icons.TypiconsPack()
- *     icons.Icon('typcn-globe')
+ *         icons.TypiconsPack()
+ *         icons.Icon('typcn-globe')
  */
 const TypiconsPack = (_: DazzlerProps) => {
     return (
