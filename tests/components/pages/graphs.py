@@ -553,7 +553,8 @@ page = Page(
                         charts.Scatter(
                             name='Series A',
                             data=data,
-                            fill=colors[2]
+                            fill=colors[2],
+                            identity='scatter-series'
                         ),
                     ],
                     legend=charts.Legend(),
@@ -685,6 +686,7 @@ page = Page(
                    core.Button('delete data', identity='delete-data'),
                    core.Button('insert data', identity='insert-data'),
                    core.Button('sort data', identity='sort-data'),
+                   core.Button('change scatter fill', identity='change-scatter-fill'),
                ]),
             ]),
             core.Container([
@@ -762,3 +764,8 @@ async def on_click_prepend(ctx: BindingContext):
 @page.bind('clicks@sort-data')
 async def on_click_sort(ctx: BindingContext):
     await ctx.set_aspect('line-chart', sort_data={'key': 'x'})
+
+
+@page.bind('clicks@change-scatter-fill')
+async def on_click_change_fill(ctx: BindingContext):
+    await ctx.set_aspect('scatter-series', fill=colors[0])
