@@ -297,6 +297,7 @@ class Authenticator:
         """
         raise NotImplementedError
 
+    # pylint: disable=no-self-use
     async def authorize(self, user: User, page: Page) -> bool:
         """
         Implement to authorize on a page basis.

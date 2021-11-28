@@ -146,6 +146,7 @@ class Dazzler(precept.Precept):  # pylint: disable=too-many-instance-attributes
             sys.path.insert(0, '.')
             module = importlib.import_module(application or 'app')
 
+            # pylint: disable=used-before-assignment
             app: typing.Optional[Dazzler] = None
 
             # Search for instance so you don't have to supply a name
