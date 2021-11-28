@@ -6,6 +6,6 @@ setup(
         'electron': [
             'PyInstaller==4.5.1'
         ],
-        'postgresql': ['aiopg==1.3.2']
+        'postgresql': ['aiopg==1.3.3']
     }
 )
