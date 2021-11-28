@@ -37,7 +37,7 @@ page = Page(
 
 @page.call('clicks@submit', 'value@firstname', 'value@lastname')
 async def on_submit_call(ctx: CallContext):
-    ctx.set_aspect(
+    await ctx.set_aspect(
         'output',
         children=core.Text(
             f'Hello {ctx.states["firstname"]["value"]}'
@@ -49,12 +49,12 @@ async def on_submit_call(ctx: CallContext):
 
 @page.call('value@simple-input')
 async def on_input(ctx: CallContext):
-    ctx.set_aspect('simple-output', text=ctx.trigger.value)
+    await ctx.set_aspect('simple-output', text=ctx.trigger.value)
 
 
 @page.call('value@circular-input')
 async def on_circular_input(ctx: CallContext):
     try:
-        ctx.set_aspect('circular-input', value='not the trigger value')
+        await ctx.set_aspect('circular-input', value='not the trigger value')
     except TriggerLoopError:
-        ctx.set_aspect('circular-output', text='circular output')
+        await ctx.set_aspect('circular-output', text='circular output')

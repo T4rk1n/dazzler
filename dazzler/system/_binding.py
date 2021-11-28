@@ -230,6 +230,9 @@ class BaseContext:
         self.user = request.get('user')
         self.session: Session = request.get('session')
 
+    async def set_aspect(self, identity, **aspects):
+        raise NotImplementedError
+
 
 class BindingContext(BaseContext):
     """
@@ -432,7 +435,7 @@ class CallContext(BaseContext):
         super().__init__(identity, request, trigger, states)
         self._output = {}
 
-    def set_aspect(self, identity, **aspects):
+    async def set_aspect(self, identity, **aspects):
         self._output.setdefault(identity, {})
 
         if identity == self.trigger.identity:
