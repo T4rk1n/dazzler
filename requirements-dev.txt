@@ -5,7 +5,7 @@ pytest-flake8==1.0.7
 pytest-cov==2.12.1
 python-coveralls
 mypy==0.910
-selenium==3.141.0
+selenium==4.1.0
 sphinx==4.2.0
 m2r2==0.3.1
 sphinx_material==0.0.35
