@@ -318,7 +318,8 @@ class Server:
             ]
         })
 
-    async def route_call(self, request: web.Request, page: Page):
+    @staticmethod
+    async def route_call(request: web.Request, page: Page):
         data = await request.json()
         binding = page.get_binding(data['key'])
         ctx = await binding(request, data, None, None, None)
