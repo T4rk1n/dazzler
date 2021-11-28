@@ -15,6 +15,7 @@ jobs:
       POSTGRES_DSN: host=localhost port=5432 dbname=circle_test user=root password=test
 
     working_directory: ~/repo
+    parallelism: 4
 
     steps:
       - checkout
@@ -60,7 +61,8 @@ jobs:
             . venv/bin/activate
             echo 'export PATH=$HOME/electron-driver:$PATH' >> $BASH_ENV
             source $BASH_ENV
-            pytest -ra --junitxml=~/test-reports/dazzler/results.xml --cov=dazzler
+            TEST_FILES=$(circleci tests glob "tests/**/test_*.py" | circleci tests split --split-by=timings)
+            pytest -ra --junitxml=~/test-reports/dazzler/results.xml --cov=dazzler $TEST_FILES
 
       - store_artifacts:
           path: ~/test-reports
