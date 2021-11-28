@@ -1,6 +1,7 @@
-import React from 'react';
-import {concat} from 'ramda';
+import React, {useReducer} from 'react';
+import {concat, keys, mergeRight} from 'ramda';
 import {Cell, ErrorBar, Label, LabelList, Text} from 'recharts';
+import {AnyDict} from '../../commons/js/types';
 
 function unwrapChildren(aspects) {
     let children = [];
@@ -34,6 +35,10 @@ function unwrapChildren(aspects) {
     return children;
 }
 
+function aspectReducer(state: AnyDict, action: AnyDict) {
+    return mergeRight(state, action);
+}
+
 /**
  * Take a dazzler Wrapper and return a raw component from the aspects.
  *
@@ -44,13 +49,34 @@ function unwrapChildren(aspects) {
  * @param componentType The type of component to return.
  */
 export function unwrapComponent(component, componentType) {
-    return (
-        component &&
-        React.createElement(componentType, {
-            ...component.props.aspects,
-            className: component.props.aspects.class_name,
-            id: component.props.aspects.identity,
-            children: unwrapChildren(component.props.aspects),
-        })
+    const [aspects, setAspects] = useReducer(
+        aspectReducer,
+        component?.props.aspects
     );
+    if (!component) {
+        return null;
+    }
+    const {identity} = component.props;
+    // Manually connect the component so it can be updated.
+    component.props.connect(
+        identity,
+        (aspects) =>
+            new Promise<void>((resolve) => {
+                setAspects(aspects);
+                resolve();
+            }),
+        (aspect) => aspects[aspect],
+        (pattern) =>
+            keys(aspects)
+                .filter((k) => pattern.test(k))
+                .map((k) => [k, aspects[k]]),
+        (aspects) => component.props.updateAspects(identity, aspects)
+    );
+
+    return React.createElement(componentType, {
+        ...aspects,
+        className: aspects.class_name,
+        id: identity,
+        children: unwrapChildren(aspects),
+    });
 }
