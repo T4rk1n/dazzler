@@ -275,7 +275,8 @@ const ColorPicker = (props: ColorPickerProps) => {
                 />
             );
         }
-        return toggle_button;
+        // Paint emoji was default but rtd & typescript > 4.5 dont like
+        return toggle_button || '🎨';
     }, [toggle_button, toggle_button_color, value]);
 
     const onToggle = useCallback(() => {
@@ -298,7 +299,7 @@ const ColorPicker = (props: ColorPickerProps) => {
 
 ColorPicker.defaultProps = {
     type: 'hex',
-    toggle_button: '🎨',
+    toggle_button_color: true,
     toggleable: true,
     toggle_on_choose: true,
     toggle_on_choose_delay: 2500,
