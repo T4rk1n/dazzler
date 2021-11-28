@@ -4,8 +4,8 @@ setup(
     extras_require={
         'redis': ['aioredis==1.3.1'],
         'electron': [
-            'PyInstaller==4.5.1'
+            'PyInstaller==4.7'
         ],
-        'postgresql': ['aiopg==1.3.2']
+        'postgresql': ['aiopg==1.3.3']
     }
 )
