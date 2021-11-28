@@ -7,10 +7,11 @@ import {DazzlerProps} from '../../../commons/js/types';
  *
  * :Pack: ``fi``
  *
- * @example
+ * :Example:
+ *     .. code-block::python
  *
- *     icons.FoundIconPack(),
- *     icons.Icon('fi-home')
+ *         icons.FoundIconPack()
+ *         icons.Icon('fi-home')
  */
 const FoundIconPack = (_: DazzlerProps) => {
     return (

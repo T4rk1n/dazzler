@@ -7,10 +7,11 @@ import {DazzlerProps} from '../../../commons/js/types';
  *
  * :Pack: ``lnr``
  *
- * @example
+ * :Example:
+ *     .. code-block:: python
  *
- *     icons.LinearIconPack(),
- *     icons.Icon('lnr-home')
+ *         icons.LinearIconPack()
+ *         icons.Icon('lnr-home')
  */
 const LinearIconPack = (_: DazzlerProps) => {
     return (

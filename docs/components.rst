@@ -4,7 +4,7 @@ Components
 
 :auth: Login Form & Logout button.
 :calendar: Date & time related components.
-:charts: Charts components based on `Recharts <https://recharts.org/>`_
+:charts: Charts components based on `Recharts <https://recharts.org>`_.
 :core: Lightweight interactive components.
 :electron: Components to interact with the Electron api.
 :extra: More components that may not be needed by all pages.

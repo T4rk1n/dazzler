@@ -5,12 +5,14 @@ import {DazzlerProps} from '../../../commons/js/types';
 /**
  * Free icon pack from https://github.com/lipis/flag-icons
  *
- * :Pack: ``flag-icon``
+ * :Pack:
+ *     ``flag-icon``
  *
  * :Example:
+ *      .. code-block:: python
  *
- *     icons.FlagIconPack()
- *     icons.Icon('flag-icon flag-icon-ca')
+ *          icons.FlagIconPack()
+ *          icons.Icon('flag-icon flag-icon-ca')
  */
 const FlagIconPack = (_: DazzlerProps) => {
     return (
