@@ -21,3 +21,9 @@ async def test_charts(start_page, browser):
         '#line-chart circle'
     )
     assert len(circles) == 28
+
+    # Make sure the unwrapped components can be updated.
+    await browser.click('#change-scatter-fill')
+    await browser.wait_for_element_by_xpath(
+        '//*[name()="path"][@id="scatter-series"][@fill="#44bb33"]'
+    )
