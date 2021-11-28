@@ -77,7 +77,7 @@ async def on_click(context: BindingContext):
 async def on_layout(context: CallContext):
     visitor = await context.session.get('visitor')
     if visitor:
-        context.set_aspect(
+        await context.set_aspect(
             'visitor-name', children=f'Welcome back {visitor}!'
         )
 

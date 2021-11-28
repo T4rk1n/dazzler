@@ -33,8 +33,8 @@ class AdminRole(typing.NamedTuple):
 
 async def _confirm_delete_user(ctx: CallContext):
     username = _get_trigger_meta(ctx.trigger.identity)
-    ctx.set_aspect('delete-username', text=username)
-    ctx.set_aspect('confirm-delete-user-modal', active=True)
+    await ctx.set_aspect('delete-username', text=username)
+    await ctx.set_aspect('confirm-delete-user-modal', active=True)
 
 
 class UserAdminPage(Page):
@@ -540,9 +540,10 @@ class UserAdminPage(Page):
         username = ctx.states['delete-username']['text']
         await self.delete_user(username)
 
-        ctx.set_aspect('delete-username', text='')
-        ctx.set_aspect('confirm-delete-user-modal', active=False)
-        ctx.set_aspect('users-listbox', delete_identity=f'user-row${username}')
+        await ctx.set_aspect('delete-username', text='')
+        await ctx.set_aspect('confirm-delete-user-modal', active=False)
+        await ctx.set_aspect(
+            'users-listbox', delete_identity=f'user-row${username}')
 
     async def on_create_role(self, ctx: CallContext):
         role_name = ctx.states['new-role-name']['value']
@@ -551,18 +552,18 @@ class UserAdminPage(Page):
 
         try:
             await self.create_role(role_name, role_description)
-            ctx.set_aspect(
+            await ctx.set_aspect(
                 'role-listbox',
                 append=self.get_role_row(
                     AdminRole(role_name, role_description)
                 )
             )
-            ctx.set_aspect('new-role-name', value='')
-            ctx.set_aspect('new-role-description', value='')
-            ctx.set_aspect('roles-data', data=role_data + [role_name])
+            await ctx.set_aspect('new-role-name', value='')
+            await ctx.set_aspect('new-role-description', value='')
+            await ctx.set_aspect('roles-data', data=role_data + [role_name])
         except Exception as err:  # pylint: disable=broad-except
             self.app.logger.exception(err)
-            ctx.set_aspect(
+            await ctx.set_aspect(
                 'toast-listbox',
                 append=self._extra.Toast(
                     self._core.Text(traceback.format_exc()),
@@ -578,13 +579,15 @@ class UserAdminPage(Page):
 
         await self.delete_role(role_name)
 
-        ctx.set_aspect('role-listbox', delete_identity=f'role-row-{role_name}')
-        ctx.set_aspect('roles-data', data=[x for x in roles if x != role_name])
+        await ctx.set_aspect(
+            'role-listbox', delete_identity=f'role-row-{role_name}')
+        await ctx.set_aspect(
+            'roles-data', data=[x for x in roles if x != role_name])
 
     async def _update_users(self, offset, roles, filters, ctx: CallContext):
         users = await self.get_users(offset, self.users_per_page, filters)
 
-        ctx.set_aspect(
+        await ctx.set_aspect(
             'users-listbox',
             items=[self.get_user_row(user, roles) for user in users]
         )
@@ -603,7 +606,8 @@ class UserAdminPage(Page):
         await self._update_users(0, roles, filters, ctx)
 
         user_count = await self.get_user_count(filters)
-        ctx.set_aspect('users-pager', total_items=user_count, current_page=1)
+        await ctx.set_aspect(
+            'users-pager', total_items=user_count, current_page=1)
 
     async def on_description_change(self, ctx: CallContext):
         role_name = _get_trigger_meta(ctx.trigger.identity)

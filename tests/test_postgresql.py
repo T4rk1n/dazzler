@@ -85,7 +85,7 @@ def pg_app():
     @page.call('color@username', once=True)
     async def on_username(ctx: CallContext):
         if ctx.user:
-            ctx.set_aspect(
+            await ctx.set_aspect(
                 'username',
                 children=f'{ctx.user.username}'
             )
