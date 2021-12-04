@@ -177,3 +177,39 @@ type PageApiResponse = {
 type CallOutput = {
     output: {[k: string]: AnyDict};
 };
+
+type DazzlerMessage = {
+    kind: string;
+};
+
+type SetAspectMessage = DazzlerMessage & {
+    identity: string;
+    payload: any;
+    regex?: boolean;
+};
+
+type GetAspectMessage = DazzlerMessage & {
+    identity: string;
+    aspect: string;
+    request_id: string;
+};
+
+type StorageMessage = DazzlerMessage & {
+    identity: string;
+    storage: string;
+};
+
+type SetStorageMessage = StorageMessage & {
+    payload: any;
+};
+
+type GetStorageMessage = StorageMessage & {
+    request_id: string;
+};
+
+type ReloadMessage = DazzlerMessage & {
+    filenames: Requirement[];
+    hot: boolean;
+    refresh: boolean;
+    deleted: Requirement[];
+};

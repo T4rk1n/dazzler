@@ -38,6 +38,11 @@ import {
     UpdaterState,
     PageApiResponse,
     Aspect,
+    SetAspectMessage,
+    GetAspectMessage,
+    GetStorageMessage,
+    ReloadMessage,
+    SetStorageMessage,
 } from '../types';
 import {getAspectKey, isSameAspect} from '../aspects';
 
@@ -252,95 +257,120 @@ export default class Updater extends React.Component<
 
     onMessage(response) {
         const data = JSON.parse(response.data);
-        const {identity, kind, payload, storage, request_id} = data;
-        let store;
-        if (storage === 'session') {
-            store = window.sessionStorage;
-        } else {
-            store = window.localStorage;
-        }
-        switch (kind) {
+        switch (data.kind) {
             case 'set-aspect':
-                const setAspects = (component) =>
-                    component
-                        .setAspects(
-                            hydrateProps(
-                                payload,
-                                this.updateAspects,
-                                this.connect,
-                                this.disconnect
-                            )
-                        )
-                        .then(() => this.updateAspects(identity, payload));
-                if (data.regex) {
-                    const pattern = new RegExp(data.identity);
-                    keys(this.boundComponents)
-                        .filter((k: string) => pattern.test(k))
-                        .map((k) => this.boundComponents[k])
-                        .forEach(setAspects);
-                } else {
-                    setAspects(this.boundComponents[identity]);
-                }
+                this._handleGetAspect(data);
                 break;
             case 'get-aspect':
-                const {aspect} = data;
-                const wanted = this.boundComponents[identity];
-                if (!wanted) {
-                    this.ws.send(
-                        JSON.stringify({
-                            kind,
-                            identity,
-                            aspect,
-                            request_id,
-                            error: `Aspect not found ${identity}.${aspect}`,
-                        })
-                    );
-                    return;
-                }
-                const value = wanted.getAspect(aspect);
-                this.ws.send(
-                    JSON.stringify({
-                        kind,
-                        identity,
-                        aspect,
-                        value: prepareProp(value),
-                        request_id,
-                    })
-                );
+                this._handleSetAspect(data);
                 break;
             case 'set-storage':
-                store.setItem(identity, JSON.stringify(payload));
+                this._handleSetStorage(data);
                 break;
             case 'get-storage':
-                this.ws.send(
-                    JSON.stringify({
-                        kind,
-                        identity,
-                        request_id,
-                        value: JSON.parse(store.getItem(identity)),
-                    })
-                );
+                this._handleGetStorage(data);
                 break;
             case 'reload':
-                const {filenames, hot, refresh, deleted} = data;
-                if (refresh) {
-                    this.ws.close();
-                    this.setState({reloading: true, needRefresh: true});
-                    return;
-                }
-                if (hot) {
-                    // The ws connection will close, when it
-                    // reconnect it will do a hard reload of the page api.
-                    this.setState({reloading: true});
-                    return;
-                }
-                filenames.forEach(loadRequirement);
-                deleted.forEach((r) => disableCss(r.url));
+                this._handleReloadMessage(data);
                 break;
             case 'ping':
                 // Just do nothing.
                 break;
+            default:
+                console.warn(`Invalid server message`, data);
         }
+    }
+
+    _getStorage(storage: string) {
+        if (storage === 'session') {
+            return window.sessionStorage;
+        }
+        return window.localStorage;
+    }
+
+    // Message Handlers
+
+    _handleSetAspect(data: SetAspectMessage) {
+        const {identity, payload, regex} = data;
+        const setAspects = (component) =>
+            component
+                .setAspects(
+                    hydrateProps(
+                        payload,
+                        this.updateAspects,
+                        this.connect,
+                        this.disconnect
+                    )
+                )
+                .then(() => this.updateAspects(identity, payload));
+        if (regex) {
+            const pattern = new RegExp(identity);
+            keys(this.boundComponents)
+                .filter((k: string) => pattern.test(k))
+                .map((k) => this.boundComponents[k])
+                .forEach(setAspects);
+        } else {
+            setAspects(this.boundComponents[identity]);
+        }
+    }
+    _handleGetAspect(data: GetAspectMessage) {
+        const {identity, aspect, kind, request_id} = data;
+        const wanted = this.boundComponents[identity];
+        if (!wanted) {
+            this.ws.send(
+                JSON.stringify({
+                    kind,
+                    identity,
+                    aspect,
+                    request_id,
+                    error: `Aspect not found ${identity}.${aspect}`,
+                })
+            );
+            return;
+        }
+        const value = wanted.getAspect(aspect);
+        this.ws.send(
+            JSON.stringify({
+                kind,
+                identity,
+                aspect,
+                value: prepareProp(value),
+                request_id,
+            })
+        );
+    }
+    _handleSetStorage(data: SetStorageMessage) {
+        const {identity, payload, storage} = data;
+        const store = this._getStorage(storage);
+        store.setItem(identity, JSON.stringify(payload));
+    }
+    _handleGetStorage(data: GetStorageMessage) {
+        const {kind, identity, request_id, storage} = data;
+        const store = this._getStorage(storage);
+        this.ws.send(
+            JSON.stringify({
+                kind,
+                identity,
+                request_id,
+                value: JSON.parse(store.getItem(identity)),
+            })
+        );
+    }
+    _handleReloadMessage(data: ReloadMessage) {
+        const {filenames, hot, refresh, deleted} = data;
+        if (refresh) {
+            this.ws.close();
+            this.setState({reloading: true, needRefresh: true});
+            return;
+        }
+        if (hot) {
+            // The ws connection will close, when it
+            // reconnect it will do a hard reload of the page api.
+            this.setState({reloading: true});
+            return;
+        }
+        filenames.forEach(loadRequirement);
+        deleted.forEach((r) => disableCss(r.url));
     }
 
     sendBinding(binding, value, call = false) {

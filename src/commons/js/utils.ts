@@ -79,7 +79,7 @@ export function loadCss(uri: string, timeout = 30000) {
         element.onerror = () => {
             clearTimeout(timeoutId);
             reject(`Failed to load stylesheet: ${uri}`);
-        }
+        };
 
         timeoutId = setTimeout(() => {
             element.href = '';
@@ -93,29 +93,26 @@ export function loadCss(uri: string, timeout = 30000) {
 export function debounce(func: Function, wait: number, immediate?: boolean) {
     let timeout, lastCall;
     // eslint-disable-next-line consistent-return
-    return function () {
+    return function (...args) {
         const now = new Date();
         if (!lastCall) {
             lastCall = now;
             if (immediate) {
                 /* eslint-disable no-invalid-this */
-                return func.apply(this, arguments);
+                return func.apply(this, args);
             }
         }
         const later = () => {
             timeout = null;
-            /* eslint-disable no-invalid-this */
             lastCall = new Date();
-            // @ts-ignore
-            return func.apply(this, arguments);
+            return func.apply(this, args);
         };
         clearTimeout(timeout);
         // @ts-ignore
         const diff = now - lastCall;
         if (diff >= wait) {
-            /* eslint-disable no-invalid-this */
             lastCall = now;
-            return func.apply(this, arguments);
+            return func.apply(this, args);
         }
         timeout = setTimeout(later, diff);
     };
