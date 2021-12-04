@@ -2,6 +2,20 @@
 
 Versions follow [Semantic Versioning](https://www.semver.org)
 
+## [0.10.0]
+### Added
+
+- 🍚 Add `core.Script`
+- 🍚 Add `core.Stylesheet`
+- 🍚 Add `charts` components.
+- 🍚 Add `icons.FlagIconPack`
+
+### Changed
+
+- 🔨 Support context component with typescript.
+- 🔨 Refactor icons to typescript.
+- 🚧 Add common styling to Icon.
+
 ## [0.9.0]
 ### Added
 
