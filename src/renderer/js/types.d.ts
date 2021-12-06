@@ -131,7 +131,7 @@ type EvolvedTie = Tie & {
 type Ties = Tie | EvolvedTie;
 
 type UpdaterState = {
-    layout?: DryDazzlerComponent;
+    layout: DryDazzlerComponent[];
     page: string;
     bindings: {[key: string]: Binding};
     rebindings: EvolvedBinding[];
@@ -166,7 +166,7 @@ type ApiFunc = <T>(path: string, options?: XhrRequestOptions) => Promise<T>;
 
 type PageApiResponse = {
     page: string;
-    layout: any;
+    layout: DryDazzlerComponent[];
     bindings: Binding[];
     packages: Record<string, Package>;
     requirements: Requirement[];

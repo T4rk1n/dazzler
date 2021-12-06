@@ -154,6 +154,10 @@ class Server:
 
                     if kind == 'binding':
                         binding = page.get_binding(data['key'])
+                        if not binding:
+                            binding =\
+                                self.dazzler.header.get_binding(data['key']) \
+                                or self.dazzler.footer.get_binding(data['key'])
 
                         create_task(
                             binding(
@@ -243,8 +247,8 @@ class Server:
                     'type': 'image/x-icon'
                 }
             ) if page.favicon else '',
-            header=page.header,
-            footer=page.footer,
+            header=page.html_header,
+            footer=page.html_footer,
             lang=page.lang,
         )
         return web.Response(body=index, content_type='text/html')
@@ -258,6 +262,7 @@ class Server:
         :param page:
         :return:
         """
+        request['page'] = page
         prepared = await page.prepare(
             request,
             self.debug,
@@ -274,6 +279,20 @@ class Server:
         if self.dazzler.config.development.reload:
             # Reload mode needs the websocket even if no binding.
             prepared['reload'] = True
+
+        for part, part_name, included in (
+            (self.dazzler.header, 'header', page.include_app_header),
+            (self.dazzler.footer, 'footer', page.include_app_footer)
+        ):
+            if not part.layout or not included:
+                continue
+            p = await part.prepare(request)
+            if part_name == 'header':
+                prepared['layout'] = p['layout'] + prepared['layout']
+            else:
+                prepared['layout'] += p['layout']
+            prepared['bindings'].update(p['bindings'])
+            prepared['ties'] += p['ties']
 
         return web.json_response(prepared)
 

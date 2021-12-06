@@ -1,11 +1,6 @@
 import React from 'react';
 import {apiRequest} from '../requests';
-import {
-    hydrateComponent,
-    hydrateProps,
-    isComponent,
-    prepareProp,
-} from '../hydrator';
+import {hydrateComponent, hydrateProps, prepareProp} from '../hydrator';
 import {loadRequirement, loadRequirements} from '../requirements';
 import {disableCss} from 'commons';
 import {
@@ -556,9 +551,6 @@ export default class Updater extends React.Component<
                 </div>
             );
         }
-        if (!isComponent(layout)) {
-            throw new Error(`Layout is not a component: ${layout}`);
-        }
 
         const contexts = [];
 
@@ -566,21 +558,23 @@ export default class Updater extends React.Component<
             contexts.push(contextComponent);
         };
 
-        const hydrated = hydrateComponent(
-            layout.name,
-            layout.package,
-            layout.identity,
-            hydrateProps(
-                layout.aspects,
+        const hydrated = layout.map((component) =>
+            hydrateComponent(
+                component.name,
+                component.package,
+                component.identity,
+                hydrateProps(
+                    component.aspects,
+                    this.updateAspects,
+                    this.connect,
+                    this.disconnect,
+                    onContext
+                ),
                 this.updateAspects,
                 this.connect,
                 this.disconnect,
                 onContext
-            ),
-            this.updateAspects,
-            this.connect,
-            this.disconnect,
-            onContext
+            )
         );
 
         return (

@@ -25,6 +25,7 @@ from .system import (
     generate_meta,
     Requirement,
     Page,
+    PagePart,
     Middleware,
     Route,
     RouteMethod,
@@ -71,6 +72,8 @@ class Dazzler(precept.Precept):  # pylint: disable=too-many-instance-attributes
     ]
     server: Server
     auth: typing.Optional[DazzlerAuth]
+    header: PagePart
+    footer: PagePart
 
     def __init__(self, module_name, app_name=None):
         module = importlib.import_module(module_name)
@@ -109,6 +112,8 @@ class Dazzler(precept.Precept):  # pylint: disable=too-many-instance-attributes
         )
         self.requirements_dir = os.path.join(self.data_dir, 'requirements')
         self.auth = None
+        self.header = PagePart()
+        self.footer = PagePart()
 
     def add_page(self, *pages: Page):
         if self._started:
