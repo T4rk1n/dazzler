@@ -41,7 +41,7 @@ async def test_page_meta_attributes(start_page, browser):
 @pytest.mark.async_test
 async def test_page_static_header(start_page, browser):
     await start_page(
-        Page('header', core.Container(), header='<div>Header</div>')
+        Page('header', core.Container(), html_header='<div>Header</div>')
     )
     await browser.wait_for_text_to_equal('body > div:first-child', 'Header')
 
@@ -50,7 +50,7 @@ async def test_page_static_header(start_page, browser):
 async def test_page_static_footer(start_page, browser):
     await start_page(
         Page('header', core.Container(),
-             footer='<div id="footer">Footer</div>')
+             html_footer='<div id="footer">Footer</div>')
     )
     await browser.wait_for_text_to_equal('#footer', 'Footer')
 

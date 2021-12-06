@@ -5,5 +5,5 @@ page = Page(
     __name__,
     core.Container('Initial', identity='content'),
     url='/',
-    header='<div id="injected">Static</div>'
+    html_header='<div id="injected">Static</div>'
 )
