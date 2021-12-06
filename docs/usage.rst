@@ -327,6 +327,60 @@ Switch between a light and dark theme:
     - :py:mod:`dazzler.system.transforms` - API reference.
     - :ref:`transforms_example` - Example of most transforms usage.
 
+
+Header & Footer
+===============
+
+A header or footer can be added to all the pages of the application.
+
+.. code-block::python
+
+    from dazzler import Dazzler
+    from dazzler.system import BindingContext,
+    from dazzler.components import core, icons, html
+
+    app = Dazzler(__name__)
+
+    async def header_layout(request):
+        # Page is added automatically to layout request.
+        page = request['page']
+
+        return core.Container([
+            # Add those icons packs globally
+            icons.IconLoader(),
+            icons.FoundIconPack(),
+            html.H1(page.title),
+            core.Button('fi-thumbnails', identity='menu-btn'),
+            core.Container([
+                core.Link(page_name='one'),
+                core.Link(page_name='two'),
+                core.Text(identity='menu-username')
+            ], hidden=True, identity='header-menu')
+        ])
+
+    app.header.layout = layout
+
+    # toggle the menu with a tie
+    app.header.tie('clicks@btn', 'hidden@header-menu').transform(
+        t.Modulus(2).t(t.Equals(0))
+    )
+
+    # Or update via binding/calls
+    @app.header.bind(
+        Trigger(
+            aspect='hidden',
+            identity='header-menu',
+            once=True,
+        )
+    )
+    async def on_click_menu(ctx: BindingContext):
+        if ctx.user:
+            await ctx.set_aspect(
+                'menu-username',
+                text=ctx.user.username
+            )
+
+
 Integrated systems
 ==================
 
