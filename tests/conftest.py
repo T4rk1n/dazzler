@@ -89,7 +89,7 @@ def run_background_cmd():
 
     def _runner(cmd):
         async def runner():
-            namespace['proceses'].append(
+            namespace['processes'].append(
                 await asyncio.create_subprocess_shell(cmd))
 
         namespace['tasks'].append(
